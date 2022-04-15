@@ -1,3 +1,0 @@
-/home/zyc/tools/gazebo-11.10.2/examples/plugins/model_push/build/CMakeFiles/rebuild_cache.dir
-/home/zyc/tools/gazebo-11.10.2/examples/plugins/model_push/build/CMakeFiles/edit_cache.dir
-/home/zyc/tools/gazebo-11.10.2/examples/plugins/model_push/build/CMakeFiles/model_push.dir

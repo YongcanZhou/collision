@@ -1,3 +1,0 @@
-/home/zyc/gazebo_collision/hello_world/build/CMakeFiles/rebuild_cache.dir
-/home/zyc/gazebo_collision/hello_world/build/CMakeFiles/edit_cache.dir
-/home/zyc/gazebo_collision/hello_world/build/CMakeFiles/hello_world.dir
