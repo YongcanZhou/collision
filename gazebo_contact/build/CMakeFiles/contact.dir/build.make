@@ -80,7 +80,7 @@ contact_EXTERNAL_OBJECTS =
 libcontact.so: CMakeFiles/contact.dir/ContactPlugin.cc.o
 libcontact.so: CMakeFiles/contact.dir/build.make
 libcontact.so: /usr/lib/x86_64-linux-gnu/libSimTKsimbody.so.3.6
-libcontact.so: /usr/local/lib/libdart.so.6.13.0
+libcontact.so: /usr/lib/x86_64-linux-gnu/libdart.so.6.9.2
 libcontact.so: /usr/lib/x86_64-linux-gnu/libgazebo.so
 libcontact.so: /usr/lib/x86_64-linux-gnu/libgazebo_client.so
 libcontact.so: /usr/lib/x86_64-linux-gnu/libgazebo_gui.so
@@ -116,9 +116,8 @@ libcontact.so: /usr/lib/x86_64-linux-gnu/libblas.so
 libcontact.so: /usr/lib/x86_64-linux-gnu/liblapack.so
 libcontact.so: /usr/lib/x86_64-linux-gnu/libblas.so
 libcontact.so: /usr/lib/x86_64-linux-gnu/liblapack.so
-libcontact.so: /usr/local/lib/libdart-external-odelcpsolver.so.6.13.0
-libcontact.so: /usr/local/lib/libccd.so.2.0
-libcontact.so: /usr/lib/x86_64-linux-gnu/libm.so
+libcontact.so: /usr/lib/x86_64-linux-gnu/libdart-external-odelcpsolver.so.6.9.2
+libcontact.so: /usr/lib/x86_64-linux-gnu/libccd.so
 libcontact.so: /usr/lib/x86_64-linux-gnu/libfcl.so
 libcontact.so: /usr/lib/x86_64-linux-gnu/libassimp.so
 libcontact.so: /usr/lib/x86_64-linux-gnu/liboctomap.so.1.9.3

@@ -1,0 +1,59 @@
+#include <functional>
+#include <gazebo/gazebo.hh>
+#include <gazebo/physics/physics.hh>
+#include <gazebo/common/common.hh>
+#include <ignition/math/Vector3.hh>
+#include <ignition/math.hh>
+
+namespace gazebo
+{
+  class ModelPush : public ModelPlugin
+  {
+    public: void Load(physics::ModelPtr _parent, sdf::ElementPtr /*_sdf*/)
+    {
+      // Store the pointer to the model
+      this->model = _parent;
+      this->world = _parent->GetWorld();  // physics::get_world(worldName)
+
+      // Listen to the update event. This event is broadcast every
+      // simulation iteration.
+      this->updateConnection = event::Events::ConnectWorldUpdateBegin(
+          std::bind(&ModelPush::OnUpdate, this));
+    }
+
+    // Called by the world update start event
+    public: void OnUpdate()
+    {
+      // ---------------------------------------------------------------------
+      // record start time
+      auto start = std::chrono::steady_clock::now();
+
+      static double x{0.0}, y{0.0}, z{0.0}, roll{0.0}, pitch{0.0}, yaw{0.0};
+      std::cout <<"x"<<x<<std::endl;
+
+      x += 0.0005;
+      y += 0.0007;
+      z += 0.0006;
+      roll += 0.0001;
+      pitch += 0.0003;
+      yaw += 0.0002;
+
+      ignition::math::Pose3d pose(x, y, z, roll, pitch, yaw);  // = orig_pose;
+      this->model->SetWorldPose(pose);
+
+      //per 1ms = 0.001s
+      std::this_thread::sleep_for(std::chrono::nanoseconds(1000000));
+      
+    }
+
+    // Pointer to the model
+    private: physics::ModelPtr model;
+    private: physics::WorldPtr world;
+
+    // Pointer to the update event connection
+    private: event::ConnectionPtr updateConnection;
+  };
+
+  // Register this plugin with the simulator
+  GZ_REGISTER_MODEL_PLUGIN(ModelPush)
+}

@@ -1,0 +1,3 @@
+/home/zyc/collision/animatedbox/build/CMakeFiles/rebuild_cache.dir
+/home/zyc/collision/animatedbox/build/CMakeFiles/edit_cache.dir
+/home/zyc/collision/animatedbox/build/CMakeFiles/animated_box.dir
