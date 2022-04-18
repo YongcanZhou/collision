@@ -29,20 +29,46 @@ namespace gazebo
       auto start = std::chrono::steady_clock::now();
 
       static double x{0.0}, y{0.0}, z{0.0}, roll{0.0}, pitch{0.0}, yaw{0.0};
-      std::cout <<"x"<<x<<std::endl;
+      // std::cout <<"x"<<x<<std::endl;
 
-      x += 0.0005;
-      y += 0.0007;
-      z += 0.0006;
-      roll += 0.0001;
-      pitch += 0.0003;
-      yaw += 0.0002;
+      
 
       ignition::math::Pose3d pose(x, y, z, roll, pitch, yaw);  // = orig_pose;
       this->model->SetWorldPose(pose);
 
-      //per 1ms = 0.001s
-      std::this_thread::sleep_for(std::chrono::nanoseconds(1000000));
+      // //per 1ms = 0.001s
+      // std::this_thread::sleep_for(std::chrono::nanoseconds(1000000));
+
+      static std::thread sim_thread_;  //
+
+
+      if  ( sim_thread_.joinable())
+      {
+        return;
+      }
+      else{
+        //using lambda
+        sim_thread_ = std::thread([&]()
+        {
+          // std::chrono::steady_clock
+          // 记录开始时间
+          auto start = std::chrono::steady_clock::now();
+
+          while (true){
+            x += 0.05;
+            y += 0.07;
+            z += 0.06;
+            roll += 0.0001;
+            pitch += 0.0003;
+            yaw += 0.0002;
+
+            std::cout<<"test"<<std::endl;
+            std::this_thread::sleep_for(std::chrono::nanoseconds(1000000000));
+          }
+        });
+      }
+ 
+
       
     }
 

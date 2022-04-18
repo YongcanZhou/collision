@@ -1,21 +1,21 @@
 Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
 Change Dir: /home/zyc/collision/model_push/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_5f640/fast && /usr/bin/make -f CMakeFiles/cmTC_5f640.dir/build.make CMakeFiles/cmTC_5f640.dir/build
+Run Build Command(s):/usr/bin/make cmTC_33b07/fast && /usr/bin/make -f CMakeFiles/cmTC_33b07.dir/build.make CMakeFiles/cmTC_33b07.dir/build
 make[1]: 进入目录“/home/zyc/collision/model_push/build/CMakeFiles/CMakeTmp”
-Building C object CMakeFiles/cmTC_5f640.dir/src.c.o
-/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_5f640.dir/src.c.o   -c /home/zyc/collision/model_push/build/CMakeFiles/CMakeTmp/src.c
-Linking C executable cmTC_5f640
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5f640.dir/link.txt --verbose=1
-/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    -rdynamic CMakeFiles/cmTC_5f640.dir/src.c.o  -o cmTC_5f640 
-/usr/bin/ld: CMakeFiles/cmTC_5f640.dir/src.c.o: in function `main':
+Building C object CMakeFiles/cmTC_33b07.dir/src.c.o
+/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_33b07.dir/src.c.o   -c /home/zyc/collision/model_push/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_33b07
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_33b07.dir/link.txt --verbose=1
+/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    -rdynamic CMakeFiles/cmTC_33b07.dir/src.c.o  -o cmTC_33b07 
+/usr/bin/ld: CMakeFiles/cmTC_33b07.dir/src.c.o: in function `main':
 src.c:(.text+0x46): undefined reference to `pthread_create'
 /usr/bin/ld: src.c:(.text+0x52): undefined reference to `pthread_detach'
 /usr/bin/ld: src.c:(.text+0x63): undefined reference to `pthread_join'
 collect2: error: ld returned 1 exit status
-make[1]: *** [CMakeFiles/cmTC_5f640.dir/build.make:87：cmTC_5f640] 错误 1
+make[1]: *** [CMakeFiles/cmTC_33b07.dir/build.make:87：cmTC_33b07] 错误 1
 make[1]: 离开目录“/home/zyc/collision/model_push/build/CMakeFiles/CMakeTmp”
-make: *** [Makefile:121：cmTC_5f640/fast] 错误 2
+make: *** [Makefile:121：cmTC_33b07/fast] 错误 2
 
 
 Source file was:
@@ -41,18 +41,18 @@ int main(void)
 Determining if the function pthread_create exists in the pthreads failed with the following output:
 Change Dir: /home/zyc/collision/model_push/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_44b74/fast && /usr/bin/make -f CMakeFiles/cmTC_44b74.dir/build.make CMakeFiles/cmTC_44b74.dir/build
+Run Build Command(s):/usr/bin/make cmTC_c67fa/fast && /usr/bin/make -f CMakeFiles/cmTC_c67fa.dir/build.make CMakeFiles/cmTC_c67fa.dir/build
 make[1]: 进入目录“/home/zyc/collision/model_push/build/CMakeFiles/CMakeTmp”
-Building C object CMakeFiles/cmTC_44b74.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_44b74.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
-Linking C executable cmTC_44b74
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_44b74.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_44b74.dir/CheckFunctionExists.c.o  -o cmTC_44b74  -lpthreads 
+Building C object CMakeFiles/cmTC_c67fa.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_c67fa.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
+Linking C executable cmTC_c67fa
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c67fa.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_c67fa.dir/CheckFunctionExists.c.o  -o cmTC_c67fa  -lpthreads 
 /usr/bin/ld: 找不到 -lpthreads
 collect2: error: ld returned 1 exit status
-make[1]: *** [CMakeFiles/cmTC_44b74.dir/build.make:87：cmTC_44b74] 错误 1
+make[1]: *** [CMakeFiles/cmTC_c67fa.dir/build.make:87：cmTC_c67fa] 错误 1
 make[1]: 离开目录“/home/zyc/collision/model_push/build/CMakeFiles/CMakeTmp”
-make: *** [Makefile:121：cmTC_44b74/fast] 错误 2
+make: *** [Makefile:121：cmTC_c67fa/fast] 错误 2
 
 
 

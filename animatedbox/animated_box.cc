@@ -75,7 +75,7 @@ namespace gazebo
         // _parent->SetAnimation(anim);
 
 
-        static double x{0.0}, y{0.0}, z{0.0};
+        // static double x{0.0}, y{0.0}, z{0.0};
 
         // //test---------------------------------------------------------------------
         // for (int i = 0; i <10;i++){
@@ -96,8 +96,6 @@ namespace gazebo
         static double x{0.0}, y{0.0}, z{0.0};
         while (x == 5){
           int currFrame = anim->GetKeyFrameCount();
-
-          std::cout <<"test time"<<currFrame<<std::endl;
 
           x += 0.5;
           y += 0.7;
