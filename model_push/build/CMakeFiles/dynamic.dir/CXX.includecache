@@ -6,13 +6,3 @@
 
 #IncludeRegexTransform: 
 
-/home/zyc/collision/model_push/dynamic.cpp
-iostream
--
-thread
--
-dynamic.h
-/home/zyc/collision/model_push/dynamic.h
-
-/home/zyc/collision/model_push/dynamic.h
-

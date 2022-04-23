@@ -8,5 +8,5 @@ list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 add_library(model_push SHARED model_push.cc)
 target_link_libraries(model_push ${GAZEBO_LIBRARIES})
 
-add_library(dynamic SHARED dynamic.cpp)
-target_link_libraries(model_push dynamic)
+add_library(dynamic_simulator SHARED dynamic_simulator.cc)
+target_link_libraries(model_push dynamic_simulator)

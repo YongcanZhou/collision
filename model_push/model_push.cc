@@ -5,7 +5,7 @@
 #include <ignition/math/Vector3.hh>
 #include <ignition/math.hh>
 
-#include "dynamic.h"
+#include "dynamic_simulator.h"
 
 namespace gazebo
 {
@@ -27,14 +27,15 @@ namespace gazebo
     public: void OnUpdate()
     {
       static double x{0.0}, y{0.0}, z{0.0}, roll{0.0}, pitch{0.0}, yaw{0.0};
-      // double *xp = &x;
-      // printf("%p\n",&x);
+
       ignition::math::Pose3d pose(x, y, z, roll, pitch, yaw);  // = orig_pose;    
       this->model->SetWorldPose(pose);
-      std::cout <<"pose  "<<pose<<std::endl;
+
+      // std::cout <<"pose  "<<pose<<std::endl;
+    
       // this->model->GetByName  
 
-      dynamic(x, y, z, roll, pitch, yaw);
+      DynamicSimulator(x, y, z, roll, pitch, yaw);
        
     }
 

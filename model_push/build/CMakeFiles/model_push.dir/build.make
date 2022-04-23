@@ -110,7 +110,7 @@ libmodel_push.so: /usr/lib/x86_64-linux-gnu/libboost_date_time.so.1.71.0
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libOgreTerrain.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libOgrePaging.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-common3-graphics.so.3.14.0
-libmodel_push.so: libdynamic.so
+libmodel_push.so: libdynamic_simulator.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libSimTKmath.so.3.6
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libSimTKcommon.so.3.6
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libblas.so
