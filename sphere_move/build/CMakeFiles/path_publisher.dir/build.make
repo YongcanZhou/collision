@@ -60,15 +60,15 @@ include CMakeFiles/path_publisher.dir/flags.make
 CMakeFiles/path_publisher.dir/path_publisher.cc.o: CMakeFiles/path_publisher.dir/flags.make
 CMakeFiles/path_publisher.dir/path_publisher.cc.o: ../path_publisher.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zyc/collision/sphere_move/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/path_publisher.dir/path_publisher.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/path_publisher.dir/path_publisher.cc.o -c /home/zyc/collision/sphere_move/path_publisher.cc
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/path_publisher.dir/path_publisher.cc.o -c /home/zyc/collision/sphere_move/path_publisher.cc
 
 CMakeFiles/path_publisher.dir/path_publisher.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/path_publisher.dir/path_publisher.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zyc/collision/sphere_move/path_publisher.cc > CMakeFiles/path_publisher.dir/path_publisher.cc.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zyc/collision/sphere_move/path_publisher.cc > CMakeFiles/path_publisher.dir/path_publisher.cc.i
 
 CMakeFiles/path_publisher.dir/path_publisher.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/path_publisher.dir/path_publisher.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zyc/collision/sphere_move/path_publisher.cc -o CMakeFiles/path_publisher.dir/path_publisher.cc.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zyc/collision/sphere_move/path_publisher.cc -o CMakeFiles/path_publisher.dir/path_publisher.cc.s
 
 # Object files for target path_publisher
 path_publisher_OBJECTS = \

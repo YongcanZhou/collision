@@ -1,0 +1,1 @@
+/usr/bin/g++ -fPIC -g  -shared -Wl,-soname,libdynamic.so -o libdynamic.so CMakeFiles/dynamic.dir/dynamic.cpp.o   -L/usr/lib/x86_64-linux-gnu/gazebo-11/plugins 

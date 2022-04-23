@@ -60,15 +60,15 @@ include CMakeFiles/model_move.dir/flags.make
 CMakeFiles/model_move.dir/model_move.cc.o: CMakeFiles/model_move.dir/flags.make
 CMakeFiles/model_move.dir/model_move.cc.o: ../model_move.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zyc/collision/sphere_move/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/model_move.dir/model_move.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/model_move.dir/model_move.cc.o -c /home/zyc/collision/sphere_move/model_move.cc
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/model_move.dir/model_move.cc.o -c /home/zyc/collision/sphere_move/model_move.cc
 
 CMakeFiles/model_move.dir/model_move.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/model_move.dir/model_move.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zyc/collision/sphere_move/model_move.cc > CMakeFiles/model_move.dir/model_move.cc.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zyc/collision/sphere_move/model_move.cc > CMakeFiles/model_move.dir/model_move.cc.i
 
 CMakeFiles/model_move.dir/model_move.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/model_move.dir/model_move.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zyc/collision/sphere_move/model_move.cc -o CMakeFiles/model_move.dir/model_move.cc.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zyc/collision/sphere_move/model_move.cc -o CMakeFiles/model_move.dir/model_move.cc.s
 
 # Object files for target model_move
 model_move_OBJECTS = \

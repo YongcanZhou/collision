@@ -60,15 +60,15 @@ include CMakeFiles/model_push.dir/flags.make
 CMakeFiles/model_push.dir/model_push.cc.o: CMakeFiles/model_push.dir/flags.make
 CMakeFiles/model_push.dir/model_push.cc.o: ../model_push.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zyc/collision/model_push/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/model_push.dir/model_push.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/model_push.dir/model_push.cc.o -c /home/zyc/collision/model_push/model_push.cc
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/model_push.dir/model_push.cc.o -c /home/zyc/collision/model_push/model_push.cc
 
 CMakeFiles/model_push.dir/model_push.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/model_push.dir/model_push.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zyc/collision/model_push/model_push.cc > CMakeFiles/model_push.dir/model_push.cc.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zyc/collision/model_push/model_push.cc > CMakeFiles/model_push.dir/model_push.cc.i
 
 CMakeFiles/model_push.dir/model_push.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/model_push.dir/model_push.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zyc/collision/model_push/model_push.cc -o CMakeFiles/model_push.dir/model_push.cc.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zyc/collision/model_push/model_push.cc -o CMakeFiles/model_push.dir/model_push.cc.s
 
 # Object files for target model_push
 model_push_OBJECTS = \
@@ -110,6 +110,7 @@ libmodel_push.so: /usr/lib/x86_64-linux-gnu/libboost_date_time.so.1.71.0
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libOgreTerrain.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libOgrePaging.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-common3-graphics.so.3.14.0
+libmodel_push.so: libdynamic.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libSimTKmath.so.3.6
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libSimTKcommon.so.3.6
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libblas.so

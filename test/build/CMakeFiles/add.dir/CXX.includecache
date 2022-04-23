@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/zyc/collision/test/add.cpp
+add.h
+/home/zyc/collision/test/add.h
+iostream
+-
+
+/home/zyc/collision/test/add.h
+
