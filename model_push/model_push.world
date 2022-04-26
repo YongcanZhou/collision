@@ -12,7 +12,7 @@
     </include>
 
     <model name="box">
-      <pose>0 0 0.5 0 0 0</pose>
+      <pose>-6 3 0.5 0 0 0</pose>
       <link name="body">
         <collision name="collision">
           <geometry>
@@ -34,7 +34,7 @@
     </model>   
 
     <model name="sphere">
-      <pose>5 0 1 0 0 0</pose>
+      <pose>-5 0 1 0 0 0</pose>
       <link name="body">
         <collision name="collision">
           <geometry>
@@ -51,6 +51,7 @@
           </geometry>
         </visual>
       </link>
+      <!-- <plugin name="model_push" filename="libmodel_push.so"/> -->
     </model>
     
   </world>
