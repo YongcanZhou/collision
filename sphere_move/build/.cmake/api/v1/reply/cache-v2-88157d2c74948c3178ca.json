@@ -635,7 +635,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/zyc/collision/model_push/build"
+			"value" : "/home/zyc/collision/sphere_move/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -1223,7 +1223,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/zyc/collision/model_push"
+			"value" : "/home/zyc/collision/sphere_move"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1467,7 +1467,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "Project"
+			"value" : "mode_move"
 		},
 		{
 			"name" : "CMAKE_RANLIB",
@@ -1859,7 +1859,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart"
+			"value" : "dart;dart;dart"
 		},
 		{
 			"name" : "DART_MIN_BOOST_VERSION",
@@ -2035,7 +2035,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "[/usr/include][dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart;dart][cfound components: dart ][v(6.6)]"
+			"value" : "[/usr/include][dart;dart;dart][cfound components: dart ][v(6.6)]"
 		},
 		{
 			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_DL",
@@ -2168,6 +2168,18 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "[/usr/include][/usr/lib/x86_64-linux-gnu/libfcl.so][v0.5.0(0.3.2)]"
+		},
+		{
+			"name" : "Gazebo_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for Gazebo."
+				}
+			],
+			"type" : "PATH",
+			"value" : "/usr/lib/x86_64-linux-gnu/cmake/gazebo"
 		},
 		{
 			"name" : "IGN_SANITIZER",
@@ -6574,30 +6586,6 @@
 			"value" : "/usr/bin/pkg-config"
 		},
 		{
-			"name" : "Project_BINARY_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "/home/zyc/collision/model_push/build"
-		},
-		{
-			"name" : "Project_SOURCE_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "/home/zyc/collision/model_push"
-		},
-		{
 			"name" : "Protobuf_DIR",
 			"properties" : 
 			[
@@ -9354,42 +9342,6 @@
 			"value" : "ccd_DIR-NOTFOUND"
 		},
 		{
-			"name" : "dynamic_BINARY_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "/home/zyc/collision/model_push/build"
-		},
-		{
-			"name" : "dynamic_SOURCE_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "/home/zyc/collision/model_push"
-		},
-		{
-			"name" : "gazebo_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "The directory containing a CMake configuration file for gazebo."
-				}
-			],
-			"type" : "PATH",
-			"value" : "/usr/lib/x86_64-linux-gnu/cmake/gazebo"
-		},
-		{
 			"name" : "gazebo_proto_msgs_lib",
 			"properties" : 
 			[
@@ -9498,7 +9450,31 @@
 			"value" : "/usr/lib/x86_64-linux-gnu/cmake/jsoncpp"
 		},
 		{
-			"name" : "model_push_LIB_DEPENDS",
+			"name" : "mode_move_BINARY_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "/home/zyc/collision/sphere_move/build"
+		},
+		{
+			"name" : "mode_move_SOURCE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "/home/zyc/collision/sphere_move"
+		},
+		{
+			"name" : "model_move_LIB_DEPENDS",
 			"properties" : 
 			[
 				{
@@ -9507,7 +9483,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "general;BulletSoftBody;general;BulletDynamics;general;BulletCollision;general;LinearMath;general;SimTKcommon;general;SimTKmath;general;SimTKsimbody;general;dart;general;dart;general;dart;general;dart;general;dart;general;dart;general;dart;general;dart;general;dart;general;dart;general;dart;general;dart;general;dart;general;dart;general;dart;general;dart;general;dart;general;/usr/lib/x86_64-linux-gnu/libgazebo.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_client.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_gui.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_sensors.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_rendering.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_physics.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_ode.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_transport.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_msgs.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_util.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_common.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_gimpact.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_opcode.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_opende_ou.so;general;Boost::thread;general;Boost::system;general;Boost::filesystem;general;Boost::program_options;general;Boost::regex;general;Boost::iostreams;general;Boost::date_time;general;/usr/lib/x86_64-linux-gnu/libprotobuf.so;general;-lpthread;general;sdformat9::sdformat9;optimized;/usr/lib/x86_64-linux-gnu/libOgreMain.so;debug;/usr/lib/x86_64-linux-gnu/libOgreMain.so;general;Boost::thread;general;Boost::date_time;optimized;/usr/lib/x86_64-linux-gnu/libOgreTerrain.so;debug;/usr/lib/x86_64-linux-gnu/libOgreTerrain.so;optimized;/usr/lib/x86_64-linux-gnu/libOgrePaging.so;debug;/usr/lib/x86_64-linux-gnu/libOgrePaging.so;general;ignition-common3::ignition-common3-graphics;general;dynamic_simulator;"
+			"value" : "general;BulletSoftBody;general;BulletDynamics;general;BulletCollision;general;LinearMath;general;SimTKcommon;general;SimTKmath;general;SimTKsimbody;general;dart;general;dart;general;dart;general;/usr/lib/x86_64-linux-gnu/libgazebo.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_client.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_gui.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_sensors.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_rendering.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_physics.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_ode.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_transport.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_msgs.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_util.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_common.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_gimpact.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_opcode.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_opende_ou.so;general;Boost::thread;general;Boost::system;general;Boost::filesystem;general;Boost::program_options;general;Boost::regex;general;Boost::iostreams;general;Boost::date_time;general;/usr/lib/x86_64-linux-gnu/libprotobuf.so;general;-lpthread;general;sdformat9::sdformat9;optimized;/usr/lib/x86_64-linux-gnu/libOgreMain.so;debug;/usr/lib/x86_64-linux-gnu/libOgreMain.so;general;Boost::thread;general;Boost::date_time;optimized;/usr/lib/x86_64-linux-gnu/libOgreTerrain.so;debug;/usr/lib/x86_64-linux-gnu/libOgreTerrain.so;optimized;/usr/lib/x86_64-linux-gnu/libOgrePaging.so;debug;/usr/lib/x86_64-linux-gnu/libOgrePaging.so;general;ignition-common3::ignition-common3-graphics;"
 		},
 		{
 			"name" : "octomap_DIR",

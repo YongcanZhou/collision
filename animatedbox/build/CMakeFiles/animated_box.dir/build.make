@@ -60,15 +60,15 @@ include CMakeFiles/animated_box.dir/flags.make
 CMakeFiles/animated_box.dir/animated_box.cc.o: CMakeFiles/animated_box.dir/flags.make
 CMakeFiles/animated_box.dir/animated_box.cc.o: ../animated_box.cc
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/zyc/collision/animatedbox/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/animated_box.dir/animated_box.cc.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/animated_box.dir/animated_box.cc.o -c /home/zyc/collision/animatedbox/animated_box.cc
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/animated_box.dir/animated_box.cc.o -c /home/zyc/collision/animatedbox/animated_box.cc
 
 CMakeFiles/animated_box.dir/animated_box.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/animated_box.dir/animated_box.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zyc/collision/animatedbox/animated_box.cc > CMakeFiles/animated_box.dir/animated_box.cc.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zyc/collision/animatedbox/animated_box.cc > CMakeFiles/animated_box.dir/animated_box.cc.i
 
 CMakeFiles/animated_box.dir/animated_box.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/animated_box.dir/animated_box.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zyc/collision/animatedbox/animated_box.cc -o CMakeFiles/animated_box.dir/animated_box.cc.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zyc/collision/animatedbox/animated_box.cc -o CMakeFiles/animated_box.dir/animated_box.cc.s
 
 # Object files for target animated_box
 animated_box_OBJECTS = \

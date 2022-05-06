@@ -1,21 +1,21 @@
 Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
 Change Dir: /home/zyc/collision/animatedbox/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_146df/fast && /usr/bin/make -f CMakeFiles/cmTC_146df.dir/build.make CMakeFiles/cmTC_146df.dir/build
+Run Build Command(s):/usr/bin/make cmTC_c845c/fast && /usr/bin/make -f CMakeFiles/cmTC_c845c.dir/build.make CMakeFiles/cmTC_c845c.dir/build
 make[1]: 进入目录“/home/zyc/collision/animatedbox/build/CMakeFiles/CMakeTmp”
-Building C object CMakeFiles/cmTC_146df.dir/src.c.o
-/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_146df.dir/src.c.o   -c /home/zyc/collision/animatedbox/build/CMakeFiles/CMakeTmp/src.c
-Linking C executable cmTC_146df
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_146df.dir/link.txt --verbose=1
-/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    -rdynamic CMakeFiles/cmTC_146df.dir/src.c.o  -o cmTC_146df 
-/usr/bin/ld: CMakeFiles/cmTC_146df.dir/src.c.o: in function `main':
+Building C object CMakeFiles/cmTC_c845c.dir/src.c.o
+/usr/bin/gcc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_c845c.dir/src.c.o   -c /home/zyc/collision/animatedbox/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_c845c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c845c.dir/link.txt --verbose=1
+/usr/bin/gcc  -DCMAKE_HAVE_LIBC_PTHREAD    -rdynamic CMakeFiles/cmTC_c845c.dir/src.c.o  -o cmTC_c845c 
+/usr/bin/ld: CMakeFiles/cmTC_c845c.dir/src.c.o: in function `main':
 src.c:(.text+0x46): undefined reference to `pthread_create'
 /usr/bin/ld: src.c:(.text+0x52): undefined reference to `pthread_detach'
 /usr/bin/ld: src.c:(.text+0x63): undefined reference to `pthread_join'
 collect2: error: ld returned 1 exit status
-make[1]: *** [CMakeFiles/cmTC_146df.dir/build.make:87：cmTC_146df] 错误 1
+make[1]: *** [CMakeFiles/cmTC_c845c.dir/build.make:87：cmTC_c845c] 错误 1
 make[1]: 离开目录“/home/zyc/collision/animatedbox/build/CMakeFiles/CMakeTmp”
-make: *** [Makefile:121：cmTC_146df/fast] 错误 2
+make: *** [Makefile:121：cmTC_c845c/fast] 错误 2
 
 
 Source file was:
@@ -41,18 +41,18 @@ int main(void)
 Determining if the function pthread_create exists in the pthreads failed with the following output:
 Change Dir: /home/zyc/collision/animatedbox/build/CMakeFiles/CMakeTmp
 
-Run Build Command(s):/usr/bin/make cmTC_d159f/fast && /usr/bin/make -f CMakeFiles/cmTC_d159f.dir/build.make CMakeFiles/cmTC_d159f.dir/build
+Run Build Command(s):/usr/bin/make cmTC_40069/fast && /usr/bin/make -f CMakeFiles/cmTC_40069.dir/build.make CMakeFiles/cmTC_40069.dir/build
 make[1]: 进入目录“/home/zyc/collision/animatedbox/build/CMakeFiles/CMakeTmp”
-Building C object CMakeFiles/cmTC_d159f.dir/CheckFunctionExists.c.o
-/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_d159f.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
-Linking C executable cmTC_d159f
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d159f.dir/link.txt --verbose=1
-/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_d159f.dir/CheckFunctionExists.c.o  -o cmTC_d159f  -lpthreads 
+Building C object CMakeFiles/cmTC_40069.dir/CheckFunctionExists.c.o
+/usr/bin/gcc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_40069.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
+Linking C executable cmTC_40069
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_40069.dir/link.txt --verbose=1
+/usr/bin/gcc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_40069.dir/CheckFunctionExists.c.o  -o cmTC_40069  -lpthreads 
 /usr/bin/ld: 找不到 -lpthreads
 collect2: error: ld returned 1 exit status
-make[1]: *** [CMakeFiles/cmTC_d159f.dir/build.make:87：cmTC_d159f] 错误 1
+make[1]: *** [CMakeFiles/cmTC_40069.dir/build.make:87：cmTC_40069] 错误 1
 make[1]: 离开目录“/home/zyc/collision/animatedbox/build/CMakeFiles/CMakeTmp”
-make: *** [Makefile:121：cmTC_d159f/fast] 错误 2
+make: *** [Makefile:121：cmTC_40069/fast] 错误 2
 
 
 

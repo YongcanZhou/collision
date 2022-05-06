@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "path_publisher"
+			"path" : "libanimated_box.so"
 		}
 	],
 	"backtrace" : 1,
@@ -10,7 +10,7 @@
 	{
 		"commands" : 
 		[
-			"add_executable",
+			"add_library",
 			"link_directories",
 			"target_link_libraries",
 			"add_definitions",
@@ -36,19 +36,19 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 16,
+				"line" : 17,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 11,
+				"line" : 13,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 17,
+				"line" : 18,
 				"parent" : 0
 			},
 			{
@@ -124,7 +124,7 @@
 			{
 				"command" : 8,
 				"file" : 0,
-				"line" : 10,
+				"line" : 12,
 				"parent" : 0
 			}
 		]
@@ -135,7 +135,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : " "
+					"fragment" : "-g -fPIC  "
 				},
 				{
 					"backtrace" : 3,
@@ -194,6 +194,9 @@
 				{
 					"backtrace" : 16,
 					"define" : "LIBBULLET_VERSION_GT_282"
+				},
+				{
+					"define" : "animated_box_EXPORTS"
 				}
 			],
 			"includes" : 
@@ -280,13 +283,13 @@
 			]
 		}
 	],
-	"id" : "path_publisher::@6890427a1f51a3e7e1df",
+	"id" : "animated_box::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "-rdynamic",
+				"fragment" : "",
 				"role" : "flags"
 			},
 			{
@@ -564,8 +567,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "path_publisher",
-	"nameOnDisk" : "path_publisher",
+	"name" : "animated_box",
+	"nameOnDisk" : "libanimated_box.so",
 	"paths" : 
 	{
 		"build" : ".",
@@ -586,9 +589,9 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "path_publisher.cc",
+			"path" : "animated_box.cc",
 			"sourceGroupIndex" : 0
 		}
 	],
-	"type" : "EXECUTABLE"
+	"type" : "SHARED_LIBRARY"
 }

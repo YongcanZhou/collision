@@ -619,11 +619,11 @@
 			[
 				{
 					"name" : "HELPSTRING",
-					"value" : "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel ..."
+					"value" : "No help, variable specified on the command line."
 				}
 			],
 			"type" : "STRING",
-			"value" : ""
+			"value" : "Debug"
 		},
 		{
 			"name" : "CMAKE_CACHEFILE_DIR",
@@ -735,11 +735,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "CXX compiler"
+					"value" : "No help, variable specified on the command line."
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/usr/bin/c++"
+			"value" : "/usr/bin/g++"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER_AR",
@@ -863,11 +863,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "C compiler"
+					"value" : "No help, variable specified on the command line."
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "/usr/bin/cc"
+			"value" : "/usr/bin/gcc"
 		},
 		{
 			"name" : "CMAKE_C_COMPILER_AR",
@@ -1099,11 +1099,11 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "Enable/Disable output of compile commands during generation."
+					"value" : "No help, variable specified on the command line."
 				}
 			],
 			"type" : "BOOL",
-			"value" : "OFF"
+			"value" : "TRUE"
 		},
 		{
 			"name" : "CMAKE_EXTRA_GENERATOR",
@@ -1859,7 +1859,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "dart"
+			"value" : "dart;dart"
 		},
 		{
 			"name" : "DART_MIN_BOOST_VERSION",
@@ -2035,7 +2035,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "[/usr/include][dart][cfound components: dart ][v(6.6)]"
+			"value" : "[/usr/include][dart;dart][cfound components: dart ][v(6.6)]"
 		},
 		{
 			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_DL",
@@ -9183,7 +9183,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "general;BulletSoftBody;general;BulletDynamics;general;BulletCollision;general;LinearMath;general;SimTKcommon;general;SimTKmath;general;SimTKsimbody;general;dart;general;/usr/lib/x86_64-linux-gnu/libgazebo.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_client.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_gui.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_sensors.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_rendering.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_physics.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_ode.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_transport.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_msgs.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_util.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_common.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_gimpact.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_opcode.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_opende_ou.so;general;Boost::thread;general;Boost::system;general;Boost::filesystem;general;Boost::program_options;general;Boost::regex;general;Boost::iostreams;general;Boost::date_time;general;/usr/lib/x86_64-linux-gnu/libprotobuf.so;general;-lpthread;general;sdformat9::sdformat9;optimized;/usr/lib/x86_64-linux-gnu/libOgreMain.so;debug;/usr/lib/x86_64-linux-gnu/libOgreMain.so;general;Boost::thread;general;Boost::date_time;optimized;/usr/lib/x86_64-linux-gnu/libOgreTerrain.so;debug;/usr/lib/x86_64-linux-gnu/libOgreTerrain.so;optimized;/usr/lib/x86_64-linux-gnu/libOgrePaging.so;debug;/usr/lib/x86_64-linux-gnu/libOgrePaging.so;general;ignition-common3::ignition-common3-graphics;"
+			"value" : "general;BulletSoftBody;general;BulletDynamics;general;BulletCollision;general;LinearMath;general;SimTKcommon;general;SimTKmath;general;SimTKsimbody;general;dart;general;dart;general;/usr/lib/x86_64-linux-gnu/libgazebo.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_client.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_gui.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_sensors.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_rendering.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_physics.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_ode.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_transport.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_msgs.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_util.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_common.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_gimpact.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_opcode.so;general;/usr/lib/x86_64-linux-gnu/libgazebo_opende_ou.so;general;Boost::thread;general;Boost::system;general;Boost::filesystem;general;Boost::program_options;general;Boost::regex;general;Boost::iostreams;general;Boost::date_time;general;/usr/lib/x86_64-linux-gnu/libprotobuf.so;general;-lpthread;general;sdformat9::sdformat9;optimized;/usr/lib/x86_64-linux-gnu/libOgreMain.so;debug;/usr/lib/x86_64-linux-gnu/libOgreMain.so;general;Boost::thread;general;Boost::date_time;optimized;/usr/lib/x86_64-linux-gnu/libOgreTerrain.so;debug;/usr/lib/x86_64-linux-gnu/libOgreTerrain.so;optimized;/usr/lib/x86_64-linux-gnu/libOgrePaging.so;debug;/usr/lib/x86_64-linux-gnu/libOgrePaging.so;general;ignition-common3::ignition-common3-graphics;"
 		},
 		{
 			"name" : "animated_box_test_BINARY_DIR",

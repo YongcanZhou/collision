@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "libanimated_box.so"
+			"path" : "libmodel_move.so"
 		}
 	],
 	"backtrace" : 1,
@@ -36,19 +36,19 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 17,
+				"line" : 19,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 13,
+				"line" : 11,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 18,
+				"line" : 20,
 				"parent" : 0
 			},
 			{
@@ -124,7 +124,7 @@
 			{
 				"command" : 8,
 				"file" : 0,
-				"line" : 12,
+				"line" : 10,
 				"parent" : 0
 			}
 		]
@@ -135,7 +135,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-fPIC  "
+					"fragment" : "-g -fPIC  "
 				},
 				{
 					"backtrace" : 3,
@@ -196,7 +196,7 @@
 					"define" : "LIBBULLET_VERSION_GT_282"
 				},
 				{
-					"define" : "animated_box_EXPORTS"
+					"define" : "model_move_EXPORTS"
 				}
 			],
 			"includes" : 
@@ -283,7 +283,7 @@
 			]
 		}
 	],
-	"id" : "animated_box::@6890427a1f51a3e7e1df",
+	"id" : "model_move::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -567,8 +567,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "animated_box",
-	"nameOnDisk" : "libanimated_box.so",
+	"name" : "model_move",
+	"nameOnDisk" : "libmodel_move.so",
 	"paths" : 
 	{
 		"build" : ".",
@@ -589,7 +589,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "animated_box.cc",
+			"path" : "model_move.cc",
 			"sourceGroupIndex" : 0
 		}
 	],

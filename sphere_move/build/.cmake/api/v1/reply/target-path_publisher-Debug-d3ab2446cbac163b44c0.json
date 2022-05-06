@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "libmodel_move.so"
+			"path" : "path_publisher"
 		}
 	],
 	"backtrace" : 1,
@@ -10,7 +10,7 @@
 	{
 		"commands" : 
 		[
-			"add_library",
+			"add_executable",
 			"link_directories",
 			"target_link_libraries",
 			"add_definitions",
@@ -36,7 +36,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 19,
+				"line" : 16,
 				"parent" : 0
 			},
 			{
@@ -48,7 +48,7 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 20,
+				"line" : 17,
 				"parent" : 0
 			},
 			{
@@ -135,7 +135,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-fPIC  "
+					"fragment" : "-g  "
 				},
 				{
 					"backtrace" : 3,
@@ -194,9 +194,6 @@
 				{
 					"backtrace" : 16,
 					"define" : "LIBBULLET_VERSION_GT_282"
-				},
-				{
-					"define" : "model_move_EXPORTS"
 				}
 			],
 			"includes" : 
@@ -283,13 +280,17 @@
 			]
 		}
 	],
-	"id" : "model_move::@6890427a1f51a3e7e1df",
+	"id" : "path_publisher::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "",
+				"fragment" : "-g",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "-rdynamic",
 				"role" : "flags"
 			},
 			{
@@ -567,8 +568,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "model_move",
-	"nameOnDisk" : "libmodel_move.so",
+	"name" : "path_publisher",
+	"nameOnDisk" : "path_publisher",
 	"paths" : 
 	{
 		"build" : ".",
@@ -589,9 +590,9 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "model_move.cc",
+			"path" : "path_publisher.cc",
 			"sourceGroupIndex" : 0
 		}
 	],
-	"type" : "SHARED_LIBRARY"
+	"type" : "EXECUTABLE"
 }

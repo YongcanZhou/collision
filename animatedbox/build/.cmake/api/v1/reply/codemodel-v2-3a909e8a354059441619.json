@@ -14,12 +14,11 @@
 					"source" : ".",
 					"targetIndexes" : 
 					[
-						0,
-						1
+						0
 					]
 				}
 			],
-			"name" : "",
+			"name" : "Debug",
 			"projects" : 
 			[
 				{
@@ -27,11 +26,10 @@
 					[
 						0
 					],
-					"name" : "mode_move",
+					"name" : "animated_box_test",
 					"targetIndexes" : 
 					[
-						0,
-						1
+						0
 					]
 				}
 			],
@@ -39,16 +37,9 @@
 			[
 				{
 					"directoryIndex" : 0,
-					"id" : "model_move::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-model_move-9924a02e2894bc4fd181.json",
-					"name" : "model_move",
-					"projectIndex" : 0
-				},
-				{
-					"directoryIndex" : 0,
-					"id" : "path_publisher::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-path_publisher-8e2418a60273758fda1c.json",
-					"name" : "path_publisher",
+					"id" : "animated_box::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-animated_box-Debug-3679c9a47c95301c544e.json",
+					"name" : "animated_box",
 					"projectIndex" : 0
 				}
 			]
@@ -57,8 +48,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/zyc/collision/sphere_move/build",
-		"source" : "/home/zyc/collision/sphere_move"
+		"build" : "/home/zyc/collision/animatedbox/build",
+		"source" : "/home/zyc/collision/animatedbox"
 	},
 	"version" : 
 	{
