@@ -6,6 +6,8 @@
 
 #IncludeRegexTransform: 
 
+/home/zyc/collision/model_push/dynamic_simulator.h
+
 /home/zyc/collision/model_push/model_push.cc
 functional
 -
@@ -19,6 +21,8 @@ ignition/math/Vector3.hh
 -
 ignition/math.hh
 -
+dynamic_simulator.h
+/home/zyc/collision/model_push/dynamic_simulator.h
 
 /usr/include/gazebo-11/gazebo/Master.hh
 string

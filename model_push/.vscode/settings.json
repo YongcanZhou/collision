@@ -71,5 +71,6 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "bit": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Enabled"
 }

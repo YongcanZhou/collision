@@ -79,6 +79,7 @@ dynamic_simulator_EXTERNAL_OBJECTS =
 
 libdynamic_simulator.so: CMakeFiles/dynamic_simulator.dir/dynamic_simulator.cc.o
 libdynamic_simulator.so: CMakeFiles/dynamic_simulator.dir/build.make
+libdynamic_simulator.so: /usr/lib/x86_64-linux-gnu/libfcl.so
 libdynamic_simulator.so: CMakeFiles/dynamic_simulator.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/zyc/collision/model_push/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX shared library libdynamic_simulator.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/dynamic_simulator.dir/link.txt --verbose=$(VERBOSE)

@@ -10,3 +10,4 @@ target_link_libraries(model_push ${GAZEBO_LIBRARIES})
 
 add_library(dynamic_simulator SHARED dynamic_simulator.cc)
 target_link_libraries(model_push dynamic_simulator)
+target_link_libraries(dynamic_simulator fcl)

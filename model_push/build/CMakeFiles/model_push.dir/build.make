@@ -118,8 +118,8 @@ libmodel_push.so: /usr/lib/x86_64-linux-gnu/liblapack.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libblas.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/liblapack.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libdart-external-odelcpsolver.so.6.9.2
-libmodel_push.so: /usr/lib/x86_64-linux-gnu/libccd.so
-libmodel_push.so: /usr/lib/x86_64-linux-gnu/libfcl.so
+libmodel_push.so: /usr/local/lib/libccd.so.2.0
+libmodel_push.so: /usr/lib/x86_64-linux-gnu/libm.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libassimp.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/liboctomap.so.1.9.3
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/liboctomath.so.1.9.3
@@ -132,6 +132,7 @@ libmodel_push.so: /usr/lib/x86_64-linux-gnu/libprotobuf.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-common3.so.3.14.0
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libuuid.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libuuid.so
+libmodel_push.so: /usr/lib/x86_64-linux-gnu/libfcl.so
 libmodel_push.so: CMakeFiles/model_push.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/zyc/collision/model_push/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX shared library libmodel_push.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/model_push.dir/link.txt --verbose=$(VERBOSE)

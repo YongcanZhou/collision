@@ -1,0 +1,1 @@
+/usr/bin/g++ -fPIC -g  -shared -Wl,-soname,libdynamic_simulator.so -o libdynamic_simulator.so CMakeFiles/dynamic_simulator.dir/dynamic_simulator.cc.o   -L/usr/lib/x86_64-linux-gnu/gazebo-11/plugins 

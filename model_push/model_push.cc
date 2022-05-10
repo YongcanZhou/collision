@@ -39,7 +39,7 @@ namespace gazebo
       
       // Change pose of link
       zyc::DynamicSimulator(x, y, z, roll, pitch, yaw);
-      std::cout <<"pose  "<<pose<<std::endl; 
+      // std::cout <<"pose  "<<pose<<std::endl; 
     }
 
     // Pointer to the model

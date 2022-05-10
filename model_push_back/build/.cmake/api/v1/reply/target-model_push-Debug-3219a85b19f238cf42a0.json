@@ -311,7 +311,7 @@
 				"role" : "libraryPath"
 			},
 			{
-				"fragment" : "-Wl,-rpath,/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/home/zyc/collision/model_push/build",
+				"fragment" : "-Wl,-rpath,/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/home/zyc/collision/model_push/build:/usr/local/lib",
 				"role" : "libraries"
 			},
 			{
@@ -519,7 +519,11 @@
 				"role" : "libraries"
 			},
 			{
-				"fragment" : "-lccd",
+				"fragment" : "/usr/local/lib/libccd.so.2.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lm",
 				"role" : "libraries"
 			},
 			{

@@ -110,6 +110,7 @@ libmodel_push.so: /usr/lib/x86_64-linux-gnu/libboost_date_time.so.1.71.0
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libOgreTerrain.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libOgrePaging.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-common3-graphics.so.3.14.0
+libmodel_push.so: libdynamic_simulator.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libSimTKmath.so.3.6
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libSimTKcommon.so.3.6
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libblas.so
@@ -117,7 +118,8 @@ libmodel_push.so: /usr/lib/x86_64-linux-gnu/liblapack.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libblas.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/liblapack.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libdart-external-odelcpsolver.so.6.9.2
-libmodel_push.so: /usr/lib/x86_64-linux-gnu/libccd.so
+libmodel_push.so: /usr/local/lib/libccd.so.2.0
+libmodel_push.so: /usr/lib/x86_64-linux-gnu/libm.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libfcl.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libassimp.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/liboctomap.so.1.9.3

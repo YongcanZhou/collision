@@ -7,6 +7,12 @@
 #IncludeRegexTransform: 
 
 /home/zyc/collision/model_push/dynamic_simulator.h
+fcl/math/constants.h
+/home/zyc/collision/model_push/fcl/math/constants.h
+fcl/narrowphase/collision.h
+/home/zyc/collision/model_push/fcl/narrowphase/collision.h
+fcl/narrowphase/collision_object.h
+/home/zyc/collision/model_push/fcl/narrowphase/collision_object.h
 
 /home/zyc/collision/model_push/model_push.cc
 functional
