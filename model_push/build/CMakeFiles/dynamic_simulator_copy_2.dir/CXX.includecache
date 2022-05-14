@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/zyc/collision/model_push/dynamic_simulator.cc
+iostream
+-
+thread
+-
+mutex
+-
+functional
+-
+map
+-
+memory
+-
+utility
+-
+vector
+-
+Eigen/Dense
+-
+fcl/math/constants.h
+/home/zyc/collision/model_push/fcl/math/constants.h
+fcl/narrowphase/collision.h
+/home/zyc/collision/model_push/fcl/narrowphase/collision.h
+fcl/narrowphase/collision_object.h
+/home/zyc/collision/model_push/fcl/narrowphase/collision_object.h
+dynamic_simulator.h
+/home/zyc/collision/model_push/dynamic_simulator.h
+
+/home/zyc/collision/model_push/dynamic_simulator.h
+fcl/math/constants.h
+/home/zyc/collision/model_push/fcl/math/constants.h
+fcl/narrowphase/collision.h
+/home/zyc/collision/model_push/fcl/narrowphase/collision.h
+fcl/narrowphase/collision_object.h
+/home/zyc/collision/model_push/fcl/narrowphase/collision_object.h
+

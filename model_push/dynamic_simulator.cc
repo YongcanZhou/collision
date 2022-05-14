@@ -17,7 +17,6 @@
 #include "dynamic_simulator.h"
 
 using namespace std;
-using namespace fcl;
 using std::map;
 using std::pair;
 using std::string;
@@ -26,26 +25,94 @@ using fcl::AngleAxis;
 using fcl::Transform3;
 using fcl::Vector3;
 
+// Simple specification for defining a box collision object. 
+// Specifies the dimensions and pose of the box in some frame F (X_FB).
+// X_FB is the "pose" of frame B in frame F.
 struct BoxSpecification {
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     fcl::Vector3<double> size;
     fcl::Transform3<double> X_FB;
-  };
+};
 
 namespace zyc
 {
-  
   std::thread sim_thread_;  
-  std::mutex sim_mutex_;
+  std::mutex  sim_mutex_;
 
-  // Simple specification for defining a box collision object. 
-  // Specifies the dimensions and pose of the box in some frame F (X_FB).
-  // X_FB is the "pose" of frame B in frame F.
+  static double x{0.0}, y{0.0}, z{5.0}, roll{0.0}, pitch{0.0}, yaw{0.0}, 
+                duration{0.0}, delta_t{0.001}, g{-9.8}, delta_z{0.0}, v_0{0.0}, velocity{0.0};
 
-  static double x{0.0}, y{0.0}, z{10.0}, roll{0.0}, pitch{0.0}, yaw{0.0}, 
-                duration{0.0}, delta_t{0.001}, g{9.8}, delta_z{0.0}, v_0{0.0};
+  auto Move()->void {
+    auto start = std::chrono::steady_clock::now();
+    {
+      std::lock_guard<std::mutex> guard(sim_mutex_);//guard为局部变量，分配在栈上，超出作用域即调用析构函数
+      x += 0;
+      y += 0;
+      // duration += delta_t;
+      velocity += g*delta_t;
+      delta_z = velocity*delta_t+1/2*g*pow(delta_t,2);
+      z += 0.01*(delta_z);//slow 100X
+      roll += 0;
+      pitch += 0;
+      yaw += 0;
+    }
+    // per 1ms
+    // std::this_thread::sleep_for(std::chrono::nanoseconds(10000000));
+    std::this_thread::sleep_until(start + std::chrono::nanoseconds(1000000));
+    //verify time 
+    // auto duration = chrono::duration_cast<chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    // cout << "Operation duration : " << duration.count() << "ms" << endl;
+  }
 
-  auto sim_thread_fun()->void{
+  auto MoveUp()->void {
+    static double duration_up{0.0}, velocity_z_up{0.0} ;
+
+    auto start = std::chrono::steady_clock::now();
+    {
+      std::lock_guard<std::mutex> guard(sim_mutex_);//guard为局部变量，分配在栈上，超出作用域即调用析构函数
+      x += 0;
+      y += 0;
+      duration_up += delta_t;
+      velocity_z_up = g*duration_up;
+      delta_z = velocity_z_up*delta_t+1/2*g*pow(delta_t,2);
+      z += 0.01*(delta_z);//slow 100X
+      roll += 0;
+      pitch += 0;
+      yaw += 0;
+    }
+    // per 1ms
+    // std::this_thread::sleep_for(std::chrono::nanoseconds(10000000));
+    std::this_thread::sleep_until(start + std::chrono::nanoseconds(1000000));
+    //verify time 
+    // auto duration = chrono::duration_cast<chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    // cout << "Operation duration : " << duration.count() << "ms" << endl;
+  }
+
+  auto MoveDown()->void {
+    static double duration_down{0.0}, velocity_z_down{0.0};
+
+    auto start = std::chrono::steady_clock::now();
+    {
+      std::lock_guard<std::mutex> guard(sim_mutex_);//guard为局部变量，分配在栈上，超出作用域即调用析构函数
+      x += 0;
+      y += 0;
+      duration_down += delta_t;
+      velocity_z_down = g*duration_down;
+      delta_z = velocity_z_down*delta_t+1/2*g*pow(delta_t,2);
+      z += 0.01*(delta_z);//slow 100X
+      roll += 0;
+      pitch += 0;
+      yaw += 0;
+    }
+    // per 1ms
+    // std::this_thread::sleep_for(std::chrono::nanoseconds(10000000));
+    std::this_thread::sleep_until(start + std::chrono::nanoseconds(1000000));
+    //verify time 
+    // auto duration = chrono::duration_cast<chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    // cout << "Operation duration : " << duration.count() << "ms" << endl;
+   }
+
+  auto SimThreadFun()->void{
     //box1
     const double size_1 = 1;
     BoxSpecification box_1{fcl::Vector3<double>{size_1, size_1, size_1},
@@ -56,64 +123,72 @@ namespace zyc
                               fcl::Transform3<double>::Identity()};
     const fcl::Vector3<double> pose_box_2{x, y, z};
     box_2.X_FB.translation() = pose_box_2;
+  
+    while (true){     
+      using CollisionGeometryPtr_t = std::shared_ptr<fcl::CollisionGeometry<double>>;
+      CollisionGeometryPtr_t box_geometry_A(new fcl::Box<double>(box_1.size));
+      CollisionGeometryPtr_t box_geometry_B(new fcl::Box<double>(box_2.size));
+      fcl::CollisionObject<double> box_A(box_geometry_A, box_1.X_FB);
+      fcl::CollisionObject<double> box_B(box_geometry_B, box_2.X_FB);
 
-    // using CollisionGeometryPtr_t = std::shared_ptr<fcl::CollisionGeometry<double>>;
-    // CollisionGeometryPtr_t box_geometry_A(new fcl::Box<double>(box_1.size));
-    // CollisionGeometryPtr_t box_geometry_B(new fcl::Box<double>(box_2.size));
-    // fcl::CollisionObject<double> box_A(box_geometry_A, box_1.X_FB);
-    // fcl::CollisionObject<double> box_B(box_geometry_B, box_2.X_FB);
+      // Compute collision - single contact and enable contact.
+      fcl::CollisionRequest<double> Request(1, true);
+      // Request.gjk_solver_type = fcl::GJKSolverType::GST_LIBCCD;
+      fcl::CollisionResult<double> Result;
+      int num_contacts = fcl::collide(&box_A, &box_B, Request, Result);
+      // std::cout<<"contact:"<< num_contacts <<std::endl;
+      std::vector<fcl::Contact<double>> contacts;
+      Result.getContacts(contacts);
 
-    // // Compute collision - single contact and enable contact.
-    // fcl::CollisionRequest<double> Request;
-    // // Request.gjk_solver_type = fcl::GJKSolverType::GST_LIBCCD;
-    // fcl::CollisionResult<double> Result;
-    
-    // // std::vector<fcl::Contact<double>> contacts;
-    // // Result.getContacts(contacts);
-
-    while (true){
-      // TODO: fcl
       box_2.X_FB.translation() << x, y, z;
-      cout <<"pose" << box_2.X_FB.translation() << endl;
-      // int num_contacts = fcl::collide(&box_A, &box_B, Request, Result);
-      // cout<<"contact"<<num_contacts<<endl;
-      // if (num_contacts!=0){
-      //   cout<<"contact"<<num_contacts<<endl;
-      // }
-      
-      // start time
-      auto start = std::chrono::steady_clock::now();
-      {
-        std::lock_guard<std::mutex> guard(sim_mutex_);//guard为局部变量，分配在栈上，超出作用域即调用析构函数
-        x += 0;
-        y += 0;
-        duration += delta_t;
-        v_0 = g*duration;
-        delta_z = v_0*delta_t+1/2*g*pow(delta_t,2);
-        z -= 0.01*(delta_z);//slow 100X
-        roll += 0;
-        pitch += 0;
-        yaw += 0;
+      // std::cout <<"pose:" << box_2.X_FB.translation() << std::endl;
+      // std::cout<<"contact:"<< num_contacts <<std::endl;
+
+      // TODO: contact depth == 0.5?
+      int num_contacts_contiue = fcl::collide(&box_A, &box_B, Request, Result);
+      if (num_contacts_contiue!=0){
+        std::cout <<"pose:" << box_2.X_FB.translation() << std::endl;
+        std::cout<<"contact:"<<num_contacts_contiue<<std::endl;
+        velocity = -velocity;
+        box_2.X_FB.translation() << x, y, 2;
+        // Move();
       }
-      // per 1ms
-      // std::this_thread::sleep_for(std::chrono::nanoseconds(10000000));
-      std::this_thread::sleep_until(start + std::chrono::nanoseconds(1000000));
-      //verify time 
-      // auto duration = chrono::duration_cast<chrono::milliseconds>(std::chrono::steady_clock::now() - start);
-      // cout << "Operation duration : " << duration.count() << "ms" << endl;
+      else {
+        // Move();
+        // auto start = std::chrono::steady_clock::now();
+        // {
+        //   std::lock_guard<std::mutex> guard(sim_mutex_);//guard为局部变量，分配在栈上，超出作用域即调用析构函数
+        //   x += 0;
+        //   y += 0;
+        //   duration += delta_t;
+        //   v_0 = g*duration;
+        //   delta_z = v_0*delta_t+1/2*g*pow(delta_t,2);
+        //   z += 0.01*(delta_z);//slow 100X
+        //   roll += 0;
+        //   pitch += 0;
+        //   yaw += 0;
+        // }
+        // // per 1ms
+        // // std::this_thread::sleep_for(std::chrono::nanoseconds(10000000));
+        // std::this_thread::sleep_until(start + std::chrono::nanoseconds(1000000));
+        // //verify time 
+        // // auto duration = chrono::duration_cast<chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+        // // cout << "Operation duration : " << duration.count() << "ms" << endl;
+      }
+      Move();
     }
   };
 
-  auto init_simulator()->void{
+  auto InitSimulator()->void{
     if  ( sim_thread_.joinable()){
       return;
     }
     else{
-      sim_thread_ = std::thread(sim_thread_fun); 
+      sim_thread_ = std::thread(SimThreadFun); 
     }
   }
 
-  void DynamicSimulator(double &x_, double &y_,double &z_,double &roll_,double &pitch_,double  &yaw_){    
+  void DynamicSimulator(double &x_, double &y_,double &z_,double &roll_,double &pitch_,double  &yaw_){
     std::lock_guard<std::mutex> guard(sim_mutex_);//guard为局部变量，分配在栈上，超出作用域即调用析构函数
     x_ = x;
     y_ = y;
