@@ -468,7 +468,7 @@
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libignition-common3-graphics.so.3.14.0",
+				"fragment" : "/usr/lib/x86_64-linux-gnu/libignition-common3-graphics.so.3.14.1",
 				"role" : "libraries"
 			},
 			{
@@ -551,7 +551,7 @@
 				"role" : "libraries"
 			},
 			{
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libignition-fuel_tools4.so.4.4.0",
+				"fragment" : "/usr/lib/x86_64-linux-gnu/libignition-fuel_tools4.so.4.5.0",
 				"role" : "libraries"
 			},
 			{
@@ -571,7 +571,7 @@
 				"role" : "libraries"
 			},
 			{
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libignition-common3.so.3.14.0",
+				"fragment" : "/usr/lib/x86_64-linux-gnu/libignition-common3.so.3.14.1",
 				"role" : "libraries"
 			},
 			{

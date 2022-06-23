@@ -96,7 +96,7 @@ namespace zyc
       if (num_contacts_contiue!=0){
         std::cout <<"pose:" << box_2.X_FB.translation() << std::endl;
         std::cout<<"contact:"<<num_contacts_contiue<<std::endl;
-        velocity = 100;
+        velocity = 80;
         // box_2.X_FB.translation() << x, y, 1;      
       }
       Move();

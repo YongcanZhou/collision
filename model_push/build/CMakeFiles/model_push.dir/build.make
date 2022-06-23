@@ -109,7 +109,7 @@ libmodel_push.so: /usr/lib/x86_64-linux-gnu/libboost_thread.so.1.71.0
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libboost_date_time.so.1.71.0
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libOgreTerrain.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libOgrePaging.so
-libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-common3-graphics.so.3.14.0
+libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-common3-graphics.so.3.14.1
 libmodel_push.so: libdynamic_simulator.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libSimTKmath.so.3.6
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libSimTKcommon.so.3.6
@@ -126,11 +126,11 @@ libmodel_push.so: /usr/lib/x86_64-linux-gnu/liboctomap.so.1.9.3
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/liboctomath.so.1.9.3
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libboost_atomic.so.1.71.0
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-transport8.so.8.2.1
-libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-fuel_tools4.so.4.4.0
+libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-fuel_tools4.so.4.5.0
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-msgs5.so.5.9.0
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-math6.so.6.11.0
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libprotobuf.so
-libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-common3.so.3.14.0
+libmodel_push.so: /usr/lib/x86_64-linux-gnu/libignition-common3.so.3.14.1
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libuuid.so
 libmodel_push.so: /usr/lib/x86_64-linux-gnu/libuuid.so
 libmodel_push.so: /usr/local/lib/libfcl.so
