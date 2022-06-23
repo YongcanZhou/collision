@@ -23,7 +23,7 @@ namespace gazebo
           std::bind(&ModelPush::OnUpdate, this));
 
       //start simulate  
-      zyc::InitSimulator();
+      zyc::InitSimulator(); 
     }
 
     // Called by the world update start event
