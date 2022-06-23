@@ -1,4 +1,0 @@
-/home/zyc/collision/model_push/build/CMakeFiles/rebuild_cache.dir
-/home/zyc/collision/model_push/build/CMakeFiles/edit_cache.dir
-/home/zyc/collision/model_push/build/CMakeFiles/dynamic_simulator.dir
-/home/zyc/collision/model_push/build/CMakeFiles/model_push.dir
