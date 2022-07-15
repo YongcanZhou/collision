@@ -1,9 +1,6 @@
-# collision
-calculate contact force about robot with gazebo
+# Robot_OCC
+Use opencasecade to simulate robot
 
+Branch master simulate with qmake in Qt
 
-$  cd ~/collision/model_push/build
-
-$ gazebo ../model_push.world
-
-
+Branch collision simulate with cmake
