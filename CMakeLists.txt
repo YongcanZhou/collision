@@ -40,6 +40,7 @@ find_package(Eigen3 REQUIRED)
 IF(WIN32)
         find_package(OpenCASCADE REQUIRED PATHS D:/app/OpenCASCADE-7.4.0-vc14-64/opencascade-7.4.0/cmake)
 endif(WIN32)
+
 # find aris
 if(UNIX)
         add_definitions(-DUNIX)
@@ -50,12 +51,22 @@ IF(WIN32)
         find_package(aris REQUIRED PATHS C:/aris/aris-2.0.0.220225/share/aris/cmake)
 endif(WIN32)
 
+# find ccd
+find_package(ccd REQUIRED PATHS “C:/Program Files (x86)/libccd/lib/ccd”)
+# find fcl
+#find_package(fcl REQUIRED PATHS C:/Users/ZHOUYC/Desktop/contact/6.refer_project/fcl/build)
+find_package(fcl REQUIRED PATHS “C:/Program Files (x86)/fcl/CMake”)
+
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${OpenCASCADE_INCLUDE_DIR})
 include_directories("D:/app/OpenCASCADE-7.4.0-vc14-64/opencascade-7.4.0/inc")
 include_directories("D:/app/eigen-3.4.0")
 include_directories(${aris_INCLUDE_DIRS})
+include_directories(${fcl_INCLUDE_DIRS})
+#include_directories(${ccd_INCLUDE_DIRS})
+include_directories("C:/Program Files (x86)/fcl/include")
+include_directories("C:/Program Files (x86)/libccd/include")
 
 file(GLOB HEADERS
     ./src/visualization/*.h
@@ -68,13 +79,14 @@ file(GLOB SOURCES
     ./src/visualization/*.ui
 )
 
-set(RESOURCES images/image.qrc)
+set(RESOURCES images/image.qrc src/simulator/collision.cpp src/simulator/collision.h)
 #message(${OpenCASCADE_DIR} )
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${RESOURCES})
 target_link_libraries(${PROJECT_NAME}  Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport Qt5::Gamepad)
 target_link_libraries(${PROJECT_NAME} ${OpenCASCADE_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} )
+#target_link_libraries(${PROJECT_NAME} ${ccd_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${fcl_LIBRARIES})
 
 
 if(UNIX)

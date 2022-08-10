@@ -10,6 +10,9 @@
 #include <QPlainTextEdit>
 #include <src/visualization/occview.h>
 #include <src/visualization/general.h>
+#include <QTimerEvent>
+#include <QDebug>
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -33,6 +36,9 @@ private slots:
 
     void on_actionSTLImport_triggered();
 
+
+    void time_update();
+
 private:
     Ui::MainWindow *ui;
     OccView *occWidget;
@@ -50,6 +56,8 @@ private:
     QLineEdit* EditToolRYCoor;
     QLineEdit* EditToolRZCoor;
 
+    //thread_visual
+    QTimer *update_time;
 
 };
 

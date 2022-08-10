@@ -715,71 +715,29 @@ void OccView::ButtonAxis03MoveForward()
 
 void OccView::ButtonAxis04MoveForward()
 {
-//    gp_Trsf trans;
-//    getJoint04CurrentAngle()=getJoint04CurrentAngle()+deltaAngle;
-//    auto angle=getJoint04CurrentAngle()-Joint04OriginAngle;
-//    Ui::PILimit(angle);
-//    trans.SetRotation(GeneralAx4,angle);
-//    m_context->SetLocation( RobotAISShape[4],trans);
-//    m_context->UpdateCurrentViewer();
+//  thread_visual
+  static std::thread ThreadViual([&]{
+    while(true){
+      zyc::DynamicSimulator(link_pm);
+      gp_Trsf transformation;
+      for (int i = 0; i < 7; ++i) {
+        transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3],
+                                 link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7],
+                                 link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11]);
+        std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z "<< link_pm[i * 16 + 11] << std::endl;
+        m_context->SetLocation (RobotAISShape[i], transformation);
+//        m_context->UpdateCurrentViewer();
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+  });
 
-//  gp_Trsf trsf_origin;
-//  trsf_origin.SetValues(1, 0, 0,  -100000,
-//                        0, 1,  0,    0,
-//                        0, 0,  1, 393);
-//  m_context->SetLocation(RobotAISShape[6],trsf_origin);
-//  m_context->UpdateCurrentViewer();
-//  RobotAISShape[6]->get_type_descriptor().get();
-//  transform
+}
 
-  zyc::DynamicSimulator(link_pm);
-
-  gp_Trsf transformation;
-  for(int i=0;i<7;++i){
-    transformation.SetValues(link_pm[i*16],link_pm[i*16+1],link_pm[i*16+2],link_pm[i*16+3],
-                               link_pm[i*16+4],link_pm[i*16+5],link_pm[i*16+6],link_pm[i*16+7],
-                               link_pm[i*16+8],link_pm[i*16+9],link_pm[i*16+10],link_pm[i*16+11]);
-//      std::cout<<"position:"<<"x "<<link_pm[i*16+3]<<"y "<<link_pm[i*16+7]<<"z "<< link_pm[i*16+11]<<std::endl;
-    m_context->SetLocation(RobotAISShape[i],transformation);
-    m_context->UpdateCurrentViewer();
-  }
-//    std::cout<<"position:"<<transformation.TranslationPart().X()<<std::endl;
-
-/*    //move x
-    static double dx;
-    dx=dx+20;
-    transformation.SetValues(1,0,0,dx,
-                             0,1,0,0,
-                             0,0,1,0);
-    m_context->SetLocation(RobotAISShape[4],transformation);
-    m_context->UpdateCurrentViewer();
-    */
-
-/*
-    //! Sets the coefficients  of the transformation.  The
-    //! transformation  of the  point  x,y,z is  the point
-    //! x',y',z' with :
-    //!
-    //! x' = a11 x + a12 y + a13 z + a14
-    //! y' = a21 x + a22 y + a23 z + a24
-    //! z' = a31 x + a32 y + a33 z + a34
-    //!
-    //! The method Value(i,j) will return aij.
-    //! Raises ConstructionError if the determinant of  the aij is null.
-    //! The matrix is orthogonalized before future using.
-    Standard_EXPORT void SetValues (const Standard_Real a11, const Standard_Real a12, const Standard_Real a13, const Standard_Real a14, const Standard_Real a21, const Standard_Real a22, const Standard_Real a23, const Standard_Real a24, const Standard_Real a31, const Standard_Real a32, const Standard_Real a33, const Standard_Real a34);
-*/
-
-/*    //! Creates an axis placement with the  "Location" point <P>
-    //! and the normal direction <V>.
-    Standard_EXPORT gp_Ax3(const gp_Pnt& P, const gp_Dir& V);*/
-
-/*    gp_Trsf trans;
-    getJoint04CurrentAngle()=getJoint04CurrentAngle()-Joint04OriginAngle_static+DeltaAngle;
-    Ui::PILimit(getJoint04CurrentAngle());
-    trans.SetRotation(GeneralAx4,getJoint04CurrentAngle());
-    m_context->SetLocation(RobotAISShape[4],trans);
-    m_context->UpdateCurrentViewer();*/
+// 刷新页面
+void OccView::visual_update()
+{
+  m_context->UpdateCurrentViewer();
 }
 
 void OccView::ButtonAxis05MoveForward()

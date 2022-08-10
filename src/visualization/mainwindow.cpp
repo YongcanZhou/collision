@@ -400,6 +400,11 @@ MainWindow::MainWindow(QWidget *parent) :
     /*****anyTest******/
     /*****anyTest******/
 
+    //thread_visual
+    update_time = new QTimer();
+    QObject::connect(update_time,SIGNAL(timeout()),this,SLOT(time_update()));
+    update_time->start(10); //1m秒钟后启动
+
 }
 
 MainWindow::~MainWindow()
@@ -490,6 +495,12 @@ void MainWindow::on_actionToolImport_triggered()
     {
         QMessageBox::information(nullptr, tr("Path"), tr("You didn't select any files."));
     }
+}
+
+
+void MainWindow::time_update()
+{
+  occWidget->visual_update();
 }
 
 void MainWindow::on_actionSTLImport_triggered()

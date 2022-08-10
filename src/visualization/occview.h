@@ -131,9 +131,12 @@ private:
 
 public:
     QString workpiecePath,robotPath,toolPath,stlPath;
+
+    // 刷新页面
+    void visual_update();
+
     //加载显示机器人模型
     void loadDisplayRobotWhole();
-
 
     //初始化机器人的初始位姿
     void initUR5();
