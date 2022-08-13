@@ -96,6 +96,7 @@ namespace zyc
       }
     }
   }
+
   auto col_thread()->void{
 
   }

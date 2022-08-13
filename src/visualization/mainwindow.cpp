@@ -400,10 +400,10 @@ MainWindow::MainWindow(QWidget *parent) :
     /*****anyTest******/
     /*****anyTest******/
 
-    //thread_visual
-    update_time = new QTimer();
-    QObject::connect(update_time,SIGNAL(timeout()),this,SLOT(time_update()));
-    update_time->start(10); //1m秒钟后启动
+//    //thread_visual
+//    update_time = new QTimer();
+//    QObject::connect(update_time,SIGNAL(timeout()),this,SLOT(time_update()));
+//    update_time->start(10); //1m秒钟后启动
 
 }
 

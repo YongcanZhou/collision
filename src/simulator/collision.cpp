@@ -1,23 +1,9 @@
 //
 // Created by ZHOUYC on 2022/8/5.
 //
+#include <memory>
+#include <src/simulator/collision.h>
 
-#include <assimp/Importer.hpp>      // C++ importer interface
-#include <assimp/scene.h>           // Output data structure
-#include <assimp/postprocess.h>     // Post processing flags
-
-#include "fcl/fcl.h"
-#include "fcl/narrowphase/collision_object.h"
-#include "fcl/config.h"
-#include "fcl/geometry/bvh/BVH_model.h"
-#include "fcl/math/bv/AABB.h"
-#include <fcl/math/bv/OBBRSS.h>
-#include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Core>
-
-#pragma comment (lib, "assimp-vc142-mt.lib")
-#pragma comment (lib, "fcl.lib")
 using namespace std;
 using namespace fcl;
 using std::map;
@@ -28,83 +14,156 @@ using fcl::AngleAxis;
 using fcl::Transform3;
 using fcl::Vector3;
 
+namespace zyc{
 
-//==============================================================================
-template <class BV>
-fcl::BVHModel<BV>* createMesh(const aiScene* _mesh)
-{
-  // Create FCL mesh from Assimp mesh
-  assert(_mesh);
-//      typedef BVHModel<OBB<double>> Model;
-//      std::shared_ptr<BVHModel<BV> > geom(new BVHModel<BV>);
-//      shared_ptr<BV> geom = std::make_shared<BV>();
-//  auto geom = new BVHModel<BV>;
-//  typedef BVHModel<OBBRSSd> Model;
-//  auto geom = new BVHModel<OBBRSS<double>>;
-  auto geom = new fcl::BVHModel<BV>;
-  geom->beginModel();
-  for (std::size_t i = 0; i < _mesh->mNumMeshes; i++)
-  {
-    for (std::size_t j = 0; j < _mesh->mMeshes[i]->mNumFaces; j++)
-    {
-      fcl::Vector3d vertices_fcl[3];
-      for (std::size_t k = 0; k < 3; k++)
-      {
-        const aiVector3D& vertex = _mesh->mMeshes[i]->mVertices[_mesh->mMeshes[i]->mFaces[j].mIndices[k]];
-        vertices_fcl[k] = fcl::Vector3d (vertex.x, vertex.y, vertex.z);
-      }
-      geom->addTriangle(vertices_fcl[0], vertices_fcl[1], vertices_fcl[2]);
+  Loader::Loader() : importer(new Assimp::Importer()) {
+    // set list of ignored parameters (parameters used for rendering)
+    importer->SetPropertyInteger(
+            AI_CONFIG_PP_RVC_FLAGS,
+            aiComponent_TANGENTS_AND_BITANGENTS | aiComponent_COLORS |
+            aiComponent_BONEWEIGHTS | aiComponent_ANIMATIONS |
+            aiComponent_LIGHTS | aiComponent_CAMERAS | aiComponent_TEXTURES |
+            aiComponent_TEXCOORDS | aiComponent_MATERIALS | aiComponent_NORMALS);
+
+    // remove LINES and POINTS
+    importer->SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE,
+                                 aiPrimitiveType_LINE | aiPrimitiveType_POINT);
+  }
+
+  Loader::~Loader() {
+    if (importer) delete importer;
+  }
+
+  void Loader::load(const std::string& resource_path) {
+    scene = importer->ReadFile(
+            resource_path.c_str(),
+            aiProcess_SortByPType | aiProcess_Triangulate |
+            aiProcess_RemoveComponent | aiProcess_ImproveCacheLocality |
+            aiProcess_FindDegenerates | aiProcess_JoinIdenticalVertices);
+
+    if (!scene) {
+      const std::string exception_message(
+              std::string("Could not load resource ") + resource_path +
+              std::string("\n") + importer->GetErrorString() + std::string("\n") +
+              "Hint: the mesh directory may be wrong.");
+      throw std::invalid_argument(exception_message);
     }
-  }
-  geom->endModel();
-  geom->computeLocalAABB();
-  return geom;
-}
 
-void LoadFinish(const aiScene* scene)
-{
-
-  std::cout << "LoadFinish ! NumVertices : " << (*(scene->mMeshes))->mNumVertices << std::endl;
-}
-
-bool LoadModel(const std::string& pFile)
-{
-  // Create an instance of the Importer class
-  Assimp::Importer importer;
-
-  // And have it read the given file with some example postprocessing
-  // Usually - if speed is not the most important aspect for you - you'll
-  // probably to request more postprocessing than we do in this example.
-  const aiScene* scene = importer.ReadFile(pFile,
-                                           aiProcess_CalcTangentSpace |
-                                           aiProcess_Triangulate |
-                                           aiProcess_JoinIdenticalVertices |
-                                           aiProcess_SortByPType);
-
-  // If the import failed, report it
-  if (!scene)
-  {
-    std::cout << importer.GetErrorString() << std::endl;
-    return false;
+    if (!scene->HasMeshes())
+      throw std::invalid_argument(std::string("No meshes found in file ") +
+                                  resource_path);
   }
 
-  // Now we can access the file's contents.
-  LoadFinish(scene);
-//  fcl::CollisionGeometry* geom = nullptr;
-  auto geom = createMesh<OBBRSS<double>>(scene);
+  unsigned recurseBuildMesh(const fcl::Vector3f& scale, const aiScene* scene,
+                            const aiNode* node, unsigned vertices_offset,
+                            TriangleAndVertices& tv) {
+    if (!node) return 0;
 
-//      BVHModel<OBBRSSd> geom = createMesh<OBBRSSd>(scene);
-//      scene->mRootNode   aiNode *node
+    aiMatrix4x4 transform = node->mTransformation;
+    aiNode* pnode = node->mParent;
+    while (pnode) {
+      // Don't convert to y-up orientation, which is what the root node in
+      // Assimp does
+      if (pnode->mParent != nullptr) {
+        transform = pnode->mTransformation * transform;
+      }
+      pnode = pnode->mParent;
+    }
 
-  // We're done. Everything will be cleaned up by the importer destructor
-  return true;
-}
+    unsigned nbVertices = 0;
+    for (uint32_t i = 0; i < node->mNumMeshes; i++) {
+      aiMesh* input_mesh = scene->mMeshes[node->mMeshes[i]];
 
-auto collision()->void
-{
-  LoadModel(R"(C:\Users\ZHOUYC\Desktop\contact\3_collision\collision\ee.STL)");
-}
+      // Add the vertices
+      for (uint32_t j = 0; j < input_mesh->mNumVertices; j++) {
+        aiVector3D p = input_mesh->mVertices[j];
+        p *= transform;
+        tv.vertices_.push_back(
+                fcl::Vector3f (p.x * scale[0], p.y * scale[1], p.z * scale[2]));
+      }
 
+      cout<<"mNumFaces"<<":"<<input_mesh->mNumFaces<<" ";
 
+      // add the indices
+      for (uint32_t j = 0; j < input_mesh->mNumFaces; j++) {
+        aiFace& face = input_mesh->mFaces[j];
+        assert(face.mNumIndices == 3 && "The size of the face is not valid.");
 
+        tv.triangles_.push_back(
+                fcl::Triangle(vertices_offset + face.mIndices[0],
+                              vertices_offset + face.mIndices[1],
+                              vertices_offset + face.mIndices[2]));
+      }
+      cout<<"mNumVertices"<<":"<<input_mesh->mNumVertices<<" ";
+      nbVertices += input_mesh->mNumVertices;
+    }
 
+    for (uint32_t i = 0; i < node->mNumChildren; ++i) {
+      nbVertices += recurseBuildMesh(scale, scene, node->mChildren[i], nbVertices, tv);
+    }
+
+    return nbVertices;
+
+  }
+
+  void buildMesh(const fcl::Vector3f& scale, const aiScene* scene,
+                 unsigned vertices_offset, TriangleAndVertices& tv) {
+    recurseBuildMesh(scale, scene, scene->mRootNode, vertices_offset, tv);
+  }
+
+  void meshFromAssimpScene(
+    const fcl::Vector3f & scale, const aiScene* scene,
+    const shared_ptr<fcl::BVHModel<OBBRSSf> >& mesh) {
+    TriangleAndVertices tv;
+
+    mesh->beginModel();
+
+    buildMesh(scale, scene, (unsigned)mesh->num_vertices, tv);
+    mesh->addSubModel(tv.vertices_, tv.triangles_);
+
+    mesh->endModel();
+  }
+
+  void fclCollision() {
+
+    Loader scene;
+    scene.load("C://Users//ZHOUYC//Desktop//contact//3_collision//collision//ee.stl");
+//    scene.load("D:/app/assimp/test/models/STL/triangle_with_two_solids.stl");
+    typedef fcl::BVHModel<OBBRSSf> Model;
+    std::shared_ptr<Model> geom = std::make_shared<Model>();
+    Vector3f scale{1,1,1};
+    meshFromAssimpScene(scale, scene.scene, geom);
+
+//  cout<<"geom.get().aabb_center: "<<geom.get()->aabb_center<<" geom.get.aabb_radius: "<<geom.get()->aabb_radius<<endl;
+
+  fcl::Transform3<float> X_WBV = fcl::Transform3<float>::Identity();
+  auto Robot = new CollisionObjectf(geom, X_WBV);
+
+  cout<<" Configure sphere geometry."<<endl;
+  // Configure sphere geometry.
+  using Real = typename fcl::constants<float>::Real;
+  const Real r = 0.030;
+  auto sphere_geometry = std::make_shared<fcl::Sphere<float>>(r);
+  // Poses of the geometry.
+  fcl::Transform3<float> X_WS = fcl::Transform3<float>::Identity();
+  X_WS.translation() << 393, 0, 642;
+  fcl::CollisionObject<float> sphere(sphere_geometry, X_WS);
+
+  cout<<"Compute collision"<<endl;
+  // Compute collision - single contact and enable contact.
+  fcl::CollisionRequest<float> Request(1, true);
+  // Request.gjk_solver_type = fcl::GJKSolverType::GST_LIBCCD;
+  fcl::CollisionResult<float> Result;
+  std::size_t num_contacts = fcl::collide(&sphere, Robot, Request, Result);//collision
+  std::vector<fcl::Contact<float>> contacts;
+  Result.getContacts(contacts);
+  cout << "num "<<contacts.size() << " contacts found" << endl;
+  for(const Contact<float> &contact : contacts) {
+    cout << "position: " << contact.pos << endl;
+  }
+
+  delete Robot;
+
+  }
+
+}//namespace zyc

@@ -22,6 +22,8 @@ int main(int argc, char *argv[])
 //    std::cout<<"test"<<test[3]<<std::enidl;
 //    return 0;
 
+
+
     QApplication a(argc, argv);
     MainWindow w;
     w.show();

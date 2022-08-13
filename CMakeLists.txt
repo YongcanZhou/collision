@@ -11,7 +11,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-
+add_compile_options(-bigobj)
 if (WIN32)
 set(Qt5Core_DIR D:/app/Qt/5.12.12/msvc2017_64/lib/cmake/Qt5Core)
 set(Qt5Widgets_DIR D:/app/Qt/5.12.12/msvc2017_64/lib/cmake/Qt5Widgets)
@@ -79,7 +79,7 @@ file(GLOB SOURCES
     ./src/visualization/*.ui
 )
 
-set(RESOURCES images/image.qrc src/simulator/collision.cpp src/simulator/collision.h)
+set(RESOURCES images/image.qrc )
 #message(${OpenCASCADE_DIR} )
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${RESOURCES})

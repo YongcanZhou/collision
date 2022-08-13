@@ -3,6 +3,7 @@
 
 #include "src/visualization/occview.h"
 #include "src/simulator/dynamic_simulator.h"
+#include "src/simulator/collision.h"
 
 using namespace std;
 using namespace aris::dynamic;
@@ -59,6 +60,7 @@ double OccView::Joint06OriginAngle_static = 0.0;
 OccView::OccView(QWidget *parent) : QWidget(parent)
 {
     InitView();
+//    collision();
     //InitFilters();
     m_contextMenu = new QMenu(this);  //这是右击弹出的菜单Fhome
     m_addAction = new QAction("new",this);
@@ -715,22 +717,36 @@ void OccView::ButtonAxis03MoveForward()
 
 void OccView::ButtonAxis04MoveForward()
 {
-//  thread_visual
-  static std::thread ThreadViual([&]{
-    while(true){
-      zyc::DynamicSimulator(link_pm);
-      gp_Trsf transformation;
-      for (int i = 0; i < 7; ++i) {
-        transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3],
-                                 link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7],
-                                 link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11]);
-        std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z "<< link_pm[i * 16 + 11] << std::endl;
-        m_context->SetLocation (RobotAISShape[i], transformation);
+//  std::thread ThreadViual;
+//  if (ThreadViual.joinable()) {
+//    return;
+//  } else {
+    //  thread_visual
+/*    static std::thread ThreadViual([&]{
+        while(true){
+          zyc::DynamicSimulator(link_pm);
+          gp_Trsf transformation;
+          for (int i = 0; i < 7; ++i) {
+            transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3],
+                                     link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7],
+                                     link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11]);
+//            std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z "<< link_pm[i * 16 + 11] << std::endl;
+            m_context->SetLocation (RobotAISShape[i], transformation);
 //        m_context->UpdateCurrentViewer();
-      }
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-  });
+          }
+          std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    });*/
+//  }
+
+  zyc::fclCollision();
+//  std::vector<Vector3f> temp;
+//  temp[0] = {0,1,2};
+////  temp[1] = {0,1,2};
+////  temp[0] = {0,1,2};
+//  for (int i = 0;i<3;i++){
+//    cout << temp[i] << std::endl;
+//  }
 
 }
 
