@@ -82,7 +82,7 @@ namespace zyc{
                 fcl::Vector3f (p.x * scale[0], p.y * scale[1], p.z * scale[2]));
       }
 
-      cout<<"mNumFaces"<<":"<<input_mesh->mNumFaces<<" ";
+      cout<<"mNumFaces"<<":"<<input_mesh->mNumFaces<<endl;
 
       // add the indices
       for (uint32_t j = 0; j < input_mesh->mNumFaces; j++) {
@@ -94,7 +94,7 @@ namespace zyc{
                               vertices_offset + face.mIndices[1],
                               vertices_offset + face.mIndices[2]));
       }
-      cout<<"mNumVertices"<<":"<<input_mesh->mNumVertices<<" ";
+      cout<<"mNumVertices"<<":"<<input_mesh->mNumVertices<<endl;
       nbVertices += input_mesh->mNumVertices;
     }
 
@@ -126,35 +126,54 @@ namespace zyc{
 
   void fclCollision() {
 
-    Loader scene;
-    scene.load("C://Users//ZHOUYC//Desktop//contact//3_collision//collision//ee.stl");
-//    scene.load("D:/app/assimp/test/models/STL/triangle_with_two_solids.stl");
-    typedef fcl::BVHModel<OBBRSSf> Model;
-    std::shared_ptr<Model> geom = std::make_shared<Model>();
-    Vector3f scale{1,1,1};
-    meshFromAssimpScene(scale, scene.scene, geom);
-
-//  cout<<"geom.get().aabb_center: "<<geom.get()->aabb_center<<" geom.get.aabb_radius: "<<geom.get()->aabb_radius<<endl;
-
+  Loader scene;
+  scene.load("C://Users//ZHOUYC//Desktop//contact//3_collision//collision//ee.stl");
+//  scene.load("D:/app/assimp/test/models/STL/triangle_with_two_solids.stl");
+  typedef fcl::BVHModel<OBBRSSf> Model;
+  std::shared_ptr<Model> geom = std::make_shared<Model>();
+  Vector3f scale{1,1,1};
+  meshFromAssimpScene(scale, scene.scene, geom);
+  geom->computeLocalAABB();
+  cout<<"geom.get().aabb_center: "<<geom.get()->aabb_center[0]<<" "<< geom.get()->aabb_center[1]<<" "<<geom.get()->aabb_center[2]
+  <<" geom.get.aabb_radius: "<<geom.get()->aabb_radius<<endl;
   fcl::Transform3<float> X_WBV = fcl::Transform3<float>::Identity();
+//  X_WBV.translation() << -365, 0, -642;
+  X_WBV.translation() << 0,0, 0;
+//  X_WBV.linear() << 0,0,1, 0,1,0, -1,0,0;//y axis 90
   auto Robot = new CollisionObjectf(geom, X_WBV);
 
-  cout<<" Configure sphere geometry."<<endl;
-  // Configure sphere geometry.
-  using Real = typename fcl::constants<float>::Real;
-  const Real r = 0.030;
-  auto sphere_geometry = std::make_shared<fcl::Sphere<float>>(r);
-  // Poses of the geometry.
-  fcl::Transform3<float> X_WS = fcl::Transform3<float>::Identity();
-  X_WS.translation() << 393, 0, 642;
-  fcl::CollisionObject<float> sphere(sphere_geometry, X_WS);
+//  cout<<"Configure sphere geometry."<<endl;
+//  // Configure sphere geometry.
+//  using Real = typename fcl::constants<float>::Real;
+//  const Real r = 30;
+//  auto sphere_geometry = std::make_shared<fcl::Sphere<float>>(r);
+//  // Poses of the geometry.
+//  fcl::Transform3<float> X_WS = fcl::Transform3<float>::Identity();
+//  X_WS.translation() << 0, 0, 0;
+//  fcl::CollisionObject<float> sphere(sphere_geometry, X_WS);
+
+    Loader scene_sphere;
+    scene_sphere.load("C://Users//ZHOUYC//Desktop//contact//3_collision//collision//sphere.stl");
+//  scene.load("D:/app/assimp/test/models/STL/triangle_with_two_solids.stl");
+    typedef fcl::BVHModel<OBBRSSf> Model;
+    std::shared_ptr<Model> geom_sphere = std::make_shared<Model>();
+    Vector3f scale_sphere{1,1,1};
+    meshFromAssimpScene(scale_sphere, scene_sphere.scene, geom_sphere);
+    geom_sphere->computeLocalAABB();
+    cout<<"geom.get().aabb_center: "<<geom_sphere.get()->aabb_center[0]<<" "<< geom_sphere.get()->aabb_center[1]<<" "<<geom_sphere.get()->aabb_center[2]
+        <<" geom.get.aabb_radius: "<<geom_sphere.get()->aabb_radius<<endl;
+    fcl::Transform3<float> X_WS = fcl::Transform3<float>::Identity();
+//  X_WS.translation() << -365, 0, -642;
+    X_WS.translation() << -155, 0, 0;
+//    X_WS.linear() << 0,0,1, 0,1,0, -1,0,0;//y axis 90
+    auto Sphere = new CollisionObjectf(geom, X_WBV);
 
   cout<<"Compute collision"<<endl;
   // Compute collision - single contact and enable contact.
   fcl::CollisionRequest<float> Request(1, true);
   // Request.gjk_solver_type = fcl::GJKSolverType::GST_LIBCCD;
   fcl::CollisionResult<float> Result;
-  std::size_t num_contacts = fcl::collide(&sphere, Robot, Request, Result);//collision
+  std::size_t num_contacts = fcl::collide(Sphere, Robot, Request, Result);//collision
   std::vector<fcl::Contact<float>> contacts;
   Result.getContacts(contacts);
   cout << "num "<<contacts.size() << " contacts found" << endl;
@@ -162,7 +181,16 @@ namespace zyc{
     cout << "position: " << contact.pos << endl;
   }
 
+  // set the distance request structure, here we just use the default setting
+    DistanceRequest<float> request;
+  // result will be returned via the collision result structure
+    DistanceResult<float> result;
+  // perform distance test
+    distance(Sphere, Robot, request, result);
+  cout<<result.min_distance<<endl;
+
   delete Robot;
+  delete Sphere;
 
   }
 
