@@ -62,8 +62,8 @@ double OccView::Joint06OriginAngle_static = 0.0;
 OccView::OccView(QWidget *parent) : QWidget(parent)
 {
     InitView();
-//    aris_sim::InitSimulator();
-//    aris_sim::InitCollision();
+    aris_sim::InitSimulator();
+    aris_sim::InitCollision();
     num_contacts = 0;
     running = false; // set to stop detached thread(thread_visual)
 
