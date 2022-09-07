@@ -78,6 +78,7 @@ class OccView : public QWidget
     Q_OBJECT
 public:
     explicit OccView(QWidget *parent = nullptr);
+    ~OccView();
 
 signals:
 
@@ -131,9 +132,6 @@ private:
 
 public:
     QString workpiecePath,robotPath,toolPath,stlPath;
-
-    // 显示
-    void visual(size_t& num_contacts);
 
     // 刷新页面
     void visual_update();
@@ -252,8 +250,12 @@ private:
     gp_Ax1 UR5Ax1,UR5Ax2,UR5Ax3,UR5Ax4,UR5Ax5,UR5Ax6;
     gp_Ax1 XB4Ax1,XB4Ax2,XB4Ax3,XB4Ax4,XB4Ax5,XB4Ax6;
     gp_Ax1 GeneralAx1,GeneralAx2,GeneralAx3,GeneralAx4,GeneralAx5,GeneralAx6;
-    static double z;
+
+    double px,py,pz;
     std::array<double,7*16> link_pm;
+    size_t num_contacts;
+    std::atomic_bool running ; // set to stop thread
+
 
 public:
     OCAFBrowser *ocaf;

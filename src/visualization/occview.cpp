@@ -1,10 +1,11 @@
 ﻿#include <aris.hpp>
 #include <iostream>
-#include <memory>
 
 #include "src/visualization/occview.h"
-#include "src/simulator/dynamic_simulator.h"
-#include "src/simulator/collision.h"
+//#include "src/simulator/dynamic_simulator.h"
+//#include "src/simulator/collision.h"
+#include <aris_sim.hpp>
+
 
 using namespace std;
 using namespace aris::dynamic;
@@ -61,6 +62,11 @@ double OccView::Joint06OriginAngle_static = 0.0;
 OccView::OccView(QWidget *parent) : QWidget(parent)
 {
     InitView();
+//    aris_sim::InitSimulator();
+//    aris_sim::InitCollision();
+    num_contacts = 0;
+    running = false; // set to stop detached thread(thread_visual)
+
 //    collision();
     //InitFilters();
     m_contextMenu = new QMenu(this);  //这是右击弹出的菜单Fhome
@@ -121,8 +127,10 @@ OccView::OccView(QWidget *parent) : QWidget(parent)
         GeneralAx5=XB4Ax5;
         GeneralAx6=XB4Ax6;
     #endif
+}
 
-
+OccView::~OccView() noexcept {
+  running = false; // set to stop detached thread
 }
 
 void OccView::paintEvent(QPaintEvent *)
@@ -718,70 +726,47 @@ void OccView::ButtonAxis03MoveForward()
 
 void OccView::ButtonAxis04MoveForward()
 {
-  size_t num_contacts=0;
-  double ee_px{0.0},ee_py{0.0},ee_pz{0.0};
-//  std::thread ThreadVisual;
-//  if (ThreadVisual.joinable()) {
-//    return;
-//  } else {
-    //  thread_visual
-    static std::thread thread_visual([&]{
-        while(true){
-//          auto start = std::chrono::steady_clock::now();
-          zyc::DynamicSimulator(link_pm);
-          gp_Trsf transformation;
-          for (int i = 0; i < 7; ++i) {
-            transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3],
-                                     link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7],
-                                     link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11]);
-//            std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z "<< link_pm[i * 16 + 11] << std::endl;
-            m_context->SetLocation (RobotAISShape[i], transformation);
-//        m_context->UpdateCurrentViewer();
-          }
-    /*      ee_px = link_pm[80 + 3];
-          ee_py = link_pm[80 + 7];
-          ee_pz = link_pm[80+ 11];
-          cout<<ee_px<<" "<<ee_py<<" "<<ee_pz<<endl;
-          zyc::fclCollision(float(ee_px),float(ee_py),float(ee_pz),num_contacts);*/
-          std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-//          std::this_thread::sleep_until(start + std::chrono::milliseconds (100));
-        }
-    });
-//  }
+//  aris_sim::InitSimulator();
+//  aris_sim::InitCollision();
+  num_contacts=0;
+  //开启仿真轨迹规划
+  aris_sim::SimPlan();
 
-//  std::thread thread_collision(zyc::fclCollision,float(ee_px),float(ee_py),float(ee_pz),std::ref(num_contacts));
-
-//  std::thread thread_ik(zyc::SimThreadFun);
-//  std::thread thread_visual(OccView::ButtonAxis05MoveForward);
-  thread_visual.join();
-//  thread_collision.join();
-//  thread_ik.join();
-
+  //线程thread_visual，每100ms从sim获取link位姿 TODO 线程回收
+  static std::thread thread_visual([&]{
+    running=true;
+    while(num_contacts==0 && running){
+      //TODO num_contact=0 one time
+      auto start = std::chrono::steady_clock::now();
+      //从sim获取link位姿
+      aris_sim::DynamicSimulator(link_pm);
+      gp_Trsf transformation;
+      for (int i = 1; i < 7; ++i) {
+        transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3],
+                                 link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7],
+                                 link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11]);
+    //          std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z "<< link_pm[i * 16 + 11] << std::endl;
+        m_context->SetLocation (RobotAISShape[i], transformation);
+      }
+      px = link_pm[6 * 16 + 3];
+      py = link_pm[6 * 16 + 7];
+      pz = link_pm[6 * 16 + 11];
+      //计算是否碰撞
+      //TODO 平移+旋转
+    //      aris_sim::Collision(float(px),float(py),float(pz),num_contacts);
+      std::this_thread::sleep_until(start + std::chrono::milliseconds (100));
+    }
+  });
+  //分离线程thread_visual
+  if(thread_visual.joinable()){
+    thread_visual.detach();
+  }
 }
-
-// 显示
-void OccView::visual(size_t& num_contacts)
-{
-//  while(!num_contacts){
-//    zyc::DynamicSimulator(link_pm);
-//    gp_Trsf transformation;
-//    for (int i = 0; i < 7; ++i) {
-//      transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3],
-//                               link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7],
-//                               link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11]);
-//      std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z "<< link_pm[i * 16 + 11] << std::endl;
-//      m_context->SetLocation (RobotAISShape[i], transformation);
-////        m_context->UpdateCurrentViewer();
-//    }
-//    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-//  }
-}
-
-
 
 // 刷新页面
 void OccView::visual_update()
 {
+  //QT计时器：每10ms刷新显示
   m_context->UpdateCurrentViewer();
 }
 
@@ -794,23 +779,12 @@ void OccView::ButtonAxis05MoveForward()
 //    trans.SetRotation(GeneralAx5,angle);
 //    m_context->SetLocation( RobotAISShape[5],trans);
 //    m_context->UpdateCurrentViewer();
-/*    gp_Trsf trans;
+    gp_Trsf trans;
     getJoint05CurrentAngle()=getJoint05CurrentAngle()-Joint05OriginAngle_static+DeltaAngle;
     Ui::PILimit(getJoint05CurrentAngle());
     trans.SetRotation(GeneralAx5,getJoint05CurrentAngle());
     m_context->SetLocation(RobotAISShape[5],trans);
-    m_context->UpdateCurrentViewer();*/
-
-  zyc::DynamicSimulator(link_pm);
-  gp_Trsf transformation;
-  for (int i = 0; i < 7; ++i) {
-    transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3],
-                             link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7],
-                             link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11]);
-//            std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z "<< link_pm[i * 16 + 11] << std::endl;
-    m_context->SetLocation (RobotAISShape[i], transformation);
-//        m_context->UpdateCurrentViewer();
-  }
+    m_context->UpdateCurrentViewer();
 }
 
 void OccView::ButtonAxis06MoveForward()

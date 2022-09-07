@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
     auto buttonAxis03Forward=new QPushButton(this);
     buttonAxis03Forward->setText(tr("R3+"));
     auto buttonAxis04Forward=new QPushButton(this);
-    buttonAxis04Forward->setText(tr("R4+"));
+    buttonAxis04Forward->setText(tr("mvj"));
     auto buttonAxis05Forward=new QPushButton(this);
     buttonAxis05Forward->setText(tr("R5+"));
     auto buttonAxis06Forward=new QPushButton(this);

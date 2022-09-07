@@ -39,13 +39,13 @@ namespace zyc{
     };
 
     struct  Loader {
-            Loader();
-            ~Loader();
+        Loader();
+        ~Loader();
 
-            void load(const std::string& );
+        void load(const std::string& );
 
-            Assimp::Importer* importer;
-            aiScene const* scene;
+        Assimp::Importer* importer;
+        aiScene const* scene;
     };
 
     void buildMesh(const fcl::Vector3f& scale, const aiScene* scene,
@@ -56,9 +56,9 @@ namespace zyc{
             const fcl::Vector3f & scale, const aiScene* scene,
             const shared_ptr<fcl::BVHModel<OBBRSSf> >& mesh);
 
-    void fclCollision(float dx,float dy, float dz,size_t& num_contatcs);
-
+    void fclCollision();
     auto InitCollision()->void;
+    auto Collision(float x_, float y_, float z_, size_t& num_contacts_)->void;
 
 }//  namespace zyc
 
