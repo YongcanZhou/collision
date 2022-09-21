@@ -1,10 +1,17 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <Eigen/StdVector>
+#define PCL_NO_PRECOMPILE
+
 #include <pcl/registration/icp.h>
 #include <pcl/registration/transforms.h>//变换矩阵类
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/io/pcd_io.h>
+#include <QVector>
+#include <QMetaType>
+#include <array>
+#include <boost/array.hpp>
 
 MainWindow::MainWindow(QWidget* parent) :
 	QMainWindow(parent),
@@ -587,7 +594,7 @@ MainWindow::MainWindow(QWidget* parent) :
 	pointsview->setRenderWindow(viewer->getRenderWindow());
 	viewer->setupInteractor(pointsview->interactor(), pointsview->renderWindow());
 #endif
-	char strfilepath[256] = "C:/Users/leiti/Desktop/rabbit.pcd";
+	char strfilepath[256] = "C:/Users/ZHOUYC/Desktop/rabbit.pcd";
 	pcl::io::loadPCDFile(strfilepath, *cloud);
 	//viewer->addPointCloud(cloud, "cloud");
 
@@ -950,9 +957,18 @@ MainWindow::MainWindow(QWidget* parent) :
 	/*****anyTest******/
 	/*****anyTest******/
 
-	QObject::connect(threadsim, SIGNAL(updataAngle(double)), occWidget, SLOT(setAngle(double)));
 
+	qRegisterMetaType<std::array<double, 7 * 16>>("std::array<double, 7 * 16>");
+	//QObject::connect(threadsim, SIGNAL(updataAngle(double)), occWidget, SLOT(setAngle(double)));
+	QObject::connect(threadsim, SIGNAL(updateLinkPm(std::array<double, 7 * 16>)), occWidget, SLOT(setLinkPm(std::array<double, 7 * 16>)));
 	anyTest();
+
+
+	//thread_visual
+	update_time = new QTimer();
+	QObject::connect(update_time, SIGNAL(timeout()), this, SLOT(time_update()));
+	update_time->start(10); //10m秒钟后启动
+
 }
 
 MainWindow::~MainWindow()
@@ -1284,4 +1300,9 @@ void MainWindow::on_comboBoxDocuments_currentIndexChanged(int index)
 			break;
 		}
 	}
+}
+
+void MainWindow::time_update()
+{
+	occWidget->visual_update();
 }

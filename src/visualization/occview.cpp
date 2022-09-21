@@ -1,7 +1,8 @@
 ﻿#include "occview.h"
+#include <aris_sim.hpp>
 
-
-#define ER100
+// #define ER100
+#define XB4
 
 #ifdef UR5
 double OccView::Joint01CurrentAngle = -PI / 2;
@@ -31,9 +32,30 @@ double OccView::Joint05CurrentAngle = 0.0;
 double OccView::Joint06CurrentAngle = 0.0;
 #endif
 
+#ifdef XB4
+double OccView::Joint01CurrentAngle = 0.0;
+double OccView::Joint02CurrentAngle = 0.0;
+double OccView::Joint03CurrentAngle = 0.0;
+double OccView::Joint04CurrentAngle = 0.0;
+double OccView::Joint05CurrentAngle = 0.0;
+double OccView::Joint06CurrentAngle = 0.0;
+double OccView::Joint01OriginAngle_static = 0.0;
+double OccView::Joint02OriginAngle_static = 0.0;
+double OccView::Joint03OriginAngle_static = 0.0;
+double OccView::Joint04OriginAngle_static = 0.0;
+double OccView::Joint05OriginAngle_static = 0.0;
+double OccView::Joint06OriginAngle_static = 0.0;
+#endif
+
+
 
 OccView::OccView(QWidget *parent) : QWidget(parent)
 {
+	//aris_sim::InitSimulator();
+	//aris_sim::InitCollision("C:/Users/ZHOUYC/Desktop/ee_5.STL");
+	//num_contacts = 0;
+	//running = false; // set to stop detached thread(thread_visual)
+
 	InitView();
 	//InitFilters();
 	m_contextMenu = new QMenu(this);  //这是右击弹出的菜单Fhome
@@ -74,6 +96,13 @@ OccView::OccView(QWidget *parent) : QWidget(parent)
 	UR5Ax5 = gp_Ax1(gp_Pnt(0, -116.3, 946.83), gp_Dir(0, 0, 1));
 	UR5Ax6 = gp_Ax1(gp_Pnt(0, -161.8, 994.33), gp_Dir(0, -1, 0));
 
+	XB4Ax1 = gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+	XB4Ax2 = gp_Ax1(gp_Pnt(0.040, 0, 0.342), gp_Dir(0, 1, 0));
+	XB4Ax3 = gp_Ax1(gp_Pnt(0.040, 0, 0.617), gp_Dir(0, 1, 0));
+	XB4Ax4 = gp_Ax1(gp_Pnt(0.040, 0, 0.642), gp_Dir(1, 0, 0));
+	XB4Ax5 = gp_Ax1(gp_Pnt(0.320, 0, 0.642), gp_Dir(0, 1, 0));
+	XB4Ax6 = gp_Ax1(gp_Pnt(0.393, 0, 0.642), gp_Dir(1, 0, 0));
+
 	OccProgressIndicator *indicat = new OccProgressIndicator();
 	QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
 
@@ -102,6 +131,15 @@ OccView::OccView(QWidget *parent) : QWidget(parent)
 	GeneralAx4 = ER100_3000Ax4;
 	GeneralAx5 = ER100_3000Ax5;
 	GeneralAx6 = ER100_3000Ax6;
+#endif
+
+#ifdef XB4
+	GeneralAx1 = XB4Ax1;
+	GeneralAx2 = XB4Ax2;
+	GeneralAx3 = XB4Ax3;
+	GeneralAx4 = XB4Ax4;
+	GeneralAx5 = XB4Ax5;
+	GeneralAx6 = XB4Ax6;
 #endif
 
 
@@ -136,6 +174,10 @@ OccView::OccView(QWidget *parent) : QWidget(parent)
 	//            }
 	//        }
 
+}
+
+OccView::~OccView() noexcept {
+	//running = false; // set to stop detached thread
 }
 
 void OccView::paintEvent(QPaintEvent *)
@@ -368,13 +410,14 @@ void OccView::loadDisplayRobotWhole()
 		m_context->SetLocation(RobotAISShape[4], delta);
 		m_context->Update(RobotAISShape[4], Standard_True);
 
+		//取消 robot 模型树
 		//RobotAISShape[6]->AddChild(RobotAISShape[7]);
-		RobotAISShape[5]->AddChild(RobotAISShape[6]);
-		RobotAISShape[4]->AddChild(RobotAISShape[5]);
-		RobotAISShape[3]->AddChild(RobotAISShape[4]);
-		RobotAISShape[2]->AddChild(RobotAISShape[3]);
-		RobotAISShape[1]->AddChild(RobotAISShape[2]);
-		RobotAISShape[0]->AddChild(RobotAISShape[1]);
+		//RobotAISShape[5]->AddChild(RobotAISShape[6]);
+		//RobotAISShape[4]->AddChild(RobotAISShape[5]);
+		//RobotAISShape[3]->AddChild(RobotAISShape[4]);
+		//RobotAISShape[2]->AddChild(RobotAISShape[3]);
+		//RobotAISShape[1]->AddChild(RobotAISShape[2]);
+		//RobotAISShape[0]->AddChild(RobotAISShape[1]);
 
 	}
 
@@ -481,7 +524,7 @@ void OccView::loadDisplayRobotJoints()
 	RobotAISShape[index] = new AIS_Shape(shape);
 	m_context->Display(RobotAISShape[index], Standard_True);
 
-	index++;
+	/*index++;
 	if (index == 7) {
 
 		RobotAISShape[5]->AddChild(RobotAISShape[6]);
@@ -492,7 +535,7 @@ void OccView::loadDisplayRobotJoints()
 		RobotAISShape[0]->AddChild(RobotAISShape[1]);
 
 		index = 0;
-	}
+	}*/
 
 
 }
@@ -1616,8 +1659,8 @@ void OccView::AnaminationStart()
 	//        m_context->Update(getAISShape(),Standard_True);
 	//    }
 
-
-	double ddd[6]{ 1,0,0,0,0,0 };
+	
+	/*double ddd[6]{ 1,0,0,0,0,0 };
 	for (int k = 0; k < 100; k++) {
 		qDebug() << ddd[0];
 		ddd[0] += 1;
@@ -1633,12 +1676,20 @@ void OccView::AnaminationStart()
 	gp_Ax3 *ax3_2 = new gp_Ax3(*new gp_Pnt(60, 60, 60), *new gp_Dir(1, 1, 1));
 
 
-	theTransformation->SetDisplacement(*ax3_1, *ax3_2);
+	theTransformation->SetDisplacement(*ax3_1, *ax3_2);*/
+	
 
 
 	//    BRepBuilderAPI_Transform myBRepTransformation =new BRepBuilderAPI_Transform(S, theTransformation, false);
 	//    TopoDS_Shape TransformedShape = myBRepTransformation->Shape();
 
+
+}
+
+// 刷新页面
+void OccView::visual_update() {
+	//QT计时器：每10ms刷新显示
+	m_context->UpdateCurrentViewer();
 }
 
 void OccView::SetModelLocation(Handle(AIS_Shape)& aShape, gp_Trsf trsf)
@@ -1955,6 +2006,18 @@ void OccView::ButtonAxis06MoveBackward()
 		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
 }
 
+void OccView::setLinkPm(std::array<double, 7 * 16> link_pm)
+{
+	gp_Trsf transformation;
+	for (int i = 1; i < 7; ++i) {
+		transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3]*1000,
+								link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7]*1000,
+								link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11]*1000);
+		std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z "<< link_pm[i * 16 + 11] << std::endl;
+		m_context->SetLocation(RobotAISShape[i], transformation);
+	}
+}
+
 void OccView::setAngle(double angle)
 {
 	gp_Trsf trans1, trans2, trans3, trans4, trans5,trans6;
@@ -1999,6 +2062,15 @@ void OccView::setAngle(double * angle)
 	m_context->SetLocation(RobotAISShape[6], trans6);
 	m_context->UpdateCurrentViewer();
 	qDebug() << "slot:" << angle[0];
+
+	gp_Trsf transformation;
+	for (int i = 1; i < 7; ++i) {
+		transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3] * 1000,
+			link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7] * 1000,
+			link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11] * 1000);
+		//std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z " << link_pm[i * 16 + 11] << std::endl;
+		m_context->SetLocation(RobotAISShape[i], transformation);
+	}
 
 }
 
@@ -2471,12 +2543,12 @@ void OccView::ReadFile(QString aFilePath, Handle(Document)doc)
 				m_context->Display(RobotAISShape[i - 1], true);
 			}
 
-			RobotAISShape[5]->AddChild(RobotAISShape[6]);
-			RobotAISShape[4]->AddChild(RobotAISShape[5]);
-			RobotAISShape[3]->AddChild(RobotAISShape[4]);
-			RobotAISShape[2]->AddChild(RobotAISShape[3]);
-			RobotAISShape[1]->AddChild(RobotAISShape[2]);
-			RobotAISShape[0]->AddChild(RobotAISShape[1]);
+			//RobotAISShape[5]->AddChild(RobotAISShape[6]);
+			//RobotAISShape[4]->AddChild(RobotAISShape[5]);
+			//RobotAISShape[3]->AddChild(RobotAISShape[4]);
+			//RobotAISShape[2]->AddChild(RobotAISShape[3]);
+			//RobotAISShape[1]->AddChild(RobotAISShape[2]);
+			//RobotAISShape[0]->AddChild(RobotAISShape[1]);
 		}
 		initRobot();
 

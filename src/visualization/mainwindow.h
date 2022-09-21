@@ -28,6 +28,8 @@
 #include "documents.h"
 #include "application.h"
 
+#include <QTimer>
+
 
 namespace Ui {
     class MainWindow;
@@ -57,6 +59,8 @@ private slots:
     void on_actionNewDoc_triggered();
 
     void on_comboBoxDocuments_currentIndexChanged(int index);
+
+    void time_update();
 
 private:
     Ui::MainWindow *ui;
@@ -91,6 +95,9 @@ private:
 
 	QTreeWidgetItem* Doc1_treeitem, *Doc2_treeitem, *Doc3_treeitem;
 	QTreeWidgetItem* Doc1_ExternalToolEnable_item, *Doc2_ExternalToolEnable_item, *Doc3_ExternalToolEnable_item;
+
+    //thread_visual
+    QTimer* update_time;
 
 
 private slots:

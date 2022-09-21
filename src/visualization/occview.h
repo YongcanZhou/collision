@@ -82,6 +82,7 @@ class OccView : public QWidget
     Q_OBJECT
 public:
     explicit OccView(QWidget *parent = nullptr);
+    ~OccView();
 
 	enum nameState {
 		joint1,
@@ -143,6 +144,10 @@ private:
 
 public:
     QString workpiecePath,robotPath,toolPath,stlPath;
+
+    // 刷新页面
+    void visual_update();
+
     //加载显示机器人模型
     void loadDisplayRobotWhole();
 
@@ -316,6 +321,7 @@ signals:
 	void sendimportValueSigal(int);
 
 private slots:
+    void setLinkPm(std::array<double, 7 * 16> link_pm);
 	void setAngle(double angle);
 	void setAngle(double* angle);
 	void importValue(int value) {
@@ -345,11 +351,17 @@ private:
     static double Joint06CurrentAngle;
 
 	double Joint01OriginAngle{0.0}, Joint02OriginAngle{ 0.0 }, Joint03OriginAngle{ 0.0 }, Joint04OriginAngle{ 0.0 }, Joint05OriginAngle{ 0.0 }, Joint06OriginAngle{ 0.0 };
-
+    static double Joint01OriginAngle_static, Joint02OriginAngle_static, Joint03OriginAngle_static, Joint04OriginAngle_static, Joint05OriginAngle_static, Joint06OriginAngle_static;
     gp_Ax1 KukaAx1,KukaAx2,KukaAx3,KukaAx4,KukaAx5,KukaAx6;
     gp_Ax1 UR5Ax1,UR5Ax2,UR5Ax3,UR5Ax4,UR5Ax5,UR5Ax6;
 	gp_Ax1 ER100_3000Ax1, ER100_3000Ax2, ER100_3000Ax3, ER100_3000Ax4, ER100_3000Ax5, ER100_3000Ax6;
+    gp_Ax1 XB4Ax1, XB4Ax2, XB4Ax3, XB4Ax4, XB4Ax5, XB4Ax6;
     gp_Ax1 GeneralAx1,GeneralAx2,GeneralAx3,GeneralAx4,GeneralAx5,GeneralAx6;
+
+    //double px, py, pz;
+    std::array<double, 7 * 16> link_pm;
+    //size_t num_contacts;
+    //std::atomic_bool running; // set to stop thread
 
 
 

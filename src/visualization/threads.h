@@ -20,8 +20,15 @@ private:
 	double angle{ 0.0 };
 	QMutex m_lock;
 	bool threadStop{ true };
+
+	double px, py, pz;
+	std::array<double, 7 * 16> link_pm;
+	size_t num_contacts;
+	std::atomic_bool running; // set to stop thread
+
 signals:
 	void updataAngle(double angle_);
+	void updateLinkPm(std::array<double, 7 * 16> link_pm);
 public:
 	void ThreadStart();
 	void ThreadStop();
