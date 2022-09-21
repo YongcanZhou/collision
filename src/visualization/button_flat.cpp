@@ -1,10 +1,5 @@
-﻿/****************************************************************************
-** Copyright (c) 2021, Fougue Ltd. <http://www.fougue.pro>
-** All rights reserved.
-** See license at https://github.com/fougue/mayo/blob/master/LICENSE.txt
-****************************************************************************/
-
-#include "src/visualization/button_flat.h"
+﻿
+#include "button_flat.h"
 
 
 namespace Ui {

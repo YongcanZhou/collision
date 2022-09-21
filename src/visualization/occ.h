@@ -184,6 +184,7 @@
 #include <CSLib.hxx>
 #include <GeomLProp_SurfaceTool.hxx>
 #include <BRepIntCurveSurface_Inter.hxx>
+#include <TDF_Tool.hxx>
 
 
 #include <IntCurvesFace_ShapeIntersector.hxx>
@@ -204,6 +205,20 @@
 #include <StlAPI_Writer.hxx>
 #include <RWStl.hxx>
 #include <RWStl_Reader.hxx>
+
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <Standard_Version.hxx>
+#include <TDF_TagSource.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <Transfer_ProcessForTransient.hxx>
+#include <Transfer_ProcessForFinder.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <Message_ProgressIndicator.hxx>
+
+
+#include <AIS_TextLabel.hxx>
 
 #include <Poly_Polygon3D.hxx>
 #endif // OCC_H

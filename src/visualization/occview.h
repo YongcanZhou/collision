@@ -2,7 +2,6 @@
 #define OCCVIEW_H
 
 #include <QWidget>
-#include "qevent.h"
 #include <QtWidgets/QApplication>
 #include <QDebug>
 #include <QMenu>
@@ -11,7 +10,10 @@
 #include <QEasingCurve>
 #include <QThread>
 
-#include <src/visualization/general.h>
+#include "qevent.h"
+#include "general.h"
+#include "documents.h"
+#include "threads.h"
 
 #define BUTTON_ON true
 #define BUTTON_OFF false
@@ -53,8 +55,10 @@ public:
         myList.Append(XCAFDoc_Location::GetID());
     }
 
+    void load(QTreeWidget*);
 
 private:
+    void load(const TDF_Label& label, QTreeWidgetItem* item, const QString&);
     std::string toString(const TCollection_ExtendedString& extstr) const
     {
         char* str = new char[extstr.LengthOfCString() + 1];
@@ -78,11 +82,18 @@ class OccView : public QWidget
     Q_OBJECT
 public:
     explicit OccView(QWidget *parent = nullptr);
-    ~OccView();
 
-signals:
+	enum nameState {
+		joint1,
+		joint2,
+		joint3,
+		joint4,
+		joint5,
+		joint6,
+		tool,
+		part,
+	};
 
-public slots:
 
 protected:
     //!三维场景转换模式
@@ -132,15 +143,13 @@ private:
 
 public:
     QString workpiecePath,robotPath,toolPath,stlPath;
-
-    // 刷新页面
-    void visual_update();
-
     //加载显示机器人模型
     void loadDisplayRobotWhole();
 
+    void ReadFile(QString aFilePath,Handle(Document) doc);
+
     //初始化机器人的初始位姿
-    void initUR5();
+    void initRobot();
 
     //加载显示机器人模型
     void loadDisplayRobotJoints();
@@ -154,20 +163,82 @@ public:
     //加载和显示点云
     void loadDisplaySTL();
 
-    const  Handle(V3d_View)& getView(){return m_view;}
-    const  Handle(AIS_InteractiveContext)& getContext(){return m_context;}
+    //显示法向量
+    void displayNormalVector();
 
-    Handle_AIS_Shape& getAISShape(){return PartAISShape;}
+    void removeNormalVector();
+    //提取工件中所有的面
+    void pickUp(TopoDS_Shape);
+    void getShape();
+    void selectMode(Handle(AIS_Shape) selectmode,const Ui::selectionType& type);
+    void DisselectMode(Handle(AIS_Shape) selectmode,const Ui::selectionType& type);
+    void newPartCoordinate();
+    void newToolCoordinate();
+    void startSelectFirstCurve();
+    void startSelectSecondCurve();
+    void startSelectPlains();
+    const  Handle(V3d_View)& getView()
+	{
+		return m_view;
+	}
+    const  Handle(AIS_InteractiveContext)& getContext()
+	{
+		return m_context;
+	}
+    bool& getDrawLine()
+	{
+		return DrawLine;
+	}
+    bool& getSelectstatus()
+	{
+		return faceSelect;
+	}
+    Handle_AIS_Shape& getAISShape()
+	{
+		return PartAISShape;
+	}
+    void setSelectType(const Ui::selectionType& type,const bool& selection){
+        if(faceSelect!=selection){
+            if(selection){
+                selectMode(PartAISShape,type);
+            }else{
+                DisselectMode(PartAISShape,type);
+            }
+            faceSelect=selection;
+        }
+    }
 
+    bool& getNewToolCoordinate()
+	{
+		return newToolCoordinateEnable;
+	}
+	bool& getNewPartCoordinate() 
+	{ 
+		return newPartCoordinateEnable; 
+	}
 
+	void initNewToolCoordinate() 
+	{
+		firstPointSelected = secondPointSelected = thirdPointSelected = false;
+	}
+
+	void initNewPartCoordinate()
+	{
+		firstPointSelected = secondPointSelected = thirdPointSelected = false;
+	}
+
+    void coutPointCoor();
+    gp_Pnt ChangeCoordinateSecond(double x,double y);
     void SetModelLocation(Handle(AIS_Shape)& aShape,gp_Trsf trsf);
     void SetModelLocation_Euler(Handle(AIS_Shape)& aShape, double* pTemp);
     void SetModelLocation_Matrix(Handle(AIS_Shape)& aShape, double* matrixTemp);
-
+    void AnaminationStart();
     void angleDebug(const gp_Ax3& FromSystem, const gp_Ax3& ToSystem);
-
+    void PartMoveSim();
+    void RobotMoveSim();
+    void toolTrihedronDisplay();
     void RobotBackHome();
-
+    void CameraAnaminationStart();
     void ButtonAxis01MoveForward();
     void ButtonAxis02MoveForward();
     void ButtonAxis03MoveForward();
@@ -180,18 +251,12 @@ public:
     void ButtonAxis04MoveBackward();
     void ButtonAxis05MoveBackward();
     void ButtonAxis06MoveBackward();
-    void ButtonTranXMoveForward();
-    void ButtonTranYMoveForward();
-    void ButtonTranZMoveForward();
-    void ButtonTranRXMoveForward();
-    void ButtonTranRYMoveForward();
-    void ButtonTranRZMoveForward();
-    void ButtonTranXMoveBackward();
-    void ButtonTranYMoveBackward();
-    void ButtonTranZMoveBackward();
-    void ButtonTranRXMoveBackward();
-    void ButtonTranRYMoveBackward();
-    void ButtonTranRZMoveBackward();
+    void ButtonPartCoorOK();
+	void ButtonToolCoorOK();
+    void ButtonFirstCurve();
+    void ButtonSecondCurve();
+    void ButtonPlainSelect();
+    void ButtonPointsCal();
 
 
     double& getJoint01CurrentAngle(){return Joint01CurrentAngle;}
@@ -201,6 +266,11 @@ public:
     double& getJoint05CurrentAngle(){return Joint05CurrentAngle;}
     double& getJoint06CurrentAngle(){return Joint06CurrentAngle;}
     Ui::EularCoor& getPartCoor(){return part0Coordinate;}
+	Ui::EularCoor& getToolCoor() { return tool0Coordinate; }
+    void ConstructRobot(Assemly_Tree & tree);
+	void InstallFilters(TopAbs_ShapeEnum shapeenum);
+	void UninstallFilters(TopAbs_ShapeEnum shapeenum);
+	void setJointAngle(nameState joint,double angle);
 
 private:
     void InitView();
@@ -224,10 +294,33 @@ private:
     gp_Ax2 tool0Ax2;
     gp_Ax2 part0Ax2;
     Ui::EularCoor part0Coordinate,originPart0Coordinate;
+	Ui::EularCoor tool0Coordinate, originTool0Coordinate;
     Handle(Geom_Axis2Placement) PartTrihedronAxis;
+	Handle(Geom_Axis2Placement) ToolTrihedronAxis;
+
+	Eigen::Matrix4d robot_tool0_matrix;
+	bool ExternalToolEnable{ true };
+
+	std::vector<std::pair<gp_Pnt, gp_Vec>> pointVecs;//轨迹点
 
 
 
+
+signals:
+    void mouseMovedSignal(const QPoint& posMouseInView);
+    void NewPartCoordinateCompleteSigal();
+    void NewToolCoordinateCompleteSigal();
+    void firstCurveCompleteSigal();
+    void secondCurveCompleteSigal();
+    void faceSelectCompleteSigal();
+	void sendimportValueSigal(int);
+
+private slots:
+	void setAngle(double angle);
+	void setAngle(double* angle);
+	void importValue(int value) {
+		emit sendimportValueSigal(value);
+	}
 
     //右键菜单
 private:
@@ -235,6 +328,13 @@ private:
     QAction*  m_addAction;
     QAction*  m_delAction;
     gp_Trsf tttrsf;
+
+
+    //新建坐标系
+    gp_Pnt pointO,pointX,pointY;
+    bool newToolCoordinateEnable{false};
+	bool newPartCoordinateEnable{ false };
+    bool firstPointSelected{false},secondPointSelected{false},thirdPointSelected{false};
 
     //关节转动
     static double Joint01CurrentAngle;
@@ -244,21 +344,28 @@ private:
     static double Joint05CurrentAngle;
     static double Joint06CurrentAngle;
 
-    double Joint01OriginAngle,Joint02OriginAngle,Joint03OriginAngle,Joint04OriginAngle,Joint05OriginAngle,Joint06OriginAngle;
-    static double Joint01OriginAngle_static,Joint02OriginAngle_static,Joint03OriginAngle_static,Joint04OriginAngle_static,Joint05OriginAngle_static,Joint06OriginAngle_static;
+	double Joint01OriginAngle{0.0}, Joint02OriginAngle{ 0.0 }, Joint03OriginAngle{ 0.0 }, Joint04OriginAngle{ 0.0 }, Joint05OriginAngle{ 0.0 }, Joint06OriginAngle{ 0.0 };
+
     gp_Ax1 KukaAx1,KukaAx2,KukaAx3,KukaAx4,KukaAx5,KukaAx6;
     gp_Ax1 UR5Ax1,UR5Ax2,UR5Ax3,UR5Ax4,UR5Ax5,UR5Ax6;
-    gp_Ax1 XB4Ax1,XB4Ax2,XB4Ax3,XB4Ax4,XB4Ax5,XB4Ax6;
+	gp_Ax1 ER100_3000Ax1, ER100_3000Ax2, ER100_3000Ax3, ER100_3000Ax4, ER100_3000Ax5, ER100_3000Ax6;
     gp_Ax1 GeneralAx1,GeneralAx2,GeneralAx3,GeneralAx4,GeneralAx5,GeneralAx6;
 
-    double px,py,pz;
-    std::array<double,7*16> link_pm;
-    size_t num_contacts;
-    std::atomic_bool running ; // set to stop thread
 
 
 public:
     OCAFBrowser *ocaf;
+    std::pair<QString,TopoDS_Shape> PairfirstCurve;
+    std::pair<QString,TopoDS_Shape> PairsecondCurve;
+    std::vector<std::pair<QString,TopoDS_Shape>> PairPlains;
+    bool selectFirstCurve{false};
+    bool selectSecondCurve{false};
+    bool selectFaces{false};
+
+
+public:
+	void setVisiable(nameState name,bool state);
+	void setExternalToolEnable(bool enable);
 
 };
 

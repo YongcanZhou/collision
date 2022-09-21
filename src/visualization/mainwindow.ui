@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>486</width>
+    <width>482</width>
     <height>382</height>
    </rect>
   </property>
@@ -20,6 +20,9 @@
       <property name="frameShape">
        <enum>QFrame::Box</enum>
       </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -32,6 +35,9 @@
       <widget class="QWidget" name="widget" native="true">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
+         <widget class="QComboBox" name="comboBoxDocuments"/>
+        </item>
+        <item>
          <widget class="QSplitter" name="splitter_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -39,32 +45,32 @@
           <widget class="QTreeWidget" name="treeWidget">
            <column>
             <property name="text">
-             <string>Assem</string>
+             <string>ModelTree</string>
             </property>
            </column>
           </widget>
           <widget class="QTabWidget" name="tabWidget01">
            <property name="currentIndex">
-            <number>2</number>
+            <number>3</number>
            </property>
            <widget class="QWidget" name="tabWidgetPage1">
             <attribute name="title">
-             <string/>
+             <string>通用设置</string>
             </attribute>
            </widget>
            <widget class="QWidget" name="tabWidgetPage2">
             <attribute name="title">
-             <string/>
+             <string>工件设置</string>
             </attribute>
            </widget>
            <widget class="QWidget" name="tabWidgetPage3">
             <attribute name="title">
-             <string>页</string>
+             <string>工具设置</string>
             </attribute>
            </widget>
            <widget class="QWidget" name="tabWidgetPage4">
             <attribute name="title">
-             <string>页</string>
+             <string>仿真设置</string>
             </attribute>
            </widget>
           </widget>
@@ -72,10 +78,40 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="occWidget" native="true">
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
+      <widget class="QWidget" name="occWidgetComponent" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QWidget" name="PublicComponentWidget" native="true"/>
+        </item>
+        <item>
+         <widget class="QTabWidget" name="occTabWidget">
+          <property name="tabPosition">
+           <enum>QTabWidget::West</enum>
+          </property>
+          <property name="tabShape">
+           <enum>QTabWidget::Triangular</enum>
+          </property>
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <widget class="QWidget" name="occTabWidgetPage1">
+           <attribute name="title">
+            <string>轨迹校正</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="occTabWidgetPage2">
+           <attribute name="title">
+            <string>点云处理</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="occTabWidgetPage3">
+           <attribute name="title">
+            <string>夹持校正</string>
+           </attribute>
+          </widget>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -86,8 +122,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>486</width>
-     <height>17</height>
+     <width>482</width>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -98,9 +134,6 @@
      <property name="title">
       <string>导入</string>
      </property>
-     <addaction name="separator"/>
-     <addaction name="separator"/>
-     <addaction name="separator"/>
      <addaction name="actionRbtImport"/>
      <addaction name="separator"/>
      <addaction name="actionWopImport"/>
@@ -110,7 +143,17 @@
      <addaction name="actionToolImport"/>
      <addaction name="separator"/>
      <addaction name="actionSTLImport"/>
+     <addaction name="separator"/>
     </widget>
+    <widget class="QMenu" name="menuwenjian">
+     <property name="title">
+      <string>文件</string>
+     </property>
+     <addaction name="actionNewDoc"/>
+     <addaction name="separator"/>
+    </widget>
+    <addaction name="menuwenjian"/>
+    <addaction name="separator"/>
     <addaction name="menu_3"/>
     <addaction name="separator"/>
     <addaction name="actionExport"/>
@@ -174,6 +217,11 @@
   <action name="actionSTLImport">
    <property name="text">
     <string>导入点云</string>
+   </property>
+  </action>
+  <action name="actionNewDoc">
+   <property name="text">
+    <string>新建</string>
    </property>
   </action>
  </widget>

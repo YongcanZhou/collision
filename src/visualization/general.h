@@ -1,12 +1,16 @@
 ﻿#ifndef GENERAL_H
 #define GENERAL_H
+
 #include <QDebug>
-#include<Eigen/Eigen>
-#include <src/visualization/occ.h>
-#include <src/visualization/button_flat.h>
+#include <Eigen/Eigen>
+#include <QTreeWidgetItem>
+
+#include "button_flat.h"
+#include "libtree.h"
+
 namespace Ui {
 
-#define deltaAngle 0.2
+#define deltaAngle 0.03
 #define deltaLength 0.01
 #define transPos 20
 #define PI 3.1415926
@@ -14,15 +18,68 @@ namespace Ui {
 static ButtonFlat* createViewBtn(QWidget* parent, const QIcon& icon, const QString& tooltip)
 {
     auto btn = new ButtonFlat(parent);
-    //    btn->setBackgroundBrush(mayoTheme()->color(Theme::Color::ButtonView3d_Background));
-    //    btn->setCheckedBrush(mayoTheme()->color(Theme::Color::ButtonView3d_Checked));
-    //    btn->setHoverBrush(mayoTheme()->color(Theme::Color::ButtonView3d_Hover));
     btn->setIcon(icon);
     btn->setIconSize(QSize(18, 18));
     btn->setFixedSize(24, 24);
     btn->setToolTip(tooltip);
     return btn;
 }
+
+typedef struct Joint {
+
+	Joint() : j1(0), j2(0), j3(0), j4(0), j5(0), j6(0) {}
+
+	Joint(double j1, double j2, double j3, double j4, double j5, double j6) : j1(j1), j2(j2), j3(j3), j4(j4), j5(j5), j6(j6) {}
+
+	Joint(const Joint& joint)
+	{
+		j1 = joint.j1;
+		j2 = joint.j2;
+		j3 = joint.j3;
+		j4 = joint.j4;
+		j5 = joint.j5;
+		j6 = joint.j6;
+	}
+
+	Joint& operator=(const Joint& joint)
+	{
+		j1 = joint.j1;
+		j2 = joint.j2;
+		j3 = joint.j3;
+		j4 = joint.j4;
+		j5 = joint.j5;
+		j6 = joint.j6;
+		return *this;
+	}
+
+	void print() const
+	{
+
+		qDebug() << QString("[%1, %2, %3, %4, %5, %6]").arg(j1).arg(j2).arg(j3).arg(j4).arg(j5).arg(j6);
+
+	}
+
+	double j1 = 0;      /// 单位角度
+	double j2 = 0;
+	double j3 = 0;
+	double j4 = 0;
+	double j5 = 0;
+	double j6 = 0;
+
+}Joint;
+
+/** 关节类型 */
+typedef enum JointType {
+	BASE,   /// 基座
+	J1,     /// 关节一
+	J2,
+	J3,
+	J4,
+	J5,
+	J6
+
+}JointType;
+
 
 static gp_Pnt V3dView_to3dPosition(const Handle_V3d_View& view, double x, double y)
 {
@@ -69,7 +126,31 @@ static gp_Pnt ConvertClickToPoint(Standard_Real theX, Standard_Real theY, Handle
     return ResultPoint;
 }
 
+static void DrawLineByMouse(const gp_Pnt& thePntStart, const gp_Pnt& thePntEnd, Handle_AIS_Shape& myAISShape, Handle(AIS_InteractiveContext) &m_context)
+{
+    //检查传入参数
+    if (thePntStart.IsEqual(thePntEnd, 1e-3))
+        return;
 
+    //构建拓扑线段
+    Handle(Geom_TrimmedCurve) aSegment =
+            GC_MakeSegment(thePntStart, thePntEnd);
+    TopoDS_Edge aEdge = BRepBuilderAPI_MakeEdge(aSegment);
+    static Handle(AIS_Shape)lastEdge;
+    Handle(AIS_Shape)Edge=new AIS_Shape(aEdge);
+
+    //将构建的拓扑线段设置至AIS_Shape形状中
+    //   myAISShape->SetShape(aEdge);
+
+    //    //移除前面绘画的旧线段, 绘制新线段。
+    m_context->Remove(lastEdge, true);
+    m_context->Display(myAISShape, FALSE);
+    //m_context->Remove(myAISShape,true);
+    m_context->Display(Edge, false);
+    lastEdge=Edge;
+    //更新View
+    m_context->UpdateCurrentViewer();
+}
 
 static void qDebugMatrix3d(const Eigen::Matrix3d& RotateMatrix,const std::string& name){
     qDebug()<<name.c_str();
@@ -110,34 +191,49 @@ static Eigen::Matrix4d Rotate2RotatePos(Eigen::Matrix3d RotateMatrix,double x,do
 static void s_pe2pm(const double (&pe)[6], Eigen::Matrix4d& matrix_c_n , std::string kind)
 {
 
-    if (kind == "123")
-    {
-        double thetax=pe[5];
-        double thetay=pe[4];
-        double thetaz=pe[3];
-        Eigen::Vector3d eulerAngle(thetax, thetay, thetaz);//(Z-Y-X，即RPY)Eigen::Vector3d eulerAngle(yaw, pitch, roll)
-        Eigen::AngleAxisd rollAngle(Eigen::AngleAxisd(eulerAngle(0), Eigen::Vector3d::UnitX()));
-        Eigen::AngleAxisd pitchAngle(Eigen::AngleAxisd(eulerAngle(1), Eigen::Vector3d::UnitY()));
-        Eigen::AngleAxisd yawAngle(Eigen::AngleAxisd(eulerAngle(2), Eigen::Vector3d::UnitZ()));
-        Eigen::Matrix3d matrix_c;
-        matrix_c = rollAngle * pitchAngle*yawAngle;
-        matrix_c_n = Rotate2RotatePos(matrix_c, pe[0], pe[1], pe[2]);
-    }
+	if (kind == "123")
+	{
+		double thetax = pe[3];
+		double thetay = pe[4];
+		double thetaz = pe[5];
+		Eigen::Vector3d eulerAngle(thetax, thetay, thetaz);//(Z-Y-X，即RPY)Eigen::Vector3d eulerAngle(yaw, PItch, roll)
+		Eigen::AngleAxisd rollAngle(Eigen::AngleAxisd(eulerAngle(0), Eigen::Vector3d::UnitX()));
+		Eigen::AngleAxisd PItchAngle(Eigen::AngleAxisd(eulerAngle(1), Eigen::Vector3d::UnitY()));
+		Eigen::AngleAxisd yawAngle(Eigen::AngleAxisd(eulerAngle(2), Eigen::Vector3d::UnitZ()));
+		Eigen::Matrix3d matrix_c;
+		matrix_c = rollAngle * PItchAngle*yawAngle;
+		matrix_c_n = Rotate2RotatePos(matrix_c, pe[0], pe[1], pe[2]);
+	}
 
-    if (kind == "321")
-    {
-        double thetax=pe[5];
-        double thetay=pe[4];
-        double thetaz=pe[3];
-        Eigen::Vector3d eulerAngle(thetax, thetay, thetaz);//(Z-Y-X，即RPY)Eigen::Vector3d eulerAngle(yaw, pitch, roll)
-        Eigen::AngleAxisd rollAngle(Eigen::AngleAxisd(eulerAngle(0), Eigen::Vector3d::UnitX()));
-        Eigen::AngleAxisd pitchAngle(Eigen::AngleAxisd(eulerAngle(1), Eigen::Vector3d::UnitY()));
-        Eigen::AngleAxisd yawAngle(Eigen::AngleAxisd(eulerAngle(2), Eigen::Vector3d::UnitZ()));
-        Eigen::Matrix3d matrix_c;
-        matrix_c = yawAngle * pitchAngle*rollAngle;
-        matrix_c_n = Rotate2RotatePos(matrix_c, pe[0], pe[1], pe[2]);
+	if (kind == "321")
+	{
+		double thetax = pe[5];
+		double thetay = pe[4];
+		double thetaz = pe[3];
+		Eigen::Vector3d eulerAngle(thetax, thetay, thetaz);//(Z-Y-X，即RPY)Eigen::Vector3d eulerAngle(yaw, PItch, roll)
+		Eigen::AngleAxisd rollAngle(Eigen::AngleAxisd(eulerAngle(0), Eigen::Vector3d::UnitX()));
+		Eigen::AngleAxisd PItchAngle(Eigen::AngleAxisd(eulerAngle(1), Eigen::Vector3d::UnitY()));
+		Eigen::AngleAxisd yawAngle(Eigen::AngleAxisd(eulerAngle(2), Eigen::Vector3d::UnitZ()));
+		Eigen::Matrix3d matrix_c;
+		matrix_c = yawAngle * PItchAngle*rollAngle;
+		matrix_c_n = Rotate2RotatePos(matrix_c, pe[0], pe[1], pe[2]);
 
-    }
+	}
+	if (kind == "323")
+	{
+		double thetax = pe[3];
+		double thetay = pe[4];
+		double thetaz = pe[5];
+		Eigen::Vector3d eulerAngle(thetax, thetay, thetaz);//(Z-Y-X，即RPY)Eigen::Vector3d eulerAngle(yaw, PItch, roll)
+		Eigen::AngleAxisd rollAngle(Eigen::AngleAxisd(eulerAngle(0), Eigen::Vector3d::UnitZ()));
+		Eigen::AngleAxisd PItchAngle(Eigen::AngleAxisd(eulerAngle(1), Eigen::Vector3d::UnitY()));
+		Eigen::AngleAxisd yawAngle(Eigen::AngleAxisd(eulerAngle(2), Eigen::Vector3d::UnitZ()));
+		Eigen::Matrix3d matrix_c;
+		matrix_c = rollAngle * PItchAngle*yawAngle;
+		matrix_c_n = Rotate2RotatePos(matrix_c, pe[0], pe[1], pe[2]);
+
+	}
+
 }
 
 static void getEulerFromTrsf(double* pe,const gp_Trsf& trsf){
@@ -206,19 +302,21 @@ static void s_pm2pe(const Eigen::Matrix4d& matrix,double* pe, std::string kind){
             matrix(1,0),  matrix(1,1),  matrix(1,2),
             matrix(2,0),  matrix(2,1),  matrix(2,2);
 
-    if(kind=="123"){
-        eulerAngle=rotation_matrix.eulerAngles(0,1,2);
-    }
-    if(kind=="321"){
-        eulerAngle=rotation_matrix.eulerAngles(2,1,0);
-    }
+	if (kind == "123") {
+		eulerAngle = rotation_matrix.eulerAngles(0, 1, 2);
+	}
+	if (kind == "321") {
+		eulerAngle = rotation_matrix.eulerAngles(2, 1, 0);
+	}
+	if (kind == "323") {
+		eulerAngle = rotation_matrix.eulerAngles(2, 1, 2);
+	}
 
 
     pe[0]=matrix(0,3); pe[1]=matrix(1,3); pe[2]=matrix(2,3);
     pe[3]=eulerAngle(0); pe[4]=eulerAngle(1); pe[5]=eulerAngle(2);
 }
 
-//Modified D-H
 struct robotDH{
     struct jointDH{
         double Angle_alfa_1,Length_a_1,Length_d,Angle_theta;
@@ -226,209 +324,6 @@ struct robotDH{
     jointDH joint01dh,joint02dh,joint03dh,joint04dh,joint05dh,joint06dh;
 };
 
-static Eigen::Matrix4d ModifyDHconvertMatrix(const double& Length_ai_1,const double&Angle_afa_1,const double&Length_di1,const double&Angle_theta){
-    Eigen::Matrix4d res;
-    res(0,0)=std::cos(Angle_theta);                        res(0,1)=-std::sin(Angle_theta);                        res(0,2)=0;                           res(0,3)=Length_ai_1;
-    res(1,0)=std::sin(Angle_theta)*std::cos(Angle_afa_1);  res(1,1)=std::cos(Angle_theta)*std::cos(Angle_afa_1);   res(1,2)=-std::sin(Angle_afa_1);      res(1,3)=-Length_di1*std::sin(Angle_afa_1);
-    res(2,0)=std::sin(Angle_theta)*std::sin(Angle_afa_1);  res(2,1)=std::cos(Angle_theta)*std::sin(Angle_afa_1);   res(2,2)= std::cos(Angle_afa_1);      res(2,3)= Length_di1*std::cos(Angle_afa_1);
-    res(3,0)=0;                                            res(3,1)=0;                                             res(3,2)=0;                           res(3,3)=1;
-    return res;
-}
-
-static Eigen::Matrix4d StandardDHconvertMatrix(const double& Length_ai_1,const double&Angle_afa_1,const double&Length_di1,const double&Angle_theta){
-    Eigen::Matrix4d res;
-    res(0,0)=std::cos(Angle_theta);   res(0,1)=-std::sin(Angle_theta)*std::cos(Angle_afa_1);  res(0,2)=std::sin(Angle_theta)*std::sin(Angle_afa_1);     res(0,3)=Length_ai_1*std::cos(Angle_theta);
-    res(1,0)=std::sin(Angle_theta);   res(1,1)= std::cos(Angle_theta)*std::cos(Angle_afa_1);  res(1,2)=-std::cos(Angle_theta)*std::sin(Angle_afa_1);    res(1,3)=Length_ai_1*std::sin(Angle_theta);
-    res(2,0)=0;                       res(2,1)=std::sin(Angle_afa_1);                         res(2,2)= std::cos(Angle_afa_1);                          res(2,3)= Length_di1;
-    res(3,0)=0;                       res(3,1)=0;                                             res(3,2)=0;                                               res(3,3)=1;
-    return res;
-}
-
-static Eigen::Matrix4d KUKARobotForwardCal(const double* thetas){
-    Eigen::Matrix4d res;
-    robotDH rob;
-    rob.joint01dh.Length_d=0.089159;    rob.joint01dh.Length_a_1=0;   rob.joint01dh.Angle_alfa_1=PI/2;     rob.joint01dh.Angle_theta=0;
-    rob.joint02dh.Length_d=0;    rob.joint02dh.Length_a_1=-0.425;   rob.joint02dh.Angle_alfa_1=0;         rob.joint02dh.Angle_theta=0;
-    rob.joint03dh.Length_d=0;    rob.joint03dh.Length_a_1=-0.39225;    rob.joint03dh.Angle_alfa_1=0;      rob.joint03dh.Angle_theta=0;
-    rob.joint04dh.Length_d=0.10915;  rob.joint04dh.Length_a_1=0;     rob.joint04dh.Angle_alfa_1=PI/2;      rob.joint04dh.Angle_theta=0;
-    rob.joint05dh.Length_d=0.09465;    rob.joint05dh.Length_a_1=0;     rob.joint05dh.Angle_alfa_1=-PI/2;      rob.joint05dh.Angle_theta=0;
-    rob.joint06dh.Length_d=0.0823;  rob.joint06dh.Length_a_1=0;     rob.joint06dh.Angle_alfa_1=0;      rob.joint06dh.Angle_theta=0;
-
-    //    auto res01=ModifyDHconvertMatrix(rob.joint01dh.Length_a_1,rob.joint01dh.Angle_alfa_1,rob.joint01dh.Length_d,rob.joint01dh.Angle_theta+thetas[0]);
-    //    auto res02=ModifyDHconvertMatrix(rob.joint02dh.Length_a_1,rob.joint02dh.Angle_alfa_1,rob.joint02dh.Length_d,rob.joint02dh.Angle_theta+thetas[1]);
-    //    auto res03=ModifyDHconvertMatrix(rob.joint03dh.Length_a_1,rob.joint03dh.Angle_alfa_1,rob.joint03dh.Length_d,rob.joint03dh.Angle_theta+thetas[2]);
-    //    auto res04=ModifyDHconvertMatrix(rob.joint04dh.Length_a_1,rob.joint04dh.Angle_alfa_1,rob.joint04dh.Length_d,rob.joint04dh.Angle_theta+thetas[3]);
-    //    auto res05=ModifyDHconvertMatrix(rob.joint05dh.Length_a_1,rob.joint05dh.Angle_alfa_1,rob.joint05dh.Length_d,rob.joint05dh.Angle_theta+thetas[4]);
-    //    auto res06=ModifyDHconvertMatrix(rob.joint06dh.Length_a_1,rob.joint06dh.Angle_alfa_1,rob.joint06dh.Length_d,rob.joint06dh.Angle_theta+thetas[5]);
-
-    auto res01=StandardDHconvertMatrix(rob.joint01dh.Length_a_1,rob.joint01dh.Angle_alfa_1,rob.joint01dh.Length_d,rob.joint01dh.Angle_theta+thetas[0]);
-    auto res02=StandardDHconvertMatrix(rob.joint02dh.Length_a_1,rob.joint02dh.Angle_alfa_1,rob.joint02dh.Length_d,rob.joint02dh.Angle_theta+thetas[1]);
-    auto res03=StandardDHconvertMatrix(rob.joint03dh.Length_a_1,rob.joint03dh.Angle_alfa_1,rob.joint03dh.Length_d,rob.joint03dh.Angle_theta+thetas[2]);
-    auto res04=StandardDHconvertMatrix(rob.joint04dh.Length_a_1,rob.joint04dh.Angle_alfa_1,rob.joint04dh.Length_d,rob.joint04dh.Angle_theta+thetas[3]);
-    auto res05=StandardDHconvertMatrix(rob.joint05dh.Length_a_1,rob.joint05dh.Angle_alfa_1,rob.joint05dh.Length_d,rob.joint05dh.Angle_theta+thetas[4]);
-    auto res06=StandardDHconvertMatrix(rob.joint06dh.Length_a_1,rob.joint06dh.Angle_alfa_1,rob.joint06dh.Length_d,rob.joint06dh.Angle_theta+thetas[5]);
-
-    res=res01*res02*res03*res04*res05*res06;
-    qDebugMatrix4d(res,"res");
-    return res;
-}
-
-static Eigen::Matrix4d UR5RobotForwardCal(const double* thetas){
-    double d[6 + 1] = { 0, 0.089159,0,0,0.10915,0.09465,0.0823 };//第0个不用
-    double a[6] = { 0,-0.42500,-0.39225,0,0,0 };
-    double alpha[6] = { 1.570796, 0, 0, 1.570796, -1.570796, 0 };
-    double theta_input[7]{0,thetas[0],thetas[1],thetas[2],thetas[3],thetas[4],thetas[5]};
-    Eigen::Matrix4d T[6 + 1];//为了和theta对应，0不用
-    for (int i = 1; i <= 6; i++)
-    {
-        T[i](0, 0) = cos(theta_input[i]);
-        T[i](0, 1) = -sin(theta_input[i]) * cos(alpha[i - 1]);
-        T[i](0, 2) = sin(theta_input[i]) * sin(alpha[i - 1]);
-        T[i](0, 3) = a[i - 1] * cos(theta_input[i]);
-        T[i](1, 0) = sin(theta_input[i]);
-        T[i](1, 1) = cos(theta_input[i]) * cos(alpha[i - 1]);
-        T[i](1, 2) = -cos(theta_input[i]) * sin(alpha[i - 1]);
-        T[i](1, 3) = a[i - 1] * sin(theta_input[i]);
-        T[i](2, 0) = 0;
-        T[i](2, 1) = sin(alpha[i - 1]);
-        T[i](2, 2) = cos(alpha[i - 1]);
-        T[i](2, 3) = d[i];
-        T[i](3, 0) = 0;
-        T[i](3, 1) = 0;
-        T[i](3, 2) = 0;
-        T[i](3, 3) = 1;
-    }
-    Eigen::Matrix4d T0 = T[1] * T[2] * T[3] * T[4] * T[5] * T[6];
-    //    qDebug() << "检验得：" << T0(0, 0) << " " << T0(0, 1) << " " << T0(0, 2) << " px = " << T0(0, 3) << endl;
-    //    qDebug()  << "检验得：" << T0(1, 0) << " " << T0(1, 1) << " " << T0(1, 2) << " py = " << T0(1, 3) << endl;
-    //    qDebug()  << "检验得：" << T0(2, 0) << " " << T0(2, 1) << " " << T0(2, 2) << " pz = " << T0(2, 3) << endl;
-    //    qDebug()  << "检验得：" << T0(0, 3) << " " << T0(1, 3) << " " << T0(2, 3) << endl;
-    return T0;
-}
-
-static void UR5RobotInverseCal(const Eigen::Matrix4d& input,double* output){
-
-    double d[6 + 1] = { 0, 0.089159,0,0,0.10915,0.09465,0.0823 };//第0个不用
-    double a[6] = { 0,-0.42500,-0.39225,0,0,0 };
-    double alpha[6] = { 1.570796, 0, 0, 1.570796, -1.570796, 0 };
-    double theta[8 + 1][6 + 1];//八组解，每组解六个角，第0个都不用
-
-    double pe[6]{0.0};
-    Ui::s_pm2pe(input,pe,"321");
-    double x{pe[0]}, y{pe[1]}, z{pe[2]}, RX{pe[5]}, RY{pe[4]}, RZ{pe[3]};
-
-    //1.旋转向量转旋转矩阵，即求T06中的r
-    Eigen::Vector3d v(RZ, RY, RX);
-    double t_alpha = v.norm();//求模
-    v.normalize();//标准化
-    Eigen::AngleAxisd rv(t_alpha, v);//旋转向量
-    Eigen::Matrix3d rm;
-    rm = rv.matrix();
-
-    rm=input.block(0,0,3,3);
-
-    //2.求解
-    double A, B, C, D, E, F, G, M, N;//用大写字母替代常数
-
-    //注意，由于数组下标从0开始的问题，矩阵第一行第一列的元素是(0,0)
-    //theta1
-    A = rm(0, 2) * d[6] - x;
-    B = rm(1, 2) * d[6] - y;
-    C = d[4];
-    //第一个解，赋给一到四组
-    theta[1][1] = atan2(B, A) - atan2(C, sqrt(A * A + B * B - C * C));
-    theta[2][1] = theta[1][1];
-    theta[3][1] = theta[1][1];
-    theta[4][1] = theta[1][1];
-    //第二个解，赋给五到八组
-    theta[5][1] = atan2(B, A) - atan2(C, -sqrt(A * A + B * B - C * C));
-    theta[6][1] = theta[5][1];
-    theta[7][1] = theta[5][1];
-    theta[8][1] = theta[5][1];
-
-    //theta5
-    //由theta[1][1]产生的第一个解，赋给一到二组
-    A = sin(theta[1][1]) * rm(0, 2) - cos(theta[1][1]) * rm(1, 2);
-    theta[1][5] = atan2(sqrt(1 - A * A), A);
-    theta[2][5] = theta[1][5];
-    //由theta[1][1]产生的第二个解，赋给三到四组
-    theta[3][5] = atan2(-sqrt(1 - A * A), A);
-    theta[4][5] = theta[3][5];
-    //由theta[5][1]产生的第一个解，赋给五到六组
-    A = sin(theta[5][1]) * rm(0, 2) - cos(theta[5][1]) * rm(1, 2);
-    theta[5][5] = atan2(sqrt(1 - A * A), A);
-    theta[6][5] = theta[5][5];
-    //由theta[5][1]产生的第二个解，赋给七到八组
-    theta[7][5] = atan2(-sqrt(1 - A * A), A);
-    theta[8][5] = theta[7][5];
-
-    //theta6
-    for (int i = 1; i <= 8; i++)
-    {
-        A = (-sin(theta[i][1]) * rm(0, 1) + cos(theta[i][1]) * rm(1, 1)) / theta[i][5];
-        B = (sin(theta[i][1]) * rm(0, 0) - cos(theta[i][1]) * rm(1, 0)) / theta[i][5];
-        theta[i][6] = atan2(A, B);
-    }
-
-    //theta2、theta3、theta4
-    for (int i = 1; i <= 8; i = i + 2)
-    {
-        //先算theta2+theta3+theta4
-        double theta234[8 + 1];
-        A = rm(2, 2) / sin(theta[i][5]);
-        B = (cos(theta[i][1]) * rm(0, 2) + sin(theta[i][1]) * rm(1, 2)) / sin(theta[i][5]);
-        theta234[i] = atan2(-A, -B) - EIGEN_PI;
-        theta234[i + 1] = theta234[i];
-
-        //消去theta2+theta3，计算theta2
-        A = -cos(theta234[i]) * sin(theta[i][5]) * d[6] + sin(theta234[i]) * d[5];
-        B = -sin(theta234[i]) * sin(theta[i][5]) * d[6] - cos(theta234[i]) * d[5];
-        C = cos(theta[i][1]) * x + sin(theta[i][1]) * y;
-        D = z - d[1];
-        M = C - A;
-        N = D - B;
-        E = -2 * N * a[2];
-        F = 2 * M * a[2];
-        G = M * M + N * N + a[2] * a[2] - a[3] * a[3];
-        theta[i][2] = atan2(F, E) - atan2(G, sqrt(E * E + F * F - G * G));
-        theta[i + 1][2] = atan2(F, E) - atan2(G, -sqrt(E * E + F * F - G * G));
-
-        //用theta2反求theta2+theta3
-        double theta23[8 + 1];
-        theta23[i] = atan2((N - sin(theta[i][2]) * a[2]) / a[3], (M - cos(theta[i][2]) * a[2]) / a[3]);
-        theta23[i + 1] = atan2((N - sin(theta[i + 1][2]) * a[2]) / a[3], (M - cos(theta[i + 1][2]) * a[2]) / a[3]);
-
-        //theta3
-        theta[i][3] = theta23[i] - theta[i][2];
-        theta[i + 1][3] = theta23[i + 1] - theta[i + 1][2];
-
-        //theta4
-        theta[i][4] = theta234[i] - theta23[i];
-        theta[i + 1][4] = theta234[i + 1] - theta23[i + 1];
-    }
-
-    //输出并检验
-    for (int i = 1; i <= 8; i++)
-    {
-        qDebug() << "第" << i << "组解：" << endl;
-        for (int j = 1; j <= 6; j++)
-            qDebug()<< "theta" << j << "=" << theta[i][j] * 180 / PI << "  ";
-    }
-    output[0]=theta[1][1];
-    output[1]=theta[1][2];
-    output[2]=theta[1][3];
-    output[3]=theta[1][4];
-    output[4]=theta[1][5];
-    output[5]=theta[1][6];
-
-
-    //    output[0]=0.5;
-    //    output[1]=0.5;
-    //    output[2]=0.5;
-    //    output[3]=0.5;
-    //    output[4]=0.5;
-    //    output[5]=0.5;
-}
 
 
 static void PILimit(double& data){
@@ -440,194 +335,323 @@ static void PILimit(double& data){
     }
 }
 
-static int UR5RobotInverseCal02(const Eigen::Matrix4d& input,double* output){
+static void zeroLimit(double& data) {
+	if (data < 0.00001&&data>-0.00001) {
+		data = 0;
+	}
+}
 
-    double d1 = 89.159, d2 = 0, d3 = 0, d4 = 109.15, d5 = 94.65, d6 = 82.3;//ur10的D-H参数
-    double a1 = 0, a2 = -425, a3 = -392.25;
+/*******thetas 为弧度制 **********/
+static Eigen::Matrix4d ESTUN_ER100_3000_MDH_Forward(const double* thetas)
+{
+	auto matixCal = [](double di, double ai, double afa, double thetaoffset, double jointtheta) {
+		Eigen::Matrix4d res;
 
-    //末端位姿矩阵元素
-    double nx = input(0,0),  ny =input(1,0),  nz = input(2,0);
-    double ox = input(0,1),  oy = input(1,1), oz = input(2,1);
-    double ax = input(0,2),  ay = input(1,2), az = input(2,2);
-    double px = input(0,3)*1000,  py = input(1,3)*1000, pz = input(2,3)*1000;
+		auto theta = jointtheta + thetaoffset;
+
+		res(0, 0) = std::cos(theta);                res(0, 1) = -std::sin(theta);                res(0, 2) = 0;                  res(0, 3) = ai;
+		res(1, 0) = std::sin(theta)*std::cos(afa);  res(1, 1) = std::cos(theta)*std::cos(afa);   res(1, 2) = -std::sin(afa);     res(1, 3) = -di * std::sin(afa);
+		res(2, 0) = std::sin(theta)*std::sin(afa);  res(2, 1) = std::cos(theta)*std::sin(afa);   res(2, 2) = std::cos(afa);      res(2, 3) = di * std::cos(afa);
+		res(3, 0) = 0;                              res(3, 1) = 0;                               res(3, 2) = 0;                  res(3, 3) = 1;
+		return res;
+	};
+	//qDebug() << "thetas:";
+	//qDebug() << thetas[0] * 180 / PI;
+	//qDebug() << thetas[1] * 180 / PI;
+	//qDebug() << thetas[2] * 180 / PI;
+	//qDebug() << thetas[3] * 180 / PI;
+	//qDebug() << thetas[4] * 180 / PI;
+	//qDebug() << thetas[5] * 180 / PI;
 
 
-    py = py - ay*d6;
-    px = px - ax*d6;
-    pz = pz - az*d6;
-    double angle[8][6] = { 0.0 };////初始的8组解
 
-    if (px*px + py*py - d4*d4 < 0) {
-        qDebug() << "不在求解空间，无法求解";
-        return 0;
+
+
+	double d1, d2, d3, d4, d5, d6;
+	double a1, a2, a3, a4, a5, a6;
+	double afa1, afa2, afa3, afa4, afa5, afa6;
+	double thetaoffset1, thetaoffset2, thetaoffset3, thetaoffset4, thetaoffset5, thetaoffset6;
+
+	d1 = 0.0;  	  d2 = 0.0;   	  d3 = 0.0;   	  d4 = -1.6;      d5 = 0.0;    	    d6 = 0.0;
+	a1 = 0.0;     a2 = 0.26;      a3 = 1.15;      a4 = 0.23;      a5 = 0.0; 	    a6 = 0.0;
+	afa1 = 0.0;   afa2 = PI / 2;  afa3 = 0.0;     afa4 = PI / 2;  afa5 = -PI / 2;   afa6 = PI / 2;
+	thetaoffset1 = 0.0;  thetaoffset2 = -PI / 2;  thetaoffset3 = 0.0;  thetaoffset4 = 0.0;  thetaoffset5 = 0.0;   thetaoffset6 = 0.0;
+
+	double pe_base2Axis0[6]{ 0.0,
+							0,
+							0.6455,
+							180.0 / 180 * PI,
+							0,
+							0 };
+	Eigen::Matrix4d matrix_base2Axis0;
+	s_pe2pm(pe_base2Axis0, matrix_base2Axis0, "123");
+
+	double pe_Axis02tool0[6]{ 0.0,
+							 0.0,
+							 -0.214,
+							 0.0 / 180 * PI,
+							 180.0 / 180 * PI,
+							 0.0 };
+	Eigen::Matrix4d matrix_Axis02tool0;
+	s_pe2pm(pe_Axis02tool0, matrix_Axis02tool0, "123");
+
+
+	auto matrixT1 = matixCal(d1, a1, afa1, thetaoffset1, thetas[0]);
+	auto matrixT2 = matixCal(d2, a2, afa2, thetaoffset2, thetas[1]);
+	auto matrixT3 = matixCal(d3, a3, afa3, thetaoffset3, thetas[2]);
+	auto matrixT4 = matixCal(d4, a4, afa4, thetaoffset4, thetas[3]);
+	auto matrixT5 = matixCal(d5, a5, afa5, thetaoffset5, thetas[4]);
+	auto matrixT6 = matixCal(d6, a6, afa6, thetaoffset6, thetas[5]);
+
+	auto res = matrixT1 * matrixT2*matrixT3*matrixT4*matrixT5*matrixT6;
+
+
+
+
+	auto res01 = matrix_base2Axis0 * res * matrix_Axis02tool0;
+
+	qDebugMatrix4d(res, "res_forward:");
+
+	qDebugMatrix4d(res01, "res01_forward:");
+
+	return res01;
+}
+
+static Assemly_Data GetData(const Handle(XCAFDoc_ShapeTool)& ShapeTool,
+                            const Handle(XCAFDoc_ColorTool)& ColorTool,
+                            const TDF_Label & Label,
+                            TopLoc_Location Location)
+{
+    Assemly_Data data;
+
+    if(!ShapeTool->IsAssembly(Label)){
+        data.isAssembly=false;
+        //data.shape=ShapeTool->GetShape(Label);
+        data.name=ShapeTool->get_type_name();
     }
     else {
-        //计算theta1(两组解)
-        double theta1_positive = atan2(py, px) -atan2(-d4, sqrt(px*px + py*py - d4*d4));
-        double theta1_negtive = atan2(py, px) -atan2(-d4, -sqrt(px*px + py*py - d4*d4));
+        data.isAssembly=true;
+        //data.shape=ShapeTool->GetShape(Label);
+        data.name=ShapeTool->get_type_name();
+    }
 
-        //计算theta5（四组解）
-        double theta5_positive1 = atan2(pow((pow(sin(theta1_positive)*nx - cos(theta1_positive)*ny ,2) +pow( sin(theta1_positive)*ox-cos(theta1_positive)*oy  ,2)   ),0.5),sin(theta1_positive)*ax-cos(theta1_positive)*ay  );
-        double theta5_negtive1 = atan2(-pow((pow(sin(theta1_positive)*nx - cos(theta1_positive)*ny, 2) + pow(sin(theta1_positive)*ox - cos(theta1_positive)*oy, 2)), 0.5), sin(theta1_positive)*ax - cos(theta1_positive)*ay);
-        double theta5_positive2 = atan2(pow((pow(sin(theta1_negtive)*nx - cos(theta1_negtive)*ny, 2) + pow(sin(theta1_negtive)*ox - cos(theta1_negtive)*oy, 2)), 0.5), sin(theta1_negtive)*ax - cos(theta1_negtive)*ay);
-        double theta5_negtive2 = atan2(-pow((pow(sin(theta1_negtive)*nx - cos(theta1_negtive)*ny, 2) + pow(sin(theta1_negtive)*ox - cos(theta1_negtive)*oy, 2)), 0.5), sin(theta1_negtive)*ax - cos(theta1_negtive)*ay);
-        if (abs(sin(theta5_positive1)) > 0)
+    return  data;
+}
+
+static void MakeTree(const Handle(XCAFDoc_ShapeTool)& ShapeTool,
+                     const Handle(XCAFDoc_ColorTool)& ColorTool,
+                     const TDF_Label & Label,
+                     TopLoc_Location Location,
+                     Assemly_Node * ParentNode,
+                     Assemly_Tree & Tree)
+{
+    TDF_LabelSequence components;
+    if (ShapeTool->GetComponents(Label, components))
+    {
+
+        qDebug()<<"components.Length()"<<components.Length();
+
+        for (Standard_Integer compIndex = 1; compIndex <= components.Length(); ++compIndex)
         {
-            double mm_1 = (nx*sin(theta1_positive) - ny*cos(theta1_positive))/ sin(theta5_positive1);
-            double nn_1 = -(ox*sin(theta1_positive) - oy*cos(theta1_positive))/ sin(theta5_positive1);
-            double theta6_1 = atan2(nn_1, mm_1);
-
-            double theta234_1 = atan2(-az/ sin(theta5_positive1),-(cos(theta1_positive)*ax+sin(theta1_positive)*ay)/ sin(theta5_positive1));
-            double B1_1=cos(theta1_positive)*px+sin(theta1_positive)*py-d5*sin(theta234_1);
-            double B2_1 = pz - d1 + d5*cos(theta234_1);
-            double C_1 = (a2*a2 - a3*a3 + B1_1*B1_1 + B2_1*B2_1)/(2*a2);
-
-            if ((B1_1*B1_1 + B2_1*B2_1 - C_1*C_1) >= 0) {
-                double theta2_1 = -atan2(B1_1, B2_1) + atan2(C_1, pow(B2_1*B2_1 + B1_1*B1_1 - C_1*C_1, 0.5));
-                double theta2_2 = -atan2(B1_1, B2_1) + atan2(C_1, -pow(B2_1*B2_1 + B1_1*B1_1 - C_1*C_1, 0.5));
-
-                double theta23_1 = atan2((B2_1 - a2*sin(theta2_1)) / a3, (B1_1 - a2*cos(theta2_1)) / a3);
-                double theta23_2 = atan2((B2_1 - a2*sin(theta2_2)) / a3, (B1_1 - a2*cos(theta2_2)) / a3);
-
-                double theta3_1 = theta23_1 - theta2_1;
-                double theta3_2 = theta23_2 - theta2_2;
-
-                double theta4_1 = theta234_1 - theta2_1 - theta3_1;
-                double theta4_2 = theta234_1 - theta2_2 - theta3_2;
-
-                angle[0][0] = theta1_positive; angle[0][1] = theta2_1; angle[0][2] = theta3_1; angle[0][3] = theta4_1; angle[0][4] = theta5_positive1; angle[0][5] = theta6_1;
-                angle[1][0] = theta1_positive; angle[1][1] = theta2_2; angle[1][2] = theta3_2; angle[1][3] = theta4_2; angle[1][4] = theta5_positive1; angle[1][5] = theta6_1;
-            }
-            else {
-                qDebug() << "不在求解范围内1" << endl;
+            TDF_Label ChildLabel = components.Value(compIndex);
+            if (ShapeTool->IsReference(ChildLabel))
+            {
+                TDF_Label ShapeLabel;
+                if (ShapeTool->GetReferredShape(ChildLabel, ShapeLabel))
+                {
+                    qDebug()<<"true"<<","<<"do";
+                    TopLoc_Location LocalLocation = Location * ShapeTool->GetLocation(ChildLabel);
+                    Assemly_Data AssemlyData = GetData(ShapeTool, ColorTool, ShapeLabel, LocalLocation);
+                    Assemly_Node * Node = Tree.AddNode(ParentNode, AssemlyData);
+                    MakeTree(ShapeTool, ColorTool, ShapeLabel, LocalLocation, Node, Tree);
+                }
             }
         }
-        if (abs(sin(theta5_negtive1)) > 0) {
-            double mm_1 = (nx*sin(theta1_positive) - ny*cos(theta1_positive))/ sin(theta5_negtive1);
-            double nn_1 = -(ox*sin(theta1_positive) - oy*cos(theta1_positive))/ sin(theta5_negtive1);
-            double theta6_2 = atan2(nn_1, mm_1);
+    }
+}
 
-            double theta234_2 = atan2(-az / sin(theta5_negtive1), -(cos(theta1_positive)*ax + sin(theta1_positive)*ay) / sin(theta5_negtive1));
-            double B1_2 = cos(theta1_positive)*px + sin(theta1_positive)*py - d5*sin(theta234_2);
-            double B2_2 = pz - d1 + d5*cos(theta234_2);
-            double C_2 = (a2*a2 - a3*a3 + B1_2*B1_2 + B2_2*B2_2)/(2*a2) ;
 
-            if ((B1_2*B1_2 + B2_2*B2_2 - C_2*C_2) >= 0) {
-                double theta2_3 = -atan2(B1_2, B2_2) + atan2(C_2, pow(B2_2*B2_2 + B1_2*B1_2 - C_2*C_2, 0.5));
-                double theta2_4 = -atan2(B1_2, B2_2) + atan2(C_2, -pow(B2_2*B2_2 + B1_2*B1_2 - C_2*C_2, 0.5));
+static void deepBuildAssemblyTree(NodeId parentNode, const TDF_Label& label,Assemly_Tree & tree)
+{
+    auto shapeComponents=[](const TDF_Label& lbl){
+        TDF_LabelSequence seq;
+        XCAFDoc_ShapeTool::GetComponents(lbl, seq);
+        return seq;
+    };
 
-                double theta23_3 = atan2((B2_2 - a2*sin(theta2_3)) / a3, (B1_2 - a2*cos(theta2_3)) / a3);
-                double theta23_4 = atan2((B2_2 - a2*sin(theta2_4)) / a3, (B1_2 - a2*cos(theta2_4)) / a3);
+//    auto shapeReferred=[](const TDF_Label& lbl){
+//        TDF_Label referred;
+//        XCAFDoc_ShapeTool::GetReferredShape(lbl, referred);
+//        return referred;
+//    };
 
-                double theta3_3 = theta23_3 - theta2_3;
-                double theta3_4 = theta23_4 - theta2_4;
+    qDebug()<<"parentNode:"<<parentNode;
+    NodeId node = tree.appendChildID(parentNode, label);
 
-                double theta4_3 = theta234_2 - theta2_3 - theta3_3;
-                double theta4_4 = theta234_2 - theta2_4 - theta3_4;
-
-                angle[2][0] = theta1_positive; angle[2][1] = theta2_3; angle[2][2] = theta3_3; angle[2][3] = theta4_3; angle[2][4] = theta5_negtive1; angle[2][5] = theta6_2;
-                angle[3][0] = theta1_positive; angle[3][1] = theta2_4; angle[3][2] = theta3_4; angle[3][3] = theta4_4; angle[3][4] = theta5_negtive1; angle[3][5] = theta6_2;
-            }
-            else {
-                qDebug() << "不在求解范围内2" << endl;
-            }
+    qDebug()<<"NodeId node:"<<node;
+    if (XCAFDoc_ShapeTool::IsAssembly(label)) {
+        for (const TDF_Label& child : shapeComponents(label)){
+            deepBuildAssemblyTree(node, child,tree);
         }
-        if (abs(sin(theta5_positive2)) > 0) {
-            double mm_2 = (nx*sin(theta1_negtive) - ny*cos(theta1_negtive))/ sin(theta5_positive2);
-            double nn_2 = (-(ox*sin(theta1_negtive) - oy*cos(theta1_negtive)))/ sin(theta5_positive2);
-            double theta6_3 = atan2(nn_2, mm_2);
-
-            double theta234_3 = atan2(-az / sin(theta5_positive2), -(cos(theta1_negtive)*ax + sin(theta1_negtive)*ay) / sin(theta5_positive2));
-            double B1_3 = cos(theta1_negtive)*px + sin(theta1_negtive)*py - d5*sin(theta234_3);
-            double B2_3 = pz - d1 + d5*cos(theta234_3);
-            double C_3 = (a2*a2 - a3*a3 + B1_3*B1_3 + B2_3*B2_3)/(2*a2);
-            if ((B1_3*B1_3 + B2_3*B2_3 - C_3*C_3) >= 0) {
-                double theta2_5 = -atan2(B1_3, B2_3) + atan2(C_3, pow(B1_3*B1_3 + B2_3*B2_3 - C_3*C_3, 0.5));
-                double theta2_6 = -atan2(B1_3, B2_3) + atan2(C_3, -pow(B2_3*B2_3 + B1_3*B1_3 - C_3*C_3, 0.5));
-
-                double theta23_5 = atan2((B2_3 - a2*sin(theta2_5)) / a3, (B1_3 - a2*cos(theta2_5)) / a3);
-                double theta23_6 = atan2((B2_3 - a2*sin(theta2_6)) / a3, (B1_3 - a2*cos(theta2_6)) / a3);
-
-                double theta3_5 = theta23_5 - theta2_5;
-                double theta3_6 = theta23_6 - theta2_6;
-
-                double theta4_5 = theta234_3 - theta2_5 - theta3_5;
-                double theta4_6 = theta234_3 - theta2_6 - theta3_6;
-
-                angle[4][0] = theta1_negtive; angle[4][1] = theta2_5; angle[4][2] = theta3_5; angle[4][3] = theta4_5; angle[4][4] = theta5_positive2; angle[4][5] = theta6_3;
-                angle[5][0] = theta1_negtive; angle[5][1] = theta2_6; angle[5][2] = theta3_6; angle[5][3] = theta4_6; angle[5][4] = theta5_positive2; angle[5][5] = theta6_3;
-            }
-            else {
-                qDebug() << "不在求解范围内3" << endl;
-            }
-
-        }
-        if (abs(sin(theta5_negtive2)) > 0) {
-            double mm_2 = (nx*sin(theta1_negtive) - ny*cos(theta1_negtive))/sin(theta5_negtive2);
-            double nn_2 = -(ox*sin(theta1_negtive) - oy*cos(theta1_negtive)) / sin(theta5_negtive2);
-            double theta6_4 = atan2(nn_2, mm_2);
-
-            double theta234_4 = atan2(-az / sin(theta5_negtive2), -(cos(theta1_negtive)*ax + sin(theta1_negtive)*ay) / sin(theta5_negtive2));
-            double B1_4 = cos(theta1_negtive)*px + sin(theta1_negtive)*py - d5*sin(theta234_4);
-            double B2_4 = pz - d1 + d5*cos(theta234_4);
-            double C_4 = (a2*a2 - a3*a3 + B1_4*B1_4 + B2_4*B2_4)/(2*a2);
-            if ((B1_4*B1_4 + B2_4*B2_4 - C_4*C_4) >= 0) {
-
-                double theta2_7 = -atan2(B1_4, B2_4) + atan2(C_4, pow(B1_4*B1_4 + B2_4*B2_4 - C_4*C_4, 0.5));
-                double theta2_8 = -atan2(B1_4, B2_4) + atan2(C_4, -pow(B1_4*B1_4 + B2_4*B2_4 - C_4*C_4, 0.5));
-
-                double theta23_7 = atan2((B2_4 - a2*sin(theta2_7)) / a3, (B1_4 - a2*cos(theta2_7)) / a3);
-                double theta23_8 = atan2((B2_4 - a2*sin(theta2_8)) / a3, (B1_4 - a2*cos(theta2_8)) / a3);
-
-                double theta3_7 = theta23_7 - theta2_7;
-                double theta3_8 = theta23_8 - theta2_8;
-
-                double theta4_7 = theta234_4 - theta2_7 - theta3_7;
-                double theta4_8 = theta234_4 - theta2_8 - theta3_8;
-                angle[6][0] = theta1_negtive; angle[6][1] = theta2_7; angle[6][2] = theta3_7; angle[6][3] = theta4_7; angle[6][4] = theta5_negtive2; angle[6][5] = theta6_4;
-                angle[7][0] = theta1_negtive; angle[7][1] = theta2_8; angle[7][2] = theta3_8; angle[7][3] = theta4_8; angle[7][4] = theta5_negtive2; angle[7][5] = theta6_4;
-            }
-            else {
-                qDebug() << "不在求解范围内4" << endl;
-            }
-        }
-
-
-
-
-//        qDebug() << "初始8组解：" << endl;
-//        for (int i = 0; i < 8; i++) {
-//            for (int j = 0; j < 6; j++) {
-//                qDebug() << angle[i][j] * 180 / 3.14159 << ", ";
-//            }
-//            qDebug() << endl;
-//        }
-
-
-
-
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 6; j++) {
-                PILimit(angle[i][j]);
-            }
-        }
-
-
-        output[0]=angle[0][0];
-        output[1]=angle[0][1];
-        output[2]=angle[0][2];
-        output[3]=angle[0][3];
-        output[4]=angle[0][4];
-        output[5]=angle[0][5];
     }
 
 }
 
+static void traverseTree_preOrder(NodeId id, const Assemly_Tree& tree, const std::function<void(NodeId itNodeId)>& callback)
+{
+    if (!tree.isNodeDeleted(id)) {
+        callback(id);
+        for (auto it = tree.nodeChildFirst(id); it != 0; it = tree.nodeSiblingNext(it))
+            traverseTree_preOrder(it, tree, callback);
+    }
+}
+
+static void traverseTree_preOrder(const Assemly_Tree& tree, const std::function<void(NodeId itNodeId)>& callback) {
+    for (NodeId id : tree.m_vecRoot)
+        traverseTree_preOrder(id, tree, callback);
+}
+
+static void traverseTree(NodeId id, const Assemly_Tree& tree, const std::function<void(NodeId itNodeId)>& callback) {
+    return traverseTree_preOrder(id, tree, callback);
+}
+
+
+struct cafutils
+{
+
+    static  QString to_QString(const TCollection_AsciiString& str) {
+        return QString::fromUtf8(str.ToCString(), str.Length());
+    }
+
+    static  const TCollection_ExtendedString& labelAttrStdName(const TDF_Label& label)
+    {
+        Handle_TDataStd_Name attrName;
+        if (label.FindAttribute(TDataStd_Name::GetID(), attrName)) {
+            return attrName->Get();
+        }
+        else {
+            static const TCollection_ExtendedString nullStr = {};
+            return nullStr;
+        }
+    }
+
+    static  QString referenceItemText(const TDF_Label& instanceLabel, const TDF_Label& productLabel)
+    {
+        const QString instanceName = to_QString(labelAttrStdName(instanceLabel)).trimmed();
+        const QString productName = to_QString(labelAttrStdName(productLabel)).trimmed();
+        //const QByteArray strTemplate = Module::toInstanceNameTemplate(m_module->instanceNameFormat);
+        QByteArray strTemplate;
+        QString itemText = QString::fromUtf8(strTemplate);
+        itemText.replace("%instance", instanceName)
+                .replace("%product", productName);
+        return itemText;
+    }
+
+    static QIcon shapeIcon(const TDF_Label& label)
+    {
+        if (XCAFDoc_ShapeTool::IsAssembly(label))
+            return QIcon(":/themes/dark/stop.svg");
+        else if (XCAFDoc_ShapeTool::IsReference(label))
+            return QIcon(":/images/xde_reference_16.png"); // TODO move in Theme
+        else if (XCAFDoc_ShapeTool::IsSimpleShape(label))
+            return QIcon(":/themes/dark/stop.svg");
+
+        return QIcon();
+    }
+
+};
+
+enum selectionType{
+    FaceSel=1,
+    EdgeSel,
+    VetextSel,
+};
 
 struct EularCoor{
     double x,y,z,rx,ry,rz;
 };
 
+struct robPosData
+{
+	double X{ 0 }, Y{ 0 }, Z{ 0 }, A{ 0 }, B{ 0 }, C{ 0 };
+};
+
+
+static void normalize(Eigen::Vector3d& vec)
+{
+
+	double n = sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
+	vec[0] /= n;
+	vec[1] /= n;
+	vec[2] /= n;
+
 }
 
+/* 角度值转弧度值 */
+static inline double toRadian(double degree)
+{
+	return (degree / 180.0)* PI;
+}
+
+static inline double toDegree(double radian)
+{
+	return (radian / PI) * 180.0;
+}
+
+static Eigen::Matrix4d transf2Matrix(const gp_Trsf& trans)
+{
+
+
+	double X = trans.TranslationPart().X();
+	double Y = trans.TranslationPart().Y();
+	double Z = trans.TranslationPart().Z();
+
+     double RX, RY, RZ;
+	 trans.GetRotation().GetEulerAngles(gp_EulerSequence::gp_Extrinsic_XYZ, RX, RY, RZ);
+
+	 double pe[6]{X,Y,Z,RX,RY,RZ};
+	 double pm[16];
+	 Eigen::Matrix4d res;
+	 s_pe2pm(pe, res, "123");
+	return res;
+}
+
+
+static Eigen::Matrix4d transf2Matrix_02(const gp_Trsf& trans)
+{
+	Eigen::Matrix4d res;
+
+	res(0, 0) = trans.Value(1, 1); res(0, 1) = trans.Value(1, 2); res(0, 2) = trans.Value(1, 3); res(0, 3) = trans.Value(1, 4);
+	res(1, 0) = trans.Value(2, 1); res(1, 1) = trans.Value(2, 2); res(1, 2) = trans.Value(2, 3); res(1, 3) = trans.Value(2, 4);
+	res(2, 0) = trans.Value(3, 1); res(2, 1) = trans.Value(3, 2); res(2, 2) = trans.Value(3, 3); res(2, 3) = trans.Value(3, 4);
+	res(3, 0) = 0;                 res(3, 1) = 0;                 res(3, 2) = 0;                 res(3, 3) = 1;
+
+	return res;
+}
+
+static gp_Trsf Matrix2transf(const Eigen::Matrix4d& matrix)
+{
+	gp_Trsf res;
+	double pe[6];
+	s_pm2pe(matrix, pe, "123");
+
+	gp_Trsf trans, rot;
+	trans.SetTranslationPart(gp_Vec(pe[0], pe[1], pe[2]));
+	
+	gp_Quaternion origin_qua;
+	origin_qua.SetEulerAngles(gp_EulerSequence::gp_Extrinsic_XYZ, pe[3], pe[4], pe[5]);
+	rot.SetRotation(origin_qua);
+	res =trans * rot;
+
+	return res;
+
+}
+
+
+
+
+
+
+
+}
 #endif // GENERAL_H
