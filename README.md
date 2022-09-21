@@ -1,29 +1,36 @@
 # Robot_OCC
-Use opencasecade to simulate robot
 
-Branch master simulate with qmake in Qt
+## 依赖库
 
-Branch collision simulate with cmake
+1. [Qt 5.12.12](https://download.qt.io/official_releases/qt/) 
 
-## 项目构建步骤
+2. [Open CASCADE Technology 7.4.0](https://dev.opencascade.org/release/previous#node-29988)   
 
-### 依赖安装
+   - 安装完需要重新对Open CASCADE Technology编译，cmake时候不选择using VTk
 
-Windows平台的C++项目的依赖管理一直都是一个大问题，这里我们使用开源工具[vcpkg](https://github.com/microsoft/vcpkg)完成权限管理任务
+3. [PCL 1.12.1](https://github.com/PointCloudLibrary/pcl/releases/tag/pcl-1.12.1) 
 
-**选用该平台的原因**
+   - VTK 9.1 需要重新源码编译 + cmake时候勾选QT相关选项  
 
-1. 微软背书：vcpkg开源包管理软件由微软发起并开源，已经维护了相当长时间，应当能继续保持
-2. 活跃的社区：因为对于包的不同需求，到2022年，该项目的代码贡献者已经有1500多人
-3. 开源包管理：如果我们自己有复杂的第三方包集成需求，未来可以基于vcpkg做一点自己的修改
+     [windows debug boost](https://github.com/PointCloudLibrary/pcl/issues/5205)
 
-### 使用IDE构建项目
+     [VTK 9.1 添加QT相关lib](https://mangoroom.cn/cpp/pcl-vtk9-x-viewer-hosted-on-qt-widget.html)
 
-#### 使用Visual Studio构建项目
+4. [hpp-fcl](https://github.com/leitianjian/hpp-fcl/tree/145b08e1bf98daba5d8ab4ace248c7e99a1e5faf) 
 
-#### 使用Qt IDE构建项目
+5. [aris](https://github.com/py0330/aris)
 
-#### 使用CLion构建项目
+6. [aris_sim](https://github.com/leitianjian/ArisSim) 
+
+## 平台
+
+Visual studio：install VS QT tools
+
+## 使用
+
+导入机器人实现按预定轨迹运动，同时检测碰撞
+
+
 
 
 
