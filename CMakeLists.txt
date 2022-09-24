@@ -64,6 +64,16 @@ endif()
 find_package(hpp-fcl REQUIRED)
 
 # find aris_sim
+set(TARGET_ARIS_PATH "" CACHE PATH "Aris install path")
+if(EXISTS ${TARGET_ARIS_PATH})
+        message(STATUS "Directory to search aris at ${TARGET_ARIS_PATH}")
+        list(APPEND CMAKE_PREFIX_PATH ${TARGET_ARIS_PATH})
+else()
+        message(WARNING "File/Directory at variable TARGET_ARIS_PATH not exists!")
+endif()
+find_package(aris REQUIRED)
+
+# find aris_sim
 set(TARGET_ARIS_SIM_PATH "" CACHE PATH "Aris_sim install path")
 if(EXISTS ${TARGET_ARIS_SIM_PATH})
         message(STATUS "Directory to search aris_sim at ${TARGET_ARIS_SIM_PATH}")
@@ -92,7 +102,12 @@ file(GLOB SOURCES
 )
 
 set(RESOURCES images/image.qrc)
-SET(CMAKE_VERBOSE_MAKEFILE ON) 
+set(CMAKE_VERBOSE_MAKEFILE ON) 
+
+message("aris_sim_path:"${TARGET_ARIS_SIM_PATH})
+message("cmake: ${CMAKE_BUILD_TYPE}")
+message(""${aris_sim_DIR}/../../../lib/${CMAKE_BUILD_TYPE}/aris_sim_lib.dll"")
+message($<TARGET_FILE_DIR:${PROJECT_NAME}>)
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${RESOURCES})
 target_link_libraries(${PROJECT_NAME}  Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport Qt5::Gamepad)
@@ -100,7 +115,15 @@ target_link_libraries(${PROJECT_NAME} ${OpenCASCADE_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${PCL_LIBRARIES} )
 target_link_libraries(${PROJECT_NAME} ${aris_sim_LIBRARIES})
 
-# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD        # Adds a post-build event to MyTest
-#     COMMAND ${CMAKE_COMMAND} -E copy_if_different  # which executes "cmake - E copy_if_different..."
-#         "${ARIS_INSTALL_PATH}/lib/${CMAKE_BUILD_TYPE}/aris_lib.dll"      # <--this is in-file
-#         $<TARGET_FILE_DIR:${PROJECT_NAME}>)                 # <--this is out-file path
+STRING(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_LOW)
+message(${CMAKE_BUILD_TYPE_LOW})
+
+ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD        # Adds a post-build event to MyTest
+     COMMAND ${CMAKE_COMMAND} -E copy  # which executes "cmake - E copy_if_different..."
+         "${aris_sim_DIR}/../../../lib/${CMAKE_BUILD_TYPE_LOW}/aris_sim_lib.dll"      # <--this is in-file
+         $<TARGET_FILE_DIR:${PROJECT_NAME}>)                 # <--this is out-file path
+
+  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD        # Adds a post-build event to MyTest
+    COMMAND ${CMAKE_COMMAND} -E copy  # which executes "cmake - E copy_if_different..."
+        "${aris_DIR}/../../../lib/${CMAKE_BUILD_TYPE}/aris_lib.dll"      # <--this is in-file
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>)                 # <--this is out-file path

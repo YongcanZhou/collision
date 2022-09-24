@@ -321,6 +321,7 @@ signals:
 	void sendimportValueSigal(int);
 
 private slots:
+    void setLinkPq(std::array<double, 7 * 7> link_pq);
     void setLinkPm(std::array<double, 7 * 16> link_pm);
 	void setAngle(double angle);
 	void setAngle(double* angle);
@@ -359,7 +360,7 @@ private:
     gp_Ax1 GeneralAx1,GeneralAx2,GeneralAx3,GeneralAx4,GeneralAx5,GeneralAx6;
 
     //double px, py, pz;
-    std::array<double, 7 * 16> link_pm;
+    std::array<double, 7 * 7> link_pq;
     //size_t num_contacts;
     //std::atomic_bool running; // set to stop thread
 

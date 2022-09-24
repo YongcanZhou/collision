@@ -22,13 +22,13 @@ private:
 	bool threadStop{ true };
 
 	double px, py, pz;
-	std::array<double, 7 * 16> link_pm;
+	std::array<double, 7 * 7> link_pq;
 	size_t num_contacts;
 	std::atomic_bool running; // set to stop thread
 
 signals:
 	void updataAngle(double angle_);
-	void updateLinkPm(std::array<double, 7 * 16> link_pm);
+	void updateLinkPq(std::array<double, 7 * 7> link_pq);
 public:
 	void ThreadStart();
 	void ThreadStop();

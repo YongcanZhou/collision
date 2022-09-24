@@ -958,9 +958,9 @@ MainWindow::MainWindow(QWidget* parent) :
 	/*****anyTest******/
 
 
-	qRegisterMetaType<std::array<double, 7 * 16>>("std::array<double, 7 * 16>");
+	qRegisterMetaType<std::array<double, 7 * 7>>("std::array<double, 7 * 7>");
 	//QObject::connect(threadsim, SIGNAL(updataAngle(double)), occWidget, SLOT(setAngle(double)));
-	QObject::connect(threadsim, SIGNAL(updateLinkPm(std::array<double, 7 * 16>)), occWidget, SLOT(setLinkPm(std::array<double, 7 * 16>)));
+	QObject::connect(threadsim, SIGNAL(updateLinkPq(std::array<double, 7 * 7>)), occWidget, SLOT(setLinkPq(std::array<double, 7 * 7>)));
 	anyTest();
 
 
