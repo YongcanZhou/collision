@@ -27,14 +27,8 @@ void threadSimulation::run()
             //通过mainwindow.cpp中槽函数传递link_pm给occview.cpp中的setLinkPm
             emit updateLinkPq(link_pq);
 
-
-                /*  for (int i = 1; i < 7; ++i) {
-                      std::cout << link_pq[i * 7]*1000 << " " << link_pq[i * 7 + 1]*1000 << " " << link_pq[i * 7 + 2]*1000 << " " << link_pq[i * 7 + 3] << " " << link_pq[i * 7 + 4] << " " << link_pq[i * 7 + 5] << " " << link_pq[i * 7 + 6] << " " << std::endl;
-      }*/
-            
-
             ////计算是否碰撞
-            //aris_sim::Collision(float(px), float(py), float(pz), num_contacts);
+            aris_sim::Collision(link_pq, num_contacts);
             std::this_thread::sleep_until(start + std::chrono::milliseconds(100));
         }
         });

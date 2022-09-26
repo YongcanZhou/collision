@@ -360,7 +360,9 @@ private:
     gp_Ax1 GeneralAx1,GeneralAx2,GeneralAx3,GeneralAx4,GeneralAx5,GeneralAx6;
 
     //double px, py, pz;
+    std::array<double, 7 * 16> link_pm;
     std::array<double, 7 * 7> link_pq;
+    std::array<double, 7 * 6> link_pe;
     //size_t num_contacts;
     //std::atomic_bool running; // set to stop thread
 

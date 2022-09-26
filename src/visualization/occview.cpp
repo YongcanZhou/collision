@@ -2013,7 +2013,7 @@ void OccView::setLinkPm(std::array<double, 7 * 16> link_pm)
 		transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3] * 1000,
 			link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7] * 1000,
 			link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11] * 1000);
-		std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z " << link_pm[i * 16 + 11] << std::endl;
+		// std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z " << link_pm[i * 16 + 11] << std::endl;
 		m_context->SetLocation(RobotAISShape[i], transformation);
 	}
 }
@@ -2025,10 +2025,12 @@ void OccView::setLinkPq(std::array<double, 7 * 7> link_pq)
 		transformation.SetTransformation( 
 			gp_Quaternion(link_pq[i * 7 + 3], link_pq[i * 7 + 4], link_pq[i * 7 + 5], link_pq[i * 7 + 6]), 
 			gp_Vec(link_pq[i * 7] * 1000, link_pq[i * 7 + 1] * 1000, link_pq[i * 7 + 2] * 1000));
-			m_context->SetLocation(RobotAISShape[i], transformation);
+		
+		m_context->SetLocation(RobotAISShape[i], transformation);
 	}
-}
 
+	//std::cout << "position:" << "x " << link_pq[6 * 7] << " y " << link_pq[6 * 7 + 1] << " z " << link_pq[6 * 7 + 2] << std::endl;
+}
 
 void OccView::setAngle(double angle)
 {
