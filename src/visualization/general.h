@@ -13,7 +13,7 @@ namespace Ui {
 #define deltaAngle 0.03
 #define deltaLength 0.01
 #define transPos 20
-#define PI 3.1415926
+#define PI_OCC 3.1415926
 
 static ButtonFlat* createViewBtn(QWidget* parent, const QIcon& icon, const QString& tooltip)
 {
@@ -327,11 +327,11 @@ struct robotDH{
 
 
 static void PILimit(double& data){
-    if(data>PI){
-        data=data-2*PI;
+    if(data>PI_OCC){
+        data=data-2* PI_OCC;
     }
-    if(data<-PI){
-        data=data+2*PI;
+    if(data<-PI_OCC){
+        data=data+2* PI_OCC;
     }
 }
 
@@ -374,13 +374,13 @@ static Eigen::Matrix4d ESTUN_ER100_3000_MDH_Forward(const double* thetas)
 
 	d1 = 0.0;  	  d2 = 0.0;   	  d3 = 0.0;   	  d4 = -1.6;      d5 = 0.0;    	    d6 = 0.0;
 	a1 = 0.0;     a2 = 0.26;      a3 = 1.15;      a4 = 0.23;      a5 = 0.0; 	    a6 = 0.0;
-	afa1 = 0.0;   afa2 = PI / 2;  afa3 = 0.0;     afa4 = PI / 2;  afa5 = -PI / 2;   afa6 = PI / 2;
-	thetaoffset1 = 0.0;  thetaoffset2 = -PI / 2;  thetaoffset3 = 0.0;  thetaoffset4 = 0.0;  thetaoffset5 = 0.0;   thetaoffset6 = 0.0;
+	afa1 = 0.0;   afa2 = PI_OCC / 2;  afa3 = 0.0;     afa4 = PI_OCC / 2;  afa5 = -PI_OCC / 2;   afa6 = PI_OCC / 2;
+	thetaoffset1 = 0.0;  thetaoffset2 = -PI_OCC / 2;  thetaoffset3 = 0.0;  thetaoffset4 = 0.0;  thetaoffset5 = 0.0;   thetaoffset6 = 0.0;
 
 	double pe_base2Axis0[6]{ 0.0,
 							0,
 							0.6455,
-							180.0 / 180 * PI,
+							180.0 / 180 * PI_OCC,
 							0,
 							0 };
 	Eigen::Matrix4d matrix_base2Axis0;
@@ -389,8 +389,8 @@ static Eigen::Matrix4d ESTUN_ER100_3000_MDH_Forward(const double* thetas)
 	double pe_Axis02tool0[6]{ 0.0,
 							 0.0,
 							 -0.214,
-							 0.0 / 180 * PI,
-							 180.0 / 180 * PI,
+							 0.0 / 180 * PI_OCC,
+							 180.0 / 180 * PI_OCC,
 							 0.0 };
 	Eigen::Matrix4d matrix_Axis02tool0;
 	s_pe2pm(pe_Axis02tool0, matrix_Axis02tool0, "123");
@@ -590,12 +590,12 @@ static void normalize(Eigen::Vector3d& vec)
 /* 角度值转弧度值 */
 static inline double toRadian(double degree)
 {
-	return (degree / 180.0)* PI;
+	return (degree / 180.0)* PI_OCC;
 }
 
 static inline double toDegree(double radian)
 {
-	return (radian / PI) * 180.0;
+	return (radian / PI_OCC) * 180.0;
 }
 
 static Eigen::Matrix4d transf2Matrix(const gp_Trsf& trans)

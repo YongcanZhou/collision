@@ -1,5 +1,5 @@
 ﻿#include "occview.h"
-#include <aris_sim.hpp>
+#include <sire.hpp>
 
 // #define ER100
 #define XB4
@@ -49,7 +49,7 @@ double OccView::Joint06OriginAngle_static = 0.0;
 
 
 
-OccView::OccView(QWidget* parent) : QWidget(parent)
+OccView::OccView(QWidget *parent) : QWidget(parent)
 {
 	//aris_sim::InitSimulator();
 	//aris_sim::InitCollision("C:/Users/ZHOUYC/Desktop/ee_5.STL");
@@ -67,10 +67,10 @@ OccView::OccView(QWidget* parent) : QWidget(parent)
 	QObject::connect(m_addAction, &QAction::triggered, this, [=] {
 		getShape();
 		displayNormalVector();
-		});
+	});
 	QObject::connect(m_delAction, &QAction::triggered, this, [=] {
 		removeNormalVector();
-		});
+	});
 
 	KukaAx1 = gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 	KukaAx2 = gp_Ax1(gp_Pnt(260, 0, 675), gp_Dir(0, 1, 0));
@@ -103,7 +103,7 @@ OccView::OccView(QWidget* parent) : QWidget(parent)
 	XB4Ax5 = gp_Ax1(gp_Pnt(0.320, 0, 0.642), gp_Dir(0, 1, 0));
 	XB4Ax6 = gp_Ax1(gp_Pnt(0.393, 0, 0.642), gp_Dir(1, 0, 0));
 
-	OccProgressIndicator* indicat = new OccProgressIndicator();
+	OccProgressIndicator *indicat = new OccProgressIndicator();
 	QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
 
 #ifdef UR5
@@ -180,12 +180,12 @@ OccView::~OccView() noexcept {
 	//running = false; // set to stop detached thread
 }
 
-void OccView::paintEvent(QPaintEvent*)
+void OccView::paintEvent(QPaintEvent *)
 {
 	m_view->Redraw();
 }
 
-void OccView::resizeEvent(QResizeEvent*)
+void OccView::resizeEvent(QResizeEvent *)
 {
 	if (!m_view.IsNull())
 	{
@@ -193,12 +193,12 @@ void OccView::resizeEvent(QResizeEvent*)
 	}
 }
 
-QPaintEngine* OccView::paintEngine() const
+QPaintEngine *OccView::paintEngine() const
 {
 	return nullptr;
 }
 
-void OccView::mousePressEvent(QMouseEvent* event)
+void OccView::mousePressEvent(QMouseEvent *event)
 {
 	if (event->buttons() == Qt::LeftButton)//平移
 	{
@@ -236,7 +236,7 @@ void OccView::mousePressEvent(QMouseEvent* event)
 			m_y_max = event->pos().y(); //记录起始Y位置
 		}
 	}
-
+	
 	if (event->buttons() == Qt::MidButton)  //旋转
 	{
 		m_current_mode = CurAction3d_DynamicRotation;
@@ -249,13 +249,13 @@ void OccView::mousePressEvent(QMouseEvent* event)
 
 }
 
-void OccView::mouseReleaseEvent(QMouseEvent* event)
+void OccView::mouseReleaseEvent(QMouseEvent *event)
 {
 	m_current_mode = CurAction3d_Nothing;
 	leftButON = BUTTON_OFF;
 }
 
-void OccView::mouseMoveEvent(QMouseEvent* event)
+void OccView::mouseMoveEvent(QMouseEvent *event)
 {
 	switch (m_current_mode)
 	{
@@ -284,7 +284,7 @@ void OccView::mouseMoveEvent(QMouseEvent* event)
 	}
 }
 
-void OccView::wheelEvent(QWheelEvent* event)
+void OccView::wheelEvent(QWheelEvent *event)
 {
 	m_view->StartZoomAtPoint(event->pos().x(), event->pos().y());
 	m_view->ZoomAtPoint(0, 0, event->angleDelta().y(), 0); //执行缩放
@@ -485,14 +485,14 @@ void OccView::initRobot()
 
 
 	/******求解末端tool0坐标矩阵******/
-	double jointTool0[6]{ Joint01OriginAngle * PI / 180,
-						  Joint02OriginAngle * PI / 180,
-						  Joint03OriginAngle * PI / 180,
-						  Joint04OriginAngle * PI / 180,
-						  Joint05OriginAngle * PI / 180,
-						  Joint06OriginAngle * PI / 180 };
+	double jointTool0[6]{ Joint01OriginAngle*PI / 180,
+						  Joint02OriginAngle*PI / 180,
+						  Joint03OriginAngle*PI / 180,
+						  Joint04OriginAngle*PI / 180,
+						  Joint05OriginAngle*PI / 180,
+						  Joint06OriginAngle*PI / 180 };
 
-	robot_tool0_matrix = Ui::ESTUN_ER100_3000_MDH_Forward(jointTool0);
+	robot_tool0_matrix =Ui::ESTUN_ER100_3000_MDH_Forward(jointTool0);
 
 	robot_tool0_matrix(0, 3) = robot_tool0_matrix(0, 3) * 1000;
 	robot_tool0_matrix(1, 3) = robot_tool0_matrix(1, 3) * 1000;
@@ -567,7 +567,7 @@ void OccView::loadDisplayWorkpiece()
 		return;
 
 	/*******注册progressbar***********/
-	OccProgressIndicator* indicat = new OccProgressIndicator();
+	OccProgressIndicator *indicat = new OccProgressIndicator();
 	QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
 	Handle_XSControl_WorkSession ws = reader.WS();
 	ws->MapReader()->SetProgress(indicat);
@@ -595,9 +595,9 @@ void OccView::loadDisplayWorkpiece()
 	PartAISShape = new AIS_Shape(PartTopoShape);
 	if (m_context->HasLocation(PartAISShape)) {
 		qDebug() << "m_context->HasLocation(PartAISShape)";
-		double rx{ 0.0 }, ry{ 0.0 }, rz{ 0.0 };
-		PartTopoShape.Location().Transformation().GetRotation().GetEulerAngles(gp_EulerSequence::gp_Extrinsic_XYZ, rx, ry, rz);
-		qDebug() << "rx:" << rx << "," << "ry:" << ry << "rz:" << rz;
+		double rx{ 0.0 }, ry{ 0.0 }, rz{0.0};
+		 PartTopoShape.Location().Transformation().GetRotation().GetEulerAngles(gp_EulerSequence::gp_Extrinsic_XYZ, rx, ry, rz);
+		 qDebug() << "rx:" << rx << "," << "ry:" << ry << "rz:" << rz;
 
 	}
 
@@ -642,7 +642,7 @@ void OccView::loadDisplayTool()
 	//加载文件
 
 	/*******注册progressbar***********/
-	OccProgressIndicator* indicat = new OccProgressIndicator();
+	OccProgressIndicator *indicat = new OccProgressIndicator();
 	QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
 	Handle_XSControl_WorkSession ws = reader.WS();
 	ws->MapReader()->SetProgress(indicat);
@@ -1129,7 +1129,7 @@ void OccView::newPartCoordinate()
 	//    ay0.Ax2();
 
 
-	if (firstPointSelected && secondPointSelected && thirdPointSelected) {
+	if (firstPointSelected&&secondPointSelected&&thirdPointSelected) {
 		firstPointSelected = secondPointSelected = thirdPointSelected = false;
 	}
 
@@ -1173,7 +1173,7 @@ void OccView::newPartCoordinate()
 				m_context->Display(partTrihedron, Standard_True);
 				partTrihedron->AddChild(PartAISShape);
 				RobotAISShape[6]->AddChild(partTrihedron);
-
+				
 
 				gp_Ax3 origin(gp::XOY());
 				gp_Ax3 current(part0Ax2);
@@ -1265,13 +1265,13 @@ void OccView::newToolCoordinate()
 				gp_Vec vY_new = vZ.Crossed(vX);
 				gp_Dir aixY_new = vY_new / vY_new.Magnitude();
 
-				/*		Eigen::AngleAxisd rotation_vector(alpha, Eigen::Vector3d(x, y, z));
-						Eigen::Vector3d ttt();*/
+		/*		Eigen::AngleAxisd rotation_vector(alpha, Eigen::Vector3d(x, y, z));
+				Eigen::Vector3d ttt();*/
 
 
 				m_context->Display(toolTrihedron, Standard_True);
 				toolTrihedron->AddChild(ToolAISShape);
-				Handle(Geom_Axis2Placement) originAxis = new Geom_Axis2Placement(gp::XOY());
+				Handle(Geom_Axis2Placement) originAxis=new Geom_Axis2Placement(gp::XOY());
 				Handle(AIS_Trihedron) originTrihedron = new AIS_Trihedron(originAxis);
 				originTrihedron->SetDatumPartColor(Prs3d_DP_XAxis, Quantity_NOC_RED2);
 				originTrihedron->SetDatumPartColor(Prs3d_DP_YAxis, Quantity_NOC_GREEN2);
@@ -1280,7 +1280,7 @@ void OccView::newToolCoordinate()
 				toolTrihedron->AddChild(originTrihedron);
 
 
-
+				
 
 				gp_Ax3 origin(gp::XOY());
 				gp_Ax3 current(part0Ax2);
@@ -1293,17 +1293,17 @@ void OccView::newToolCoordinate()
 				auto transPM = Ui::transf2Matrix_02(toolTrihedronOriginTran);
 
 				double pe[6]{ 0.0 };
-				/*	pe[0] = pointO.X();   pe[1] = pointO.Y();   pe[2] = pointO.Z();
-					if (aixZ.X() != 1) {
-						pe[4] = asin(aixZ.X());
-						pe[3] = -asin(aixZ.Y() / cos(pe[4]));
-						pe[5] = asin(aixX.Y()*cos(pe[3]) + aixX.Z()*sin(pe[3]));
-					}
-					else {
-						pe[4] = PI / 2;
-						pe[3] = PI / 2;
-						pe[5] = 0.0;
-					}*/
+			/*	pe[0] = pointO.X();   pe[1] = pointO.Y();   pe[2] = pointO.Z();
+				if (aixZ.X() != 1) {
+					pe[4] = asin(aixZ.X());
+					pe[3] = -asin(aixZ.Y() / cos(pe[4]));
+					pe[5] = asin(aixX.Y()*cos(pe[3]) + aixX.Z()*sin(pe[3]));
+				}
+				else {
+					pe[4] = PI / 2;
+					pe[3] = PI / 2;
+					pe[5] = 0.0;
+				}*/
 
 				Ui::s_pm2pe(transPM, pe, "123");
 
@@ -1311,11 +1311,11 @@ void OccView::newToolCoordinate()
 				qDebug() << pe[0];
 				qDebug() << pe[1];
 				qDebug() << pe[2];
-				qDebug() << pe[3] * 180 / PI;
-				qDebug() << pe[4] * 180 / PI;
-				qDebug() << pe[5] * 180 / PI;
+				qDebug() << pe[3] * 180 / PI_OCC;
+				qDebug() << pe[4] * 180 / PI_OCC;
+				qDebug() << pe[5] * 180 / PI_OCC;
 
-				qDebug() << "aixX:" << aixX.X() << "," << aixX.Y() << "," << aixX.Z();
+				qDebug() <<"aixX:" <<aixX.X()<<","<< aixX.Y()<<","<< aixX.Z();
 				qDebug() << "aixY_new:" << aixY_new.X() << "," << aixY_new.Y() << "," << aixY_new.Z();
 				qDebug() << "aixZ:" << aixZ.X() << "," << aixZ.Y() << "," << aixZ.Z();
 
@@ -1659,7 +1659,7 @@ void OccView::AnaminationStart()
 	//        m_context->Update(getAISShape(),Standard_True);
 	//    }
 
-
+	
 	/*double ddd[6]{ 1,0,0,0,0,0 };
 	for (int k = 0; k < 100; k++) {
 		qDebug() << ddd[0];
@@ -1677,7 +1677,7 @@ void OccView::AnaminationStart()
 
 
 	theTransformation->SetDisplacement(*ax3_1, *ax3_2);*/
-
+	
 
 
 	//    BRepBuilderAPI_Transform myBRepTransformation =new BRepBuilderAPI_Transform(S, theTransformation, false);
@@ -1760,13 +1760,13 @@ void OccView::angleDebug(const gp_Ax3& FromSystem, const gp_Ax3& ToSystem)//变�
 
 void OccView::PartMoveSim()
 {
-
+	
 }
 
 void OccView::RobotMoveSim()
 {
 
-
+	
 }
 
 void OccView::toolTrihedronDisplay()
@@ -1846,7 +1846,7 @@ void OccView::CameraAnaminationStart()
 {
 
 
-
+	
 }
 
 void OccView::ButtonAxis01MoveForward()
@@ -1859,8 +1859,8 @@ void OccView::ButtonAxis01MoveForward()
 	m_context->SetLocation(RobotAISShape[1], trans);
 	m_context->UpdateCurrentViewer();
 
-	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI << "," << getJoint02CurrentAngle() * 180 / PI << "," << getJoint03CurrentAngle() * 180 / PI << ","
-		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
+	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI_OCC << "," << getJoint02CurrentAngle() * 180 / PI_OCC << "," << getJoint03CurrentAngle() * 180 / PI_OCC << ","
+		<< getJoint04CurrentAngle() * 180 / PI_OCC << "," << getJoint05CurrentAngle() * 180 / PI_OCC << "," << getJoint06CurrentAngle() * 180 / PI_OCC;
 }
 
 void OccView::ButtonAxis02MoveForward()
@@ -1872,8 +1872,8 @@ void OccView::ButtonAxis02MoveForward()
 	trans.SetRotation(GeneralAx2, getJoint02CurrentAngle());
 	m_context->SetLocation(RobotAISShape[2], trans);
 	m_context->UpdateCurrentViewer();
-	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI << "," << getJoint02CurrentAngle() * 180 / PI << "," << getJoint03CurrentAngle() * 180 / PI << ","
-		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
+	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI_OCC << "," << getJoint02CurrentAngle() * 180 / PI_OCC << "," << getJoint03CurrentAngle() * 180 / PI_OCC << ","
+		<< getJoint04CurrentAngle() * 180 / PI_OCC << "," << getJoint05CurrentAngle() * 180 / PI_OCC << "," << getJoint06CurrentAngle() * 180 / PI_OCC;
 }
 
 void OccView::ButtonAxis03MoveForward()
@@ -1885,8 +1885,8 @@ void OccView::ButtonAxis03MoveForward()
 	trans.SetRotation(GeneralAx3, getJoint03CurrentAngle());
 	m_context->SetLocation(RobotAISShape[3], trans);
 	m_context->UpdateCurrentViewer();
-	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI << "," << getJoint02CurrentAngle() * 180 / PI << "," << getJoint03CurrentAngle() * 180 / PI << ","
-		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
+	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI_OCC << "," << getJoint02CurrentAngle() * 180 / PI_OCC << "," << getJoint03CurrentAngle() * 180 / PI_OCC << ","
+		<< getJoint04CurrentAngle() * 180 / PI_OCC << "," << getJoint05CurrentAngle() * 180 / PI_OCC << "," << getJoint06CurrentAngle() * 180 / PI_OCC;
 }
 
 void OccView::ButtonAxis04MoveForward()
@@ -1898,8 +1898,8 @@ void OccView::ButtonAxis04MoveForward()
 	trans.SetRotation(GeneralAx4, getJoint04CurrentAngle());
 	m_context->SetLocation(RobotAISShape[4], trans);
 	m_context->UpdateCurrentViewer();
-	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI << "," << getJoint02CurrentAngle() * 180 / PI << "," << getJoint03CurrentAngle() * 180 / PI << ","
-		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
+	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI_OCC << "," << getJoint02CurrentAngle() * 180 / PI_OCC << "," << getJoint03CurrentAngle() * 180 / PI_OCC << ","
+		<< getJoint04CurrentAngle() * 180 / PI_OCC << "," << getJoint05CurrentAngle() * 180 / PI_OCC << "," << getJoint06CurrentAngle() * 180 / PI_OCC;
 }
 
 void OccView::ButtonAxis05MoveForward()
@@ -1911,8 +1911,8 @@ void OccView::ButtonAxis05MoveForward()
 	trans.SetRotation(GeneralAx5, getJoint05CurrentAngle());
 	m_context->SetLocation(RobotAISShape[5], trans);
 	m_context->UpdateCurrentViewer();
-	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI << "," << getJoint02CurrentAngle() * 180 / PI << "," << getJoint03CurrentAngle() * 180 / PI << ","
-		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
+	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI_OCC << "," << getJoint02CurrentAngle() * 180 / PI_OCC << "," << getJoint03CurrentAngle() * 180 / PI_OCC << ","
+		<< getJoint04CurrentAngle() * 180 / PI_OCC << "," << getJoint05CurrentAngle() * 180 / PI_OCC << "," << getJoint06CurrentAngle() * 180 / PI_OCC;
 }
 
 void OccView::ButtonAxis06MoveForward()
@@ -1924,8 +1924,8 @@ void OccView::ButtonAxis06MoveForward()
 	trans.SetRotation(GeneralAx6, getJoint06CurrentAngle());
 	m_context->SetLocation(RobotAISShape[6], trans);
 	m_context->UpdateCurrentViewer();
-	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI << "," << getJoint02CurrentAngle() * 180 / PI << "," << getJoint03CurrentAngle() * 180 / PI << ","
-		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
+	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI_OCC << "," << getJoint02CurrentAngle() * 180 / PI_OCC << "," << getJoint03CurrentAngle() * 180 / PI_OCC << ","
+		<< getJoint04CurrentAngle() * 180 / PI_OCC << "," << getJoint05CurrentAngle() * 180 / PI_OCC << "," << getJoint06CurrentAngle() * 180 / PI_OCC;
 }
 
 void OccView::ButtonAxis01MoveBackward()
@@ -1937,8 +1937,7 @@ void OccView::ButtonAxis01MoveBackward()
 	trans.SetRotation(GeneralAx1, getJoint01CurrentAngle());
 	m_context->SetLocation(RobotAISShape[1], trans);
 	m_context->UpdateCurrentViewer();
-	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI << "," << getJoint02CurrentAngle() * 180 / PI << "," << getJoint03CurrentAngle() * 180 / PI << ","
-		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
+
 }
 
 void OccView::ButtonAxis02MoveBackward()
@@ -1950,8 +1949,7 @@ void OccView::ButtonAxis02MoveBackward()
 	trans.SetRotation(GeneralAx2, getJoint02CurrentAngle());
 	m_context->SetLocation(RobotAISShape[2], trans);
 	m_context->UpdateCurrentViewer();
-	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI << "," << getJoint02CurrentAngle() * 180 / PI << "," << getJoint03CurrentAngle() * 180 / PI << ","
-		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
+	
 }
 
 void OccView::ButtonAxis03MoveBackward()
@@ -1963,34 +1961,31 @@ void OccView::ButtonAxis03MoveBackward()
 	trans.SetRotation(GeneralAx3, getJoint03CurrentAngle());
 	m_context->SetLocation(RobotAISShape[3], trans);
 	m_context->UpdateCurrentViewer();
-	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI << "," << getJoint02CurrentAngle() * 180 / PI << "," << getJoint03CurrentAngle() * 180 / PI << ","
-		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
+	
 }
 
 void OccView::ButtonAxis04MoveBackward()
 {
 	gp_Trsf trans;
-	getJoint04CurrentAngle() = getJoint04CurrentAngle() - deltaAngle;
+	getJoint04CurrentAngle() = getJoint04CurrentAngle()- deltaAngle;
 	auto angle = getJoint04CurrentAngle() - Joint04OriginAngle;
 	Ui::PILimit(angle);
 	trans.SetRotation(GeneralAx4, getJoint04CurrentAngle());
 	m_context->SetLocation(RobotAISShape[4], trans);
 	m_context->UpdateCurrentViewer();
-	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI << "," << getJoint02CurrentAngle() * 180 / PI << "," << getJoint03CurrentAngle() * 180 / PI << ","
-		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
+	
 }
 
 void OccView::ButtonAxis05MoveBackward()
 {
 	gp_Trsf trans;
-	getJoint05CurrentAngle() = getJoint05CurrentAngle() - deltaAngle;
+	getJoint05CurrentAngle() = getJoint05CurrentAngle()- deltaAngle;
 	auto angle = getJoint05CurrentAngle() - Joint05OriginAngle;
 	Ui::PILimit(angle);
 	trans.SetRotation(GeneralAx5, getJoint05CurrentAngle());
 	m_context->SetLocation(RobotAISShape[5], trans);
 	m_context->UpdateCurrentViewer();
-	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI << "," << getJoint02CurrentAngle() * 180 / PI << "," << getJoint03CurrentAngle() * 180 / PI << ","
-		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
+	
 }
 
 void OccView::ButtonAxis06MoveBackward()
@@ -2002,39 +1997,36 @@ void OccView::ButtonAxis06MoveBackward()
 	trans.SetRotation(GeneralAx6, getJoint06CurrentAngle());
 	m_context->SetLocation(RobotAISShape[6], trans);
 	m_context->UpdateCurrentViewer();
-	qDebug() << "CurrentAngle:" << getJoint01CurrentAngle() * 180 / PI << "," << getJoint02CurrentAngle() * 180 / PI << "," << getJoint03CurrentAngle() * 180 / PI << ","
-		<< getJoint04CurrentAngle() * 180 / PI << "," << getJoint05CurrentAngle() * 180 / PI << "," << getJoint06CurrentAngle() * 180 / PI;
+	
 }
 
-void OccView::setLinkPm(std::array<double, 7 * 16> link_pm)
+void OccView::setLinkPM(std::array<double, 7 * 16> link_pm)
 {
 	gp_Trsf transformation;
 	for (int i = 1; i < 7; ++i) {
-		transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3] * 1000,
-			link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7] * 1000,
-			link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11] * 1000);
-		// std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z " << link_pm[i * 16 + 11] << std::endl;
+		transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3]*1000,
+								link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7]*1000,
+								link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11]*1000);
+		//std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z "<< link_pm[i * 16 + 11] << std::endl;
 		m_context->SetLocation(RobotAISShape[i], transformation);
 	}
 }
 
-void OccView::setLinkPq(std::array<double, 7 * 7> link_pq)
+void OccView::setLinkPQ(std::array<double, 7 * 7> link_pq)
 {
 	gp_Trsf transformation;
 	for (int i = 1; i < 7; ++i) {
-		transformation.SetTransformation( 
-			gp_Quaternion(link_pq[i * 7 + 3], link_pq[i * 7 + 4], link_pq[i * 7 + 5], link_pq[i * 7 + 6]), 
+		transformation.SetTransformation(
+			gp_Quaternion(link_pq[i * 7 + 3], link_pq[i * 7 + 4], link_pq[i * 7 + 5], link_pq[i * 7 + 6]),
 			gp_Vec(link_pq[i * 7] * 1000, link_pq[i * 7 + 1] * 1000, link_pq[i * 7 + 2] * 1000));
-		
 		m_context->SetLocation(RobotAISShape[i], transformation);
 	}
-
-	//std::cout << "position:" << "x " << link_pq[6 * 7] << " y " << link_pq[6 * 7 + 1] << " z " << link_pq[6 * 7 + 2] << std::endl;
 }
+
 
 void OccView::setAngle(double angle)
 {
-	gp_Trsf trans1, trans2, trans3, trans4, trans5, trans6;
+	gp_Trsf trans1, trans2, trans3, trans4, trans5,trans6;
 	trans1.SetRotation(GeneralAx1, angle);
 	trans2.SetRotation(GeneralAx2, angle);
 	trans3.SetRotation(GeneralAx3, angle);
@@ -2051,7 +2043,7 @@ void OccView::setAngle(double angle)
 	m_context->UpdateCurrentViewer();
 }
 
-void OccView::setAngle(double* angle)
+void OccView::setAngle(double * angle)
 {
 	gp_Trsf trans1, trans2, trans3, trans4, trans5, trans6;
 	trans1.SetRotation(GeneralAx1, angle[0]);
@@ -2076,33 +2068,13 @@ void OccView::setAngle(double* angle)
 	m_context->SetLocation(RobotAISShape[6], trans6);
 	m_context->UpdateCurrentViewer();
 	qDebug() << "slot:" << angle[0];
-
-	//gp_Trsf transformation;
-	//for (int i = 1; i < 7; ++i) {
-	//	transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3] * 1000,
-	//		link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7] * 1000,
-	//		link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10], link_pm[i * 16 + 11] * 1000);
-	//	//std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z " << link_pm[i * 16 + 11] << std::endl;
-	//	m_context->SetLocation(RobotAISShape[i], transformation);
-	//}
-	//gp_Trsf transformation;
-	//for (int i = 1; i < 7; ++i) {
-
-	//	link_pq[i * 7] = link_pq[i * 7] * 1000;
-	//	link_pq[i * 7 + 1] = link_pq[i * 7 + 1] * 1000;
-	//	link_pq[i * 7 + 2] = link_pq[i * 7 + 2] * 1000;
-	//	std::cout << link_pq[i * 7] << " " << link_pq[i * 7 + 1] << " " << link_pq[i * 7 + 2] << " " << link_pq[i * 7 + 3] << " " << link_pq[i * 7 + 4] << " " << link_pq[i * 7 + 5] << " " << link_pq[i * 7 + 6] << " " << std::endl;
-	//	transformation.SetTranslation(gp_Vec(link_pq[i * 7], link_pq[i * 7 + 1], link_pq[i * 7 + 2]));
-	//	transformation.SetRotation(gp_Quaternion(link_pq[i * 7 + 3], link_pq[i * 7 + 4], link_pq[i * 7 + 5], link_pq[i * 7 + 6]));
-	//	m_context->SetLocation(RobotAISShape[i], transformation);
-	//}
 }
 
 void OccView::setVisiable(nameState name, bool state)
 {
 	if (name == nameState::joint1) {
 		if (state == true) {
-			m_context->Display(RobotAISShape[1], Standard_True);
+			m_context->Display(RobotAISShape[1],Standard_True);
 			m_context->Display(RobotAISShape[0], Standard_True);
 		}
 		else {
@@ -2137,12 +2109,12 @@ void OccView::ButtonPartCoorOK()
 	Ui::s_pe2pm(current_pe, currentMatrix, "123");
 
 
-	double jointTool0[6]{ getJoint01CurrentAngle() * PI / 180,
-						  getJoint02CurrentAngle() * PI / 180,
-						  getJoint03CurrentAngle() * PI / 180,
-						  getJoint04CurrentAngle() * PI / 180,
-						  getJoint05CurrentAngle() * PI / 180,
-						  getJoint06CurrentAngle() * PI / 180 };
+	double jointTool0[6]{ getJoint01CurrentAngle()*PI_OCC / 180,
+						  getJoint02CurrentAngle()* PI_OCC / 180,
+						  getJoint03CurrentAngle()* PI_OCC / 180,
+						  getJoint04CurrentAngle()* PI_OCC / 180,
+						  getJoint05CurrentAngle()* PI_OCC / 180,
+						  getJoint06CurrentAngle()* PI_OCC / 180 };
 
 	robot_tool0_matrix = Ui::ESTUN_ER100_3000_MDH_Forward(jointTool0);
 
@@ -2163,9 +2135,9 @@ void OccView::ButtonPartCoorOK()
 	qDebug() << pe_00[1];
 	qDebug() << pe_00[2];
 
-	qDebug() << pe_00[3] * 180 / PI;
-	qDebug() << pe_00[4] * 180 / PI;
-	qDebug() << pe_00[5] * 180 / PI;
+	//qDebug() << pe_00[3]*180/PI;
+	//qDebug() << pe_00[4] * 180 / PI;
+	//qDebug() << pe_00[5] * 180 / PI;
 
 	trans_00.SetTranslationPart(gp_Vec(pe_00[0], pe_00[1], pe_00[2]));
 	gp_Quaternion origin_qua;
@@ -2244,9 +2216,9 @@ void OccView::ButtonToolCoorOK()
 	transpart = trans_00 * rot_00;
 	m_context->SetLocation(toolTrihedron, transpart);
 
-	qDebug() << "deltaX:" << pe_00[0];
-	qDebug() << "deltaY:" << pe_00[1];
-	qDebug() << "deltaZ:" << pe_00[2];
+	qDebug() << "deltaX:" <<  pe_00[0];
+	qDebug() << "deltaY:" <<  pe_00[1];
+	qDebug() << "deltaZ:" <<  pe_00[2];
 	qDebug() << "deltaRX:" << pe_00[3];
 	qDebug() << "deltaRY:" << pe_00[4];
 	qDebug() << "deltaRZ:" << pe_00[5];
@@ -2410,7 +2382,7 @@ void OccView::ButtonPointsCal()
 						PartAISShape->AddChild(pshape);
 
 
-						IntCurvesFace_ShapeIntersector* intsec = new IntCurvesFace_ShapeIntersector();
+						IntCurvesFace_ShapeIntersector * intsec = new IntCurvesFace_ShapeIntersector();
 						intsec->Load(face, 1);
 						gp_Lin normLine1(pdata, gp_Dir(vec2));
 						intsec->Perform(normLine1, -1, 1);
@@ -2444,7 +2416,7 @@ void OccView::ButtonPointsCal()
 
 
 
-void OccView::ConstructRobot(Assemly_Tree& tree)
+void OccView::ConstructRobot(Assemly_Tree &tree)
 {
 
 }
@@ -2536,7 +2508,7 @@ void OccView::ReadFile(QString aFilePath, Handle(Document)doc)
 
 
 	/*******注册progressbar***********/
-	OccProgressIndicator* indicat = new OccProgressIndicator();
+	OccProgressIndicator *indicat = new OccProgressIndicator();
 	QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
 	Handle_XSControl_WorkSession ws = reader.Reader().WS();
 	ws->MapReader()->SetProgress(indicat);

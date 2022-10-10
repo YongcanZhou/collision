@@ -775,9 +775,9 @@ MainWindow::MainWindow(QWidget* parent) :
 		eularcoor.x = EditPartXCoor->text().toDouble();
 		eularcoor.y = EditPartYCoor->text().toDouble();
 		eularcoor.z = EditPartZCoor->text().toDouble();
-		eularcoor.rx = EditPartRXCoor->text().toDouble() * PI / 180;
-		eularcoor.ry = EditPartRYCoor->text().toDouble() * PI / 180;
-		eularcoor.rz = EditPartRZCoor->text().toDouble() * PI / 180;
+		eularcoor.rx = EditPartRXCoor->text().toDouble() * PI_OCC / 180;
+		eularcoor.ry = EditPartRYCoor->text().toDouble() * PI_OCC / 180;
+		eularcoor.rz = EditPartRZCoor->text().toDouble() * PI_OCC / 180;
 		occWidget->getPartCoor() = eularcoor;
 		occWidget->ButtonPartCoorOK();
 		});
@@ -793,9 +793,9 @@ MainWindow::MainWindow(QWidget* parent) :
 		EditToolXCoor->setText(QString::number(occWidget->getToolCoor().x, 'f', 3));
 		EditToolYCoor->setText(QString::number(occWidget->getToolCoor().y, 'f', 3));
 		EditToolZCoor->setText(QString::number(occWidget->getToolCoor().z, 'f', 3));
-		EditToolRXCoor->setText(QString::number(occWidget->getToolCoor().rx * 180 / PI, 'f', 3));
-		EditToolRYCoor->setText(QString::number(occWidget->getToolCoor().ry * 180 / PI, 'f', 3));
-		EditToolRZCoor->setText(QString::number(occWidget->getToolCoor().rz * 180 / PI, 'f', 3));
+		EditToolRXCoor->setText(QString::number(occWidget->getToolCoor().rx * 180 / PI_OCC, 'f', 3));
+		EditToolRYCoor->setText(QString::number(occWidget->getToolCoor().ry * 180 / PI_OCC, 'f', 3));
+		EditToolRZCoor->setText(QString::number(occWidget->getToolCoor().rz * 180 / PI_OCC, 'f', 3));
 		});
 
 	QObject::connect(occWidget, &OccView::NewPartCoordinateCompleteSigal, this, [=] {
@@ -808,9 +808,9 @@ MainWindow::MainWindow(QWidget* parent) :
 		EditPartXCoor->setText(QString::number(occWidget->getPartCoor().x, 'f', 3));
 		EditPartYCoor->setText(QString::number(occWidget->getPartCoor().y, 'f', 3));
 		EditPartZCoor->setText(QString::number(occWidget->getPartCoor().z, 'f', 3));
-		EditPartRXCoor->setText(QString::number(occWidget->getPartCoor().rx * 180 / PI, 'f', 3));
-		EditPartRYCoor->setText(QString::number(occWidget->getPartCoor().ry * 180 / PI, 'f', 3));
-		EditPartRZCoor->setText(QString::number(occWidget->getPartCoor().rz * 180 / PI, 'f', 3));
+		EditPartRXCoor->setText(QString::number(occWidget->getPartCoor().rx * 180 / PI_OCC, 'f', 3));
+		EditPartRYCoor->setText(QString::number(occWidget->getPartCoor().ry * 180 / PI_OCC, 'f', 3));
+		EditPartRZCoor->setText(QString::number(occWidget->getPartCoor().rz * 180 / PI_OCC, 'f', 3));
 		});
 
 
@@ -852,9 +852,9 @@ MainWindow::MainWindow(QWidget* parent) :
 		eularcoor.x = EditToolXCoor->text().toDouble();
 		eularcoor.y = EditToolYCoor->text().toDouble();
 		eularcoor.z = EditToolZCoor->text().toDouble();
-		eularcoor.rx = EditToolRXCoor->text().toDouble() * PI / 180;
-		eularcoor.ry = EditToolRYCoor->text().toDouble() * PI / 180;
-		eularcoor.rz = EditToolRZCoor->text().toDouble() * PI / 180;
+		eularcoor.rx = EditToolRXCoor->text().toDouble() * PI_OCC / 180;
+		eularcoor.ry = EditToolRYCoor->text().toDouble() * PI_OCC / 180;
+		eularcoor.rz = EditToolRZCoor->text().toDouble() * PI_OCC / 180;
 		occWidget->getToolCoor() = eularcoor;
 		occWidget->ButtonToolCoorOK();
 		});
@@ -957,10 +957,11 @@ MainWindow::MainWindow(QWidget* parent) :
 	/*****anyTest******/
 	/*****anyTest******/
 
-
 	qRegisterMetaType<std::array<double, 7 * 7>>("std::array<double, 7 * 7>");
+	// qRegisterMetaType<std::array<double, 7 * 16>>("std::array<double, 7 * 16>");
 	//QObject::connect(threadsim, SIGNAL(updataAngle(double)), occWidget, SLOT(setAngle(double)));
-	QObject::connect(threadsim, SIGNAL(updateLinkPq(std::array<double, 7 * 7>)), occWidget, SLOT(setLinkPq(std::array<double, 7 * 7>)));
+	//QObject::connect(threadsim, SIGNAL(updateLinkPm(std::array<double, 7 * 16>)), occWidget, SLOT(setLinkPm(std::array<double, 7 * 16>)));
+	QObject::connect(threadsim, SIGNAL(updateLinkPQ(std::array<double, 7 * 7>)), occWidget, SLOT(setLinkPQ(std::array<double, 7 * 7>)));
 	anyTest();
 
 

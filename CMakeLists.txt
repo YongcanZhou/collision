@@ -63,7 +63,7 @@ else()
 endif()
 find_package(hpp-fcl REQUIRED)
 
-# find aris_sim
+# find aris
 set(TARGET_ARIS_PATH "" CACHE PATH "Aris install path")
 if(EXISTS ${TARGET_ARIS_PATH})
         message(STATUS "Directory to search aris at ${TARGET_ARIS_PATH}")
@@ -73,15 +73,15 @@ else()
 endif()
 find_package(aris REQUIRED)
 
-# find aris_sim
-set(TARGET_ARIS_SIM_PATH "" CACHE PATH "Aris_sim install path")
-if(EXISTS ${TARGET_ARIS_SIM_PATH})
-        message(STATUS "Directory to search aris_sim at ${TARGET_ARIS_SIM_PATH}")
-        list(APPEND CMAKE_PREFIX_PATH ${TARGET_ARIS_SIM_PATH})
+# find sire
+set(TARGET_SIRE_PATH "" CACHE PATH "sire install path")
+if(EXISTS ${TARGET_SIRE_PATH})
+        message(STATUS "Directory to search sire at ${TARGET_SIRE_PATH}")
+        list(APPEND CMAKE_PREFIX_PATH ${TARGET_SIRE_PATH})
 else()
-        message(WARNING "File/Directory at variable TARGET_ARIS_SIM_PATH not exists!")
+        message(WARNING "File/Directory at variable TARGET_SIRE_PATH not exists!")
 endif()
-find_package(aris_sim REQUIRED)
+find_package(sire REQUIRED)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${EIGEN_INCLUDE_DIRS})
@@ -90,7 +90,7 @@ add_definitions(${PCL_DEFINITIONS})
 include_directories(${OpenCASCADE_INCLUDE_DIR})
 # include_directories(${aris_INCLUDE_DIRS})
 include_directories(${hpp-fcl_INCLUDE_DIRS})
-include_directories(${air_sim_INCLUDE_DIRS})
+include_directories(${sire_INCLUDE_DIRS})
 
 file(GLOB HEADERS
     ./src/visualization/*.h
@@ -104,23 +104,23 @@ file(GLOB SOURCES
 set(RESOURCES images/image.qrc)
 set(CMAKE_VERBOSE_MAKEFILE ON) 
 
-message("aris_sim_path:"${TARGET_ARIS_SIM_PATH})
-message("cmake: ${CMAKE_BUILD_TYPE}")
-message(""${aris_sim_DIR}/../../../lib/${CMAKE_BUILD_TYPE}/aris_sim_lib.dll"")
-message($<TARGET_FILE_DIR:${PROJECT_NAME}>)
+# message("aris_sim_path:"${TARGET_ARIS_SIM_PATH})
+# message("cmake: ${CMAKE_BUILD_TYPE}")
+# message(""${aris_sim_DIR}/../../../lib/${CMAKE_BUILD_TYPE}/aris_sim_lib.dll"")
+# message($<TARGET_FILE_DIR:${PROJECT_NAME}>)
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${RESOURCES})
 target_link_libraries(${PROJECT_NAME}  Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport Qt5::Gamepad)
 target_link_libraries(${PROJECT_NAME} ${OpenCASCADE_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${PCL_LIBRARIES} )
-target_link_libraries(${PROJECT_NAME} ${aris_sim_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${sire_LIBRARIES})
 
-STRING(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_LOW)
-message(${CMAKE_BUILD_TYPE_LOW})
+# STRING(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_LOW)
+# message(${CMAKE_BUILD_TYPE_LOW})
 
  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD        # Adds a post-build event to MyTest
      COMMAND ${CMAKE_COMMAND} -E copy  # which executes "cmake - E copy_if_different..."
-         "${aris_sim_DIR}/../../../lib/${CMAKE_BUILD_TYPE_LOW}/aris_sim_lib.dll"      # <--this is in-file
+         "${sire_DIR}/../../../lib/${CMAKE_BUILD_TYPE}/sire_lib.dll"      # <--this is in-file
          $<TARGET_FILE_DIR:${PROJECT_NAME}>)                 # <--this is out-file path
 
   add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD        # Adds a post-build event to MyTest

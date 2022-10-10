@@ -3,6 +3,7 @@
 #include <vtkAutoInit.h>
 // #include <vtkRenderWindow.h>
 
+#define PCL_NO_PRECOMPILE
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 #include <pcl/visualization/pcl_visualizer.h>

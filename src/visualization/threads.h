@@ -30,9 +30,9 @@ private:
 
 signals:
 	void updataAngle(double angle_);
-	void updateLinkPm(std::array<double, 7 * 16> link_pm);
-	void updateLinkPq(std::array<double, 7 * 7> link_pq);
-	void updateLinkPe(std::array<double, 7 * 6> link_pe);
+	void updateLinkPM(std::array<double, 7 * 16> link_pm);
+	void updateLinkPQ(std::array<double, 7 * 7> link_pq);
+	void updateLinkPE(std::array<double, 7 * 6> link_pe);
 public:
 	void ThreadStart();
 	void ThreadStop();
