@@ -6,33 +6,38 @@
 
 #include "general.h"
 #include "occ.h"
+#include "occview.h"
 
 class threadSimulation : public QThread
 {
 	Q_OBJECT
 
 public:
-	threadSimulation(QThread *parent=nullptr);
-	~threadSimulation();
+	explicit threadSimulation(QThread *parent=nullptr);
+	~threadSimulation() override;
 protected:
-	void run();
+	void run() override;
 private:
+//    OccView *occWidget_t;
 	double angle{ 0.0 };
 	QMutex m_lock;
 	bool threadStop{ true };
+  std::vector<std::array<double, 6>> TrackPoints;
 
-	double px, py, pz;
-	std::array<double, 7 * 16> link_pm;
-	std::array<double, 7 * 7> link_pq;
-	std::array<double, 7 * 6> link_pe;
-	size_t num_contacts;
+//	std::array<double, 7 * 16> link_pm{};
+	std::array<double, 7 * 7> link_pq{};
+//	std::array<double, 7 * 6> link_pe{};
+	size_t num_contacts{};
 	std::atomic_bool running; // set to stop thread
 
 signals:
-	void updataAngle(double angle_);
-	void updateLinkPM(std::array<double, 7 * 16> link_pm);
+//	void updataAngle(double angle_);
+//	void updateLinkPM(std::array<double, 7 * 16> link_pm);
 	void updateLinkPQ(std::array<double, 7 * 7> link_pq);
-	void updateLinkPE(std::array<double, 7 * 6> link_pe);
+
+private slots:
+//  void GetTrackPoints(std::vector<std::array<double, 6>> );
+
 public:
 	void ThreadStart();
 	void ThreadStop();
@@ -52,8 +57,8 @@ public:
 
 private:
 	friend class TaskManager;
-	TaskId m_id = 0;//任务编号
-	TaskJob m_fn;//任务的回调函数
+	TaskId m_id = 0;//??????
+	TaskJob m_fn;//???????????
 	TaskManager* m_manager = nullptr;
 };
 

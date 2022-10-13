@@ -12,6 +12,7 @@ set(CMAKE_AUTORCC ON)
 
 set(Boost_LIB_PREFIX "lib")
 set(Boost_ARCHITECTURE "-x64")
+SET(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:"msvcrt.lib")
 
 # find QT
 set(TARGET_QT_PATH "" CACHE PATH "QT install path")
