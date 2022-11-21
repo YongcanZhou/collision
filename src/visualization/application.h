@@ -17,9 +17,9 @@ public:
 public: //  from TDocStd_Application
     void NewDocument(
             const TCollection_ExtendedString& format,
-            opencascade::handle<TDocStd_Document>& outDoc) override;
+            opencascade::handle<TDocStd_Document>& outDoc) /*override*/;
 
-    void InitDocument(const opencascade::handle<TDocStd_Document>& doc) const override;
+    void InitDocument(const opencascade::handle<TDocStd_Document>& doc) const /*override*/;
 
 
 private:

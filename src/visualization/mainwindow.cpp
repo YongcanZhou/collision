@@ -5,18 +5,17 @@
 
 #define PCL_NO_PRECOMPILE
 
+#include <QMetaType>
+#include <QVector>
+#include <array>
+#include <boost/array.hpp>
+#include <pcl/io/pcd_io.h>
 #include <pcl/registration/icp.h>
 #include <pcl/registration/transforms.h>//变换矩阵类
 #include <pcl/visualization/pcl_visualizer.h>
-#include <pcl/io/pcd_io.h>
-#include <QVector>
-#include <QMetaType>
-#include <array>
-#include <boost/array.hpp>
 
-MainWindow::MainWindow(QWidget *parent) :
-        QMainWindow(parent),
-        ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+                                          ui(new Ui::MainWindow) {
   ui->setupUi(this);
   occWidget = new OccView(this);
   this->setWindowTitle(QString("KAANH"));
@@ -127,19 +126,18 @@ MainWindow::MainWindow(QWidget *parent) :
   buttonAxis06Backward->setText(tr("R6-"));
 
   struct ButtonCreationData {
-      QIcon icon;
-      QString text;
-      V3d_TypeOfOrientation proj;
+    QIcon icon;
+    QString text;
+    V3d_TypeOfOrientation proj;
   };
   const ButtonCreationData btnCreationData[] = {
-          {QIcon(":/themes/dark/view-iso.svg"),    tr("Isometric"), V3d_XposYnegZpos},
-          {QIcon(":/themes/dark/view-back.svg"),   tr("Back"),      V3d_Ypos},
-          {QIcon(":/themes/dark/view-front.svg"),  tr("Front"),     V3d_Yneg},
-          {QIcon(":/themes/dark/view-left.svg"),   tr("Left"),      V3d_Xneg},
-          {QIcon(":/themes/dark/view-right.svg"),  tr("Right"),     V3d_Xpos},
-          {QIcon(":/themes/dark/view-top.svg"),    tr("Top"),       V3d_Zpos},
-          {QIcon(":/themes/dark/view-bottom.svg"), tr("Bottom"),    V3d_Zneg}
-  };
+          {QIcon(":/themes/dark/view-iso.svg"), tr("Isometric"), V3d_XposYnegZpos},
+          {QIcon(":/themes/dark/view-back.svg"), tr("Back"), V3d_Ypos},
+          {QIcon(":/themes/dark/view-front.svg"), tr("Front"), V3d_Yneg},
+          {QIcon(":/themes/dark/view-left.svg"), tr("Left"), V3d_Xneg},
+          {QIcon(":/themes/dark/view-right.svg"), tr("Right"), V3d_Xpos},
+          {QIcon(":/themes/dark/view-top.svg"), tr("Top"), V3d_Zpos},
+          {QIcon(":/themes/dark/view-bottom.svg"), tr("Bottom"), V3d_Zneg}};
 
   auto btnViewMenu = Ui::createViewBtn(this, QIcon(":/themes/dark/view-iso.svg"), QString());
   btnViewMenu->setToolTip(btnCreationData[0].text);
@@ -148,8 +146,8 @@ MainWindow::MainWindow(QWidget *parent) :
   for (const ButtonCreationData &btnData: btnCreationData) {
     auto action = menuBtnView->addAction(btnData.icon, btnData.text);
     QObject::connect(action, &QAction::triggered, this, [=] {
-        occWidget->getView()->SetProj(btnData.proj);
-        occWidget->getView()->ZFitAll();
+      occWidget->getView()->SetProj(btnData.proj);
+      occWidget->getView()->ZFitAll();
     });
   }
 
@@ -168,33 +166,32 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
   QObject::connect(action01, &QAction::triggered, [=](bool checked) {
-      if (checked) {
-        occWidget->InstallFilters(TopAbs_ShapeEnum::TopAbs_VERTEX);
-      } else {
-        occWidget->UninstallFilters(TopAbs_ShapeEnum::TopAbs_VERTEX);
-      }
+    if (checked) {
+      occWidget->InstallFilters(TopAbs_ShapeEnum::TopAbs_VERTEX);
+    } else {
+      occWidget->UninstallFilters(TopAbs_ShapeEnum::TopAbs_VERTEX);
+    }
   });
   QObject::connect(action02, &QAction::triggered, this, [=](bool checked) {
-      if (checked) {
-        occWidget->InstallFilters(TopAbs_ShapeEnum::TopAbs_EDGE);
-      } else {
-        occWidget->UninstallFilters(TopAbs_ShapeEnum::TopAbs_EDGE);
-      }
-
+    if (checked) {
+      occWidget->InstallFilters(TopAbs_ShapeEnum::TopAbs_EDGE);
+    } else {
+      occWidget->UninstallFilters(TopAbs_ShapeEnum::TopAbs_EDGE);
+    }
   });
   QObject::connect(action03, &QAction::triggered, this, [=](bool checked) {
-      if (checked) {
-        occWidget->InstallFilters(TopAbs_ShapeEnum::TopAbs_WIRE);
-      } else {
-        occWidget->UninstallFilters(TopAbs_ShapeEnum::TopAbs_WIRE);
-      }
+    if (checked) {
+      occWidget->InstallFilters(TopAbs_ShapeEnum::TopAbs_WIRE);
+    } else {
+      occWidget->UninstallFilters(TopAbs_ShapeEnum::TopAbs_WIRE);
+    }
   });
   QObject::connect(action04, &QAction::triggered, this, [=](bool checked) {
-      if (checked) {
-        occWidget->InstallFilters(TopAbs_ShapeEnum::TopAbs_FACE);
-      } else {
-        occWidget->UninstallFilters(TopAbs_ShapeEnum::TopAbs_FACE);
-      }
+    if (checked) {
+      occWidget->InstallFilters(TopAbs_ShapeEnum::TopAbs_FACE);
+    } else {
+      occWidget->UninstallFilters(TopAbs_ShapeEnum::TopAbs_FACE);
+    }
   });
 
   qDebug() << "TopAbs_ShapeEnum::TopAbs_EDGE" << TopAbs_ShapeEnum::TopAbs_EDGE;
@@ -202,18 +199,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
   QProgressBar *bar = new QProgressBar(this);
-  bar->setRange(0, 100); //设置进度条最小值和最大值(取值范围)
-  bar->setMinimum(0); //设置进度条最小值
-  bar->setMaximum(100); //设置进度条最大值
-  bar->reset(); //让进度条重新回到开始
-  bar->setOrientation(Qt::Horizontal);  //水平方向
-  bar->setAlignment(Qt::AlignVCenter);  // 对齐方式
-  bar->setTextVisible(false); //隐藏进度条文本
+  bar->setRange(0, 100);              //设置进度条最小值和最大值(取值范围)
+  bar->setMinimum(0);                 //设置进度条最小值
+  bar->setMaximum(100);               //设置进度条最大值
+  bar->reset();                       //让进度条重新回到开始
+  bar->setOrientation(Qt::Horizontal);//水平方向
+  bar->setAlignment(Qt::AlignVCenter);// 对齐方式
+  bar->setTextVisible(false);         //隐藏进度条文本
   //bar->setFixedSize(258,5);   //进度条固定大小
-  bar->setInvertedAppearance(false); //true:反方向  false:正方向
-  bar->setVisible(true);  //false:隐藏进度条  true:显示进度条
+  bar->setInvertedAppearance(false);//true:反方向  false:正方向
+  bar->setVisible(true);            //false:隐藏进度条  true:显示进度条
   QObject::connect(occWidget, &OccView::sendimportValueSigal, [=](int value) {
-      bar->setValue(value);
+    bar->setValue(value);
   });
 
 
@@ -384,8 +381,8 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->treeWidget->addTopLevelItem(Doc1_treeitem);
   ui->treeWidget->addTopLevelItem(Doc2_treeitem);
   ui->treeWidget->addTopLevelItem(Doc3_treeitem);
-  connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem * , int)), this,
-          SLOT(TreeItemClicked(QTreeWidgetItem * , int)));
+  connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem *, int)), this,
+          SLOT(TreeItemClicked(QTreeWidgetItem *, int)));
 
 
   layout03->addWidget(buttonX);
@@ -425,10 +422,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
   QObject::connect(buttonFitAll, &Ui::ButtonFlat::clicked, this, [&] { occWidget->getView()->FitAll(); });
   QObject::connect(btnViewMenu, &Ui::ButtonFlat::clicked, this, [=] {
-      menuBtnView->popup(btnViewMenu->mapToGlobal({0, btnViewMenu->height()}));
+    menuBtnView->popup(btnViewMenu->mapToGlobal({0, btnViewMenu->height()}));
   });
   QObject::connect(menuFilterHomeButton, &QPushButton::clicked, this, [=] {
-      menuFilter->popup(menuFilterHomeButton->mapToGlobal({0, menuFilter->height()}));
+    menuFilter->popup(menuFilterHomeButton->mapToGlobal({0, menuFilter->height()}));
   });
 
   //    QObject::connect(occWidget, &OccView::mouseMovedSignal, [=](const QPoint& pos2d) {
@@ -443,86 +440,85 @@ MainWindow::MainWindow(QWidget *parent) :
   //    });
 
   QObject::connect(buttonNewToolCoordinate, &QPushButton::clicked, this, [=] {
-
-      if (!occWidget->getNewToolCoordinate()) {
-        QPalette pal = buttonNewToolCoordinate->palette();
-        pal.setColor(QPalette::ButtonText, Qt::green);
-        buttonNewToolCoordinate->setPalette(pal);
-        occWidget->getNewToolCoordinate() = true;
-        occWidget->initNewToolCoordinate();
-      } else {
-        QPalette pal = buttonNewToolCoordinate->palette();
-        pal.setColor(QPalette::ButtonText, Qt::gray);
-        buttonNewToolCoordinate->setPalette(pal);
-        occWidget->getNewToolCoordinate() = false;
-      }
+    if (!occWidget->getNewToolCoordinate()) {
+      QPalette pal = buttonNewToolCoordinate->palette();
+      pal.setColor(QPalette::ButtonText, Qt::green);
+      buttonNewToolCoordinate->setPalette(pal);
+      occWidget->getNewToolCoordinate() = true;
+      occWidget->initNewToolCoordinate();
+    } else {
+      QPalette pal = buttonNewToolCoordinate->palette();
+      pal.setColor(QPalette::ButtonText, Qt::gray);
+      buttonNewToolCoordinate->setPalette(pal);
+      occWidget->getNewToolCoordinate() = false;
+    }
   });
 
 
   QObject::connect(buttonNewPartCoordinate, &QPushButton::clicked, this, [=] {
-      if (!occWidget->getNewPartCoordinate()) {
-        QPalette pal = buttonNewPartCoordinate->palette();
-        pal.setColor(QPalette::ButtonText, Qt::green);
-        buttonNewPartCoordinate->setPalette(pal);
-        occWidget->getNewPartCoordinate() = true;
-        occWidget->initNewPartCoordinate();
-      } else {
-        QPalette pal = buttonNewPartCoordinate->palette();
-        pal.setColor(QPalette::ButtonText, Qt::gray);
-        buttonNewPartCoordinate->setPalette(pal);
-        occWidget->getNewPartCoordinate() = false;
-      }
+    if (!occWidget->getNewPartCoordinate()) {
+      QPalette pal = buttonNewPartCoordinate->palette();
+      pal.setColor(QPalette::ButtonText, Qt::green);
+      buttonNewPartCoordinate->setPalette(pal);
+      occWidget->getNewPartCoordinate() = true;
+      occWidget->initNewPartCoordinate();
+    } else {
+      QPalette pal = buttonNewPartCoordinate->palette();
+      pal.setColor(QPalette::ButtonText, Qt::gray);
+      buttonNewPartCoordinate->setPalette(pal);
+      occWidget->getNewPartCoordinate() = false;
+    }
   });
 
   QObject::connect(buttonAnaminationStart, &QPushButton::clicked, this, [=] {
-      threadsim->ThreadStart();
-      threadsim->start();
-      buttonAnaminationStart->setEnabled(false);
+    threadsim->ThreadStart();
+    threadsim->start();
+    buttonAnaminationStart->setEnabled(false);
   });
 
   QObject::connect(buttonAnaminationStop, &QPushButton::clicked, this, [=] {
-      threadsim->ThreadStop();
-      buttonAnaminationStart->setEnabled(true);
-      buttonAnaminationStop->setEnabled(true);
+    threadsim->ThreadStop();
+    buttonAnaminationStart->setEnabled(true);
+    buttonAnaminationStop->setEnabled(true);
   });
 
   QObject::connect(buttonAxis01Forward, &QPushButton::clicked, this, [&] {
-      occWidget->ButtonAxis01MoveForward();
+    occWidget->ButtonAxis01MoveForward();
   });
   QObject::connect(buttonAxis02Forward, &QPushButton::clicked, this, [&] {
-      occWidget->ButtonAxis02MoveForward();
+    occWidget->ButtonAxis02MoveForward();
   });
   QObject::connect(buttonAxis03Forward, &QPushButton::clicked, this, [&] {
-      occWidget->ButtonAxis03MoveForward();
+    occWidget->ButtonAxis03MoveForward();
   });
   QObject::connect(buttonAxis04Forward, &QPushButton::clicked, this, [&] {
-      occWidget->ButtonAxis04MoveForward();
+    occWidget->ButtonAxis04MoveForward();
   });
   QObject::connect(buttonAxis05Forward, &QPushButton::clicked, this, [&] {
-      occWidget->ButtonAxis05MoveForward();
+    occWidget->ButtonAxis05MoveForward();
   });
   QObject::connect(buttonAxis06Forward, &QPushButton::clicked, this, [&] {
-      occWidget->ButtonAxis06MoveForward();
+    occWidget->ButtonAxis06MoveForward();
   });
 
 
   QObject::connect(buttonAxis01Backward, &QPushButton::clicked, this, [&] {
-      occWidget->ButtonAxis01MoveBackward();
+    occWidget->ButtonAxis01MoveBackward();
   });
   QObject::connect(buttonAxis02Backward, &QPushButton::clicked, this, [&] {
-      occWidget->ButtonAxis02MoveBackward();
+    occWidget->ButtonAxis02MoveBackward();
   });
   QObject::connect(buttonAxis03Backward, &QPushButton::clicked, this, [&] {
-      occWidget->ButtonAxis03MoveBackward();
+    occWidget->ButtonAxis03MoveBackward();
   });
   QObject::connect(buttonAxis04Backward, &QPushButton::clicked, this, [&] {
-      occWidget->ButtonAxis04MoveBackward();
+    occWidget->ButtonAxis04MoveBackward();
   });
   QObject::connect(buttonAxis05Backward, &QPushButton::clicked, this, [&] {
-      occWidget->ButtonAxis05MoveBackward();
+    occWidget->ButtonAxis05MoveBackward();
   });
   QObject::connect(buttonAxis06Backward, &QPushButton::clicked, this, [&] {
-      occWidget->ButtonAxis06MoveBackward();
+    occWidget->ButtonAxis06MoveBackward();
   });
 
 
@@ -562,8 +558,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>(
-          pcl::PointCloud<pcl::PointXYZ>()),
-          cloud_icp = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>(pcl::PointCloud<pcl::PointXYZ>());
+                                              pcl::PointCloud<pcl::PointXYZ>()),
+                                      cloud_icp = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>(pcl::PointCloud<pcl::PointXYZ>());
   // cloud.reset(new pcl::PointCloud<pcl::PointXYZ>);
   // cloud_icp.reset(new pcl::PointCloud<pcl::PointXYZ>);
   // boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
@@ -583,8 +579,7 @@ MainWindow::MainWindow(QWidget *parent) :
   //viewer->addPointCloud(cloud, "cloud");
 
 
-
-  double theta = M_PI / 20;  // 设置旋转弧度的角度
+  double theta = M_PI / 20;// 设置旋转弧度的角度
   Eigen::Matrix4f transformation_matrix = Eigen::Matrix4f::Identity();
   transformation_matrix(0, 0) = cos(theta);
   transformation_matrix(0, 1) = -sin(theta);
@@ -685,9 +680,6 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->occTabWidgetPage3->setLayout(layout0300);
 
 
-
-
-
   /*****tabWidgetPage1******/
   /*****tabWidgetPage1******/
   /*****tabWidgetPage1******/
@@ -713,18 +705,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
   QObject::connect(buttonRobotMoveSim, &QPushButton::clicked, this, [&] {
-      occWidget->RobotMoveSim();
+    occWidget->RobotMoveSim();
   });
 
   QObject::connect(buttonPartMoveSim, &QPushButton::clicked, this, [&] {
-      occWidget->PartMoveSim();
+    occWidget->PartMoveSim();
   });
 
   QObject::connect(buttontoolTrihedronDisplay, &QPushButton::clicked, this, [&] {
-      occWidget->toolTrihedronDisplay();
+    occWidget->toolTrihedronDisplay();
   });
   QObject::connect(buttonRobotHome, &QPushButton::clicked, this, [&] {
-      occWidget->RobotBackHome();
+    occWidget->RobotBackHome();
   });
 
 
@@ -764,46 +756,46 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
   QObject::connect(buttonPartCoorOK, &QPushButton::clicked, this, [&] {
-      Ui::EularCoor eularcoor;
-      eularcoor.x = EditPartXCoor->text().toDouble();
-      eularcoor.y = EditPartYCoor->text().toDouble();
-      eularcoor.z = EditPartZCoor->text().toDouble();
-      eularcoor.rx = EditPartRXCoor->text().toDouble() * PI_OCC / 180;
-      eularcoor.ry = EditPartRYCoor->text().toDouble() * PI_OCC / 180;
-      eularcoor.rz = EditPartRZCoor->text().toDouble() * PI_OCC / 180;
-      occWidget->getPartCoor() = eularcoor;
-      occWidget->ButtonPartCoorOK();
+    Ui::EularCoor eularcoor;
+    eularcoor.x = EditPartXCoor->text().toDouble();
+    eularcoor.y = EditPartYCoor->text().toDouble();
+    eularcoor.z = EditPartZCoor->text().toDouble();
+    eularcoor.rx = EditPartRXCoor->text().toDouble() * PI_OCC / 180;
+    eularcoor.ry = EditPartRYCoor->text().toDouble() * PI_OCC / 180;
+    eularcoor.rz = EditPartRZCoor->text().toDouble() * PI_OCC / 180;
+    occWidget->getPartCoor() = eularcoor;
+    occWidget->ButtonPartCoorOK();
   });
 
   QObject::connect(occWidget, &OccView::NewToolCoordinateCompleteSigal, this, [=] {
-      QPalette pal = buttonNewToolCoordinate->palette();
-      pal.setColor(QPalette::ButtonText, Qt::gray);
-      buttonNewToolCoordinate->setPalette(pal);
-      buttonNewToolCoordinate->setEnabled(true);
-      occWidget->getNewToolCoordinate() = false;
+    QPalette pal = buttonNewToolCoordinate->palette();
+    pal.setColor(QPalette::ButtonText, Qt::gray);
+    buttonNewToolCoordinate->setPalette(pal);
+    buttonNewToolCoordinate->setEnabled(true);
+    occWidget->getNewToolCoordinate() = false;
 
 
-      EditToolXCoor->setText(QString::number(occWidget->getToolCoor().x, 'f', 3));
-      EditToolYCoor->setText(QString::number(occWidget->getToolCoor().y, 'f', 3));
-      EditToolZCoor->setText(QString::number(occWidget->getToolCoor().z, 'f', 3));
-      EditToolRXCoor->setText(QString::number(occWidget->getToolCoor().rx * 180 / PI_OCC, 'f', 3));
-      EditToolRYCoor->setText(QString::number(occWidget->getToolCoor().ry * 180 / PI_OCC, 'f', 3));
-      EditToolRZCoor->setText(QString::number(occWidget->getToolCoor().rz * 180 / PI_OCC, 'f', 3));
+    EditToolXCoor->setText(QString::number(occWidget->getToolCoor().x, 'f', 3));
+    EditToolYCoor->setText(QString::number(occWidget->getToolCoor().y, 'f', 3));
+    EditToolZCoor->setText(QString::number(occWidget->getToolCoor().z, 'f', 3));
+    EditToolRXCoor->setText(QString::number(occWidget->getToolCoor().rx * 180 / PI_OCC, 'f', 3));
+    EditToolRYCoor->setText(QString::number(occWidget->getToolCoor().ry * 180 / PI_OCC, 'f', 3));
+    EditToolRZCoor->setText(QString::number(occWidget->getToolCoor().rz * 180 / PI_OCC, 'f', 3));
   });
 
   QObject::connect(occWidget, &OccView::NewPartCoordinateCompleteSigal, this, [=] {
-      QPalette pal = buttonNewPartCoordinate->palette();
-      pal.setColor(QPalette::ButtonText, Qt::gray);
-      buttonNewPartCoordinate->setPalette(pal);
-      buttonNewPartCoordinate->setEnabled(true);
-      occWidget->getNewPartCoordinate() = false;
+    QPalette pal = buttonNewPartCoordinate->palette();
+    pal.setColor(QPalette::ButtonText, Qt::gray);
+    buttonNewPartCoordinate->setPalette(pal);
+    buttonNewPartCoordinate->setEnabled(true);
+    occWidget->getNewPartCoordinate() = false;
 
-      EditPartXCoor->setText(QString::number(occWidget->getPartCoor().x, 'f', 3));
-      EditPartYCoor->setText(QString::number(occWidget->getPartCoor().y, 'f', 3));
-      EditPartZCoor->setText(QString::number(occWidget->getPartCoor().z, 'f', 3));
-      EditPartRXCoor->setText(QString::number(occWidget->getPartCoor().rx * 180 / PI_OCC, 'f', 3));
-      EditPartRYCoor->setText(QString::number(occWidget->getPartCoor().ry * 180 / PI_OCC, 'f', 3));
-      EditPartRZCoor->setText(QString::number(occWidget->getPartCoor().rz * 180 / PI_OCC, 'f', 3));
+    EditPartXCoor->setText(QString::number(occWidget->getPartCoor().x, 'f', 3));
+    EditPartYCoor->setText(QString::number(occWidget->getPartCoor().y, 'f', 3));
+    EditPartZCoor->setText(QString::number(occWidget->getPartCoor().z, 'f', 3));
+    EditPartRXCoor->setText(QString::number(occWidget->getPartCoor().rx * 180 / PI_OCC, 'f', 3));
+    EditPartRYCoor->setText(QString::number(occWidget->getPartCoor().ry * 180 / PI_OCC, 'f', 3));
+    EditPartRZCoor->setText(QString::number(occWidget->getPartCoor().rz * 180 / PI_OCC, 'f', 3));
   });
 
 
@@ -841,17 +833,16 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->tabWidgetPage3->setLayout(layout07);
 
   QObject::connect(buttonToolCoorOK, &QPushButton::clicked, this, [&] {
-      Ui::EularCoor eularcoor;
-      eularcoor.x = EditToolXCoor->text().toDouble();
-      eularcoor.y = EditToolYCoor->text().toDouble();
-      eularcoor.z = EditToolZCoor->text().toDouble();
-      eularcoor.rx = EditToolRXCoor->text().toDouble() * PI_OCC / 180;
-      eularcoor.ry = EditToolRYCoor->text().toDouble() * PI_OCC / 180;
-      eularcoor.rz = EditToolRZCoor->text().toDouble() * PI_OCC / 180;
-      occWidget->getToolCoor() = eularcoor;
-      occWidget->ButtonToolCoorOK();
+    Ui::EularCoor eularcoor;
+    eularcoor.x = EditToolXCoor->text().toDouble();
+    eularcoor.y = EditToolYCoor->text().toDouble();
+    eularcoor.z = EditToolZCoor->text().toDouble();
+    eularcoor.rx = EditToolRXCoor->text().toDouble() * PI_OCC / 180;
+    eularcoor.ry = EditToolRYCoor->text().toDouble() * PI_OCC / 180;
+    eularcoor.rz = EditToolRZCoor->text().toDouble() * PI_OCC / 180;
+    occWidget->getToolCoor() = eularcoor;
+    occWidget->ButtonToolCoorOK();
   });
-
 
 
   /*****tabWidgetPage4******/
@@ -895,53 +886,52 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
   QObject::connect(buttonFirstCurve, &QPushButton::clicked, this, [=] {
-      occWidget->ButtonFirstCurve();
-      if (buttonFirstCurve->isEnabled()) {
-        buttonFirstCurve->setEnabled(false);
-      }
+    occWidget->ButtonFirstCurve();
+    if (buttonFirstCurve->isEnabled()) {
+      buttonFirstCurve->setEnabled(false);
+    }
   });
   QObject::connect(occWidget, &OccView::firstCurveCompleteSigal, this, [=] {
-      plainTextFirstCurve->appendPlainText(occWidget->PairfirstCurve.first);
-      if (!buttonFirstCurve->isEnabled()) {
-        buttonFirstCurve->setEnabled(true);
-      }
+    plainTextFirstCurve->appendPlainText(occWidget->PairfirstCurve.first);
+    if (!buttonFirstCurve->isEnabled()) {
+      buttonFirstCurve->setEnabled(true);
+    }
   });
   QObject::connect(occWidget, &OccView::secondCurveCompleteSigal, this, [=] {
-      plainTextSecondCurve->appendPlainText(occWidget->PairsecondCurve.first);
-      if (!buttonsecondCurve->isEnabled()) {
-        buttonsecondCurve->setEnabled(true);
-      }
+    plainTextSecondCurve->appendPlainText(occWidget->PairsecondCurve.first);
+    if (!buttonsecondCurve->isEnabled()) {
+      buttonsecondCurve->setEnabled(true);
+    }
   });
   QObject::connect(occWidget, &OccView::faceSelectCompleteSigal, this, [=] {
-      plainTextCalPlain->appendPlainText(occWidget->PairPlains.back().first);
-      if (!buttonStartCal->isEnabled()) {
-        buttonStartCal->setEnabled(true);
-      }
+    plainTextCalPlain->appendPlainText(occWidget->PairPlains.back().first);
+    if (!buttonStartCal->isEnabled()) {
+      buttonStartCal->setEnabled(true);
+    }
   });
 
   QObject::connect(buttonsecondCurve, &QPushButton::clicked, this, [=] {
-      occWidget->ButtonSecondCurve();
-      if (buttonsecondCurve->isEnabled()) {
-        buttonsecondCurve->setEnabled(false);
-      }
+    occWidget->ButtonSecondCurve();
+    if (buttonsecondCurve->isEnabled()) {
+      buttonsecondCurve->setEnabled(false);
+    }
   });
 
 
   QObject::connect(buttonCalPlain, &QPushButton::clicked, this, [=] {
-      occWidget->ButtonPlainSelect();
-      if (!buttonStartCal->isEnabled()) {
-        buttonStartCal->setEnabled(false);
-      }
-
+    occWidget->ButtonPlainSelect();
+    if (!buttonStartCal->isEnabled()) {
+      buttonStartCal->setEnabled(false);
+    }
   });
 
   QObject::connect(buttonStartCal, &QPushButton::clicked, this, [=] {
-      occWidget->ButtonPointsCal();
+    occWidget->ButtonPointsCal();
   });
 
-//  QObject::connect(buttonStartSim, &QPushButton::clicked, this, [=] {
-//      SLOT(occWidget->setLinkPQ(std::array<double, 7 * 7>) );
-//  });
+  //  QObject::connect(buttonStartSim, &QPushButton::clicked, this, [=] {
+  //      SLOT(occWidget->setLinkPQ(std::array<double, 7 * 7>) );
+  //  });
 
   /*****anyTest******/
   /*****anyTest******/
@@ -955,17 +945,16 @@ MainWindow::MainWindow(QWidget *parent) :
   //QObject::connect(threadsim, SIGNAL(updateLinkPm(std::array<double, 7 * 16>)), occWidget, SLOT(setLinkPm(std::array<double, 7 * 16>)));
 
   QObject::connect(threadsim, SIGNAL(updateLinkPQ(std::array<double, 7 * 7>)), occWidget,
-                  SLOT(setLinkPQ(std::array<double, 7 * 7>)));
-//  QObject::connect(occWidget,SIGNAL(setTrackPoints(std::vector<std::array<double, 6>>)),threadsim,
-//                                   SLOT(GetTrackPoints(std::vector<std::array<double, 6>> )) );
+                   SLOT(setLinkPQ(std::array<double, 7 * 7>)));
+  //  QObject::connect(occWidget,SIGNAL(setTrackPoints(std::vector<std::array<double, 6>>)),threadsim,
+  //                                   SLOT(GetTrackPoints(std::vector<std::array<double, 6>> )) );
   anyTest();
 
 
   //thread_visual
   update_time = new QTimer();
   QObject::connect(update_time, SIGNAL(timeout()), this, SLOT(time_update()));
-  update_time->start(10); //10m秒钟后启动
-
+  update_time->start(10);//10m秒钟后启动
 }
 
 MainWindow::~MainWindow() {
@@ -973,24 +962,7 @@ MainWindow::~MainWindow() {
   delete ui;
 }
 
-
-void MainWindow::on_actionWopImport_triggered() {
-  QFileDialog *fileDialog = new QFileDialog(this);
-  fileDialog->setWindowTitle(tr("Open Image"));
-  fileDialog->setDirectory(".");
-  fileDialog->setNameFilters(QStringList("(*.STEP)"));
-  QString path;
-  if (fileDialog->exec() == QDialog::Accepted) {
-    path = fileDialog->selectedFiles()[0];
-    QMessageBox::information(nullptr, tr("Path"), tr("You selected") + path);
-    occWidget->workpiecePath = path;
-    qDebug() << "path:" << occWidget->workpiecePath;
-    occWidget->loadDisplayWorkpiece();
-  } else {
-    QMessageBox::information(nullptr, tr("Path"), tr("You didn't select any files."));
-  }
-}
-
+//导入机器人 robot
 void MainWindow::on_actionRbtImport_triggered() {
   QFileDialog *fileDialog = new QFileDialog(this);
   fileDialog->setWindowTitle(tr("Open Image"));
@@ -1004,41 +976,42 @@ void MainWindow::on_actionRbtImport_triggered() {
     //occWidget->loadDisplayRobotWhole();
     //occWidget->ocaf->load(ui->treeWidget);
     occWidget->ReadFile(path, DocumentsPtr.begin()->first);
+
+    //diff
     bool m_isMergeXdeReferredShapeOn = true;
-
     auto buildWidgetItem = [&](QTreeWidgetItem *treeItem, const Assemly_Tree &modelTree) {
-        std::unordered_map<NodeId, QTreeWidgetItem *> mapNodeIdToTreeItem;
-        std::unordered_set<NodeId> setReferenceNodeId;
+      std::unordered_map<NodeId, QTreeWidgetItem *> mapNodeIdToTreeItem;
+      std::unordered_set<NodeId> setReferenceNodeId;
 
-        Ui::traverseTree(1, modelTree, [&](NodeId itNodeId) {
-            const NodeId nodeParentId = modelTree.nodeParent(itNodeId);
-            auto itParentFound = mapNodeIdToTreeItem.find(nodeParentId);
-            QTreeWidgetItem *guiParentNode =
-                    itParentFound != mapNodeIdToTreeItem.end() ? itParentFound->second : treeItem;
-            if (m_isMergeXdeReferredShapeOn) {
-              const TDF_Label &nodeLabel = modelTree.nodeData(itNodeId).label;
-              auto guiNode = new QTreeWidgetItem(guiParentNode);
-              QString guiNodeText = Ui::cafutils::to_QString(Ui::cafutils::labelAttrStdName(nodeLabel));
-              NodeId guiNodeId = itNodeId;
-              if (setReferenceNodeId.find(nodeParentId) != setReferenceNodeId.cend()) {
-                // const TDF_Label& refLabel = modelTree.nodeData(nodeParentId).label;
-                //guiNodeText = this->referenceItemText(refLabel, nodeLabel);
-                guiNodeId = nodeParentId;
-                if (!guiParentNode)
-                  mapNodeIdToTreeItem[nodeParentId] = guiNode;
-              }
+      Ui::traverseTree(1, modelTree, [&](NodeId itNodeId) {
+        const NodeId nodeParentId = modelTree.nodeParent(itNodeId);
+        auto itParentFound = mapNodeIdToTreeItem.find(nodeParentId);
+        QTreeWidgetItem *guiParentNode =
+                itParentFound != mapNodeIdToTreeItem.end() ? itParentFound->second : treeItem;
+        if (m_isMergeXdeReferredShapeOn) {
+          const TDF_Label &nodeLabel = modelTree.nodeData(itNodeId).label;
+          auto guiNode = new QTreeWidgetItem(guiParentNode);
+          QString guiNodeText = Ui::cafutils::to_QString(Ui::cafutils::labelAttrStdName(nodeLabel));
+          NodeId guiNodeId = itNodeId;
+          if (setReferenceNodeId.find(nodeParentId) != setReferenceNodeId.cend()) {
+            // const TDF_Label& refLabel = modelTree.nodeData(nodeParentId).label;
+            //guiNodeText = this->referenceItemText(refLabel, nodeLabel);
+            guiNodeId = nodeParentId;
+            if (!guiParentNode)
+              mapNodeIdToTreeItem[nodeParentId] = guiNode;
+          }
 
-              guiNode->setText(0, guiNodeText);
-              //WidgetModelTree::setDocumentTreeNode(guiNode, DocumentTreeNode(doc, guiNodeId));
-              const QIcon icon = Ui::cafutils::shapeIcon(nodeLabel);
-              if (!icon.isNull())
-                guiNode->setIcon(0, icon);
-              guiNode->setFlags(guiNode->flags() | Qt::ItemIsUserCheckable);
-              guiNode->setCheckState(0, Qt::Checked);
-              mapNodeIdToTreeItem[itNodeId] = guiNode;
-            }
-        });
-        //return mapNodeIdToTreeItem.find(0)->second;
+          guiNode->setText(0, guiNodeText);
+          //WidgetModelTree::setDocumentTreeNode(guiNode, DocumentTreeNode(doc, guiNodeId));
+          const QIcon icon = Ui::cafutils::shapeIcon(nodeLabel);
+          if (!icon.isNull())
+            guiNode->setIcon(0, icon);
+          guiNode->setFlags(guiNode->flags() | Qt::ItemIsUserCheckable);
+          guiNode->setCheckState(0, Qt::Checked);
+          mapNodeIdToTreeItem[itNodeId] = guiNode;
+        }
+      });
+      //return mapNodeIdToTreeItem.find(0)->second;
     };
 
     bool ok{false};
@@ -1050,9 +1023,33 @@ void MainWindow::on_actionRbtImport_triggered() {
   } else {
     QMessageBox::information(nullptr, tr("Path"), tr("You didn't select any files."));
   }
+
 }
 
+//加载工件 workpiece
+void MainWindow::on_actionWopImport_triggered() {
+  qDebug() << "on_actionWopImport_triggered";
+  QFileDialog *fileDialog = new QFileDialog(this);
+  fileDialog->setWindowTitle(tr("Open Image"));
+  fileDialog->setDirectory(".");
+  fileDialog->setNameFilters(QStringList("(*.STEP)"));
+  QString path;
+  if (fileDialog->exec() == QDialog::Accepted) {
+    path = fileDialog->selectedFiles()[0];
+    QMessageBox::information(nullptr, tr("Path"), tr("You selected") + path);
+    occWidget->workpiecePath = path;
+    qDebug() << "wop path:" << occWidget->workpiecePath;
+    occWidget->loadDisplayWorkpiece();
+  } else {
+    QMessageBox::information(nullptr, tr("Path"), tr("You didn't select any files."));
+  }
+
+}
+
+
+//导入机器人关节robot joint
 void MainWindow::on_actionRbtJointImport_triggered() {
+  qDebug() << "on_actionRbtJointImport_triggered";
   QFileDialog *fileDialog = new QFileDialog(this);
   fileDialog->setWindowTitle(tr("Open Image"));
   fileDialog->setDirectory(".");
@@ -1067,6 +1064,46 @@ void MainWindow::on_actionRbtJointImport_triggered() {
   } else {
     QMessageBox::information(nullptr, tr("Path"), tr("You didn't select any files."));
   }
+
+}
+
+//导入工具
+void MainWindow::on_actionToolImport_triggered() {
+  qDebug() << "on_actionToolImport_triggered";
+  QFileDialog *fileDialog = new QFileDialog(this);
+  fileDialog->setWindowTitle(tr("Open Image"));
+  fileDialog->setDirectory(".");
+  fileDialog->setNameFilters(QStringList("(*.STEP)"));
+  QString path;
+  if (fileDialog->exec() == QDialog::Accepted) {
+    path = fileDialog->selectedFiles()[0];
+    QMessageBox::information(nullptr, tr("Path"), tr("You selected") + path);
+    occWidget->toolPath = path;
+    qDebug() << "tool path:" << occWidget->toolPath;
+    occWidget->loadDisplayTool();
+  } else {
+    QMessageBox::information(nullptr, tr("Path"), tr("You didn't select any files."));
+  }
+
+}
+//导入点云
+void MainWindow::on_actionSTLImport_triggered() {
+  qDebug() << "on_actionSTLImport_triggered";
+  QFileDialog *fileDialog = new QFileDialog(this);
+  fileDialog->setWindowTitle(tr("Open STL"));
+  fileDialog->setDirectory(".");
+  fileDialog->setNameFilters(QStringList("(*.STL)"));
+  QString path;
+  if (fileDialog->exec() == QDialog::Accepted) {
+    path = fileDialog->selectedFiles()[0];
+    QMessageBox::information(nullptr, tr("Path"), tr("You selected") + path);
+    occWidget->stlPath = path;
+    qDebug() << "path:" << occWidget->stlPath;
+    occWidget->loadDisplaySTL();
+  } else {
+    QMessageBox::information(nullptr, tr("Path"), tr("You didn't select any files."));
+  }
+
 }
 
 void MainWindow::anyTest() {
@@ -1133,7 +1170,6 @@ void MainWindow::anyTest() {
   ui->qvtkWidget->SetRenderWindow(viewer->getRenderWindow());
   viewer->setupInteractor(ui->qvtkWidget->GetInteractor(), ui->qvtkWidget->GetRenderWindow());
   ui->qvtkWidget->update();*/
-
 }
 
 Handle(Document) MainWindow::currentDoc() {
@@ -1141,6 +1177,7 @@ Handle(Document) MainWindow::currentDoc() {
 }
 
 void MainWindow::TreeItemClicked(QTreeWidgetItem *item, int data) {
+  qDebug() << "TreeItemClicked";
   if (item == nullptr) {
     return;
   }
@@ -1177,39 +1214,6 @@ void MainWindow::TreeItemClicked(QTreeWidgetItem *item, int data) {
   }
 }
 
-void MainWindow::on_actionToolImport_triggered() {
-  QFileDialog *fileDialog = new QFileDialog(this);
-  fileDialog->setWindowTitle(tr("Open Image"));
-  fileDialog->setDirectory(".");
-  fileDialog->setNameFilters(QStringList("(*.STEP)"));
-  QString path;
-  if (fileDialog->exec() == QDialog::Accepted) {
-    path = fileDialog->selectedFiles()[0];
-    QMessageBox::information(nullptr, tr("Path"), tr("You selected") + path);
-    occWidget->toolPath = path;
-    qDebug() << "path:" << occWidget->toolPath;
-    occWidget->loadDisplayTool();
-  } else {
-    QMessageBox::information(nullptr, tr("Path"), tr("You didn't select any files."));
-  }
-}
-
-void MainWindow::on_actionSTLImport_triggered() {
-  QFileDialog *fileDialog = new QFileDialog(this);
-  fileDialog->setWindowTitle(tr("Open STL"));
-  fileDialog->setDirectory(".");
-  fileDialog->setNameFilters(QStringList("(*.STL)"));
-  QString path;
-  if (fileDialog->exec() == QDialog::Accepted) {
-    path = fileDialog->selectedFiles()[0];
-    QMessageBox::information(nullptr, tr("Path"), tr("You selected") + path);
-    occWidget->stlPath = path;
-    qDebug() << "path:" << occWidget->stlPath;
-    occWidget->loadDisplaySTL();
-  } else {
-    QMessageBox::information(nullptr, tr("Path"), tr("You didn't select any files."));
-  }
-}
 
 void MainWindow::on_actionNewDoc_triggered() {
   bool ok{false}, index{false};
@@ -1256,7 +1260,6 @@ void MainWindow::on_actionNewDoc_triggered() {
 
     pointsview->setLayout(ttt);
     clampview->setLayout(ddd);
-
   }
 }
 

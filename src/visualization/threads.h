@@ -8,6 +8,7 @@
 #include "occ.h"
 #include "occview.h"
 
+
 class threadSimulation : public QThread
 {
 	Q_OBJECT
@@ -67,13 +68,14 @@ class OccProgressIndicator : public QObject, public Message_ProgressIndicator {
 public:
 	OccProgressIndicator()
 	{
-		this->SetScale(0., 100., 1.);
+//		this->SetScale(0., 100., 1.);
 	}
 	bool UserBreak() override
 	{
 		return false;
 	}
-	bool Show(const bool force) override
+
+	bool Show(const Message_ProgressScope theScope,const bool force) /*override*/
 	{
 		emit updateProgress(this->GetPosition() * 100);
 		return false;

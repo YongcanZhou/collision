@@ -1,4 +1,16 @@
 ﻿#include "occview.h"
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepFeat_SplitShape.hxx>
+#include <BRepFill_PipeShell.hxx>
+#include <BRepOffsetAPI_MakePipe.hxx>
+#include <BRepOffsetAPI_MakePipeShell.hxx>
+#include <BRepPrimAPI_MakePrism.hxx>
+#include <BRepPrimAPI_MakeRevol.hxx>
+#include <GeomAPI_PointsToBSpline.hxx>
+#include <GeomFill_Pipe.hxx>
+#include <GeomLProp_SLProps.hxx>
+#include <GeomLib_IsPlanarSurface.hxx>
+#include <ShapeAnalysis_Surface.hxx>
 #include <sire.hpp>
 
 // #define ER100
@@ -98,8 +110,8 @@ OccView::OccView(QWidget *parent) : QWidget(parent) {
   XB4Ax5 = gp_Ax1(gp_Pnt(0.320, 0, 0.642), gp_Dir(0, 1, 0));
   XB4Ax6 = gp_Ax1(gp_Pnt(0.393, 0, 0.642), gp_Dir(1, 0, 0));
 
-  OccProgressIndicator *indicat = new OccProgressIndicator();
-  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
+//  OccProgressIndicator *indicat = new OccProgressIndicator();
+//  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
 
 #ifdef UR5
   GeneralAx1 = UR5Ax1;
@@ -274,58 +286,60 @@ void OccView::wheelEvent(QWheelEvent *event) {
   m_view->ZoomAtPoint(0, 0, event->angleDelta().y(), 0); //执行缩放
 }
 
+//mainwindows中加载 机器人 没用到的函数
 void OccView::loadDisplayRobotWhole() {
-  //load the file
-  //    STEPControl_Reader reader;
-  //    IFSelect_ReturnStatus stat = reader.ReadFile(workpiecePath.toUtf8());
-  //    switch (stat)
-  //    {
-  //    case IFSelect_RetVoid:
-  //        std::cout << "normal execution which created nothing, or no data to process!" << std::endl;
-  //        break;
-  //    case IFSelect_RetDone:
-  //        break;
-  //    case IFSelect_RetError:
-  //        std::cout << "error in command or input data, no execution!" << std::endl;
-  //        break;
-  //    case IFSelect_RetFail:
-  //        std::cout << "execution was run and has failed!" << std::endl;
-  //        break;
-  //    case IFSelect_RetStop:
-  //        std::cout << "indicates end or stop (such as Raise)!" << std::endl;
-  //        break;
-  //    default:
-  //        break;
-  //    }
-  //    if (stat != IFSelect_RetDone)
-  //        return;
+/*
+  load the file
+      STEPControl_Reader reader;
+      IFSelect_ReturnStatus stat = reader.ReadFile(workpiecePath.toUtf8());
+      switch (stat)
+      {
+      case IFSelect_RetVoid:
+          std::cout << "normal execution which created nothing, or no data to process!" << std::endl;
+          break;
+      case IFSelect_RetDone:
+          break;
+      case IFSelect_RetError:
+          std::cout << "error in command or input data, no execution!" << std::endl;
+          break;
+      case IFSelect_RetFail:
+          std::cout << "execution was run and has failed!" << std::endl;
+          break;
+      case IFSelect_RetStop:
+          std::cout << "indicates end or stop (such as Raise)!" << std::endl;
+          break;
+      default:
+          break;
+      }
+      if (stat != IFSelect_RetDone)
+          return;
 
-  //    //Selecting STEP entities for translation : The whole file
-  //    //加载文件
-  //    Standard_Integer NbRoots = reader.NbRootsForTransfer();
-  //    Standard_Integer num = reader.TransferRoots();
+      //Selecting STEP entities for translation : The whole file
+      //加载文件
+      Standard_Integer NbRoots = reader.NbRootsForTransfer();
+      Standard_Integer num = reader.TransferRoots();
 
-  //    //Mapping STEP entities to Open CASCADE Technology shapes
-  //    PartTopoShape = reader.OneShape();
-  //    auto number=reader.NbShapes();
-  //    qDebug()<<"NbRoots:"<< NbRoots;
-  //    qDebug()<<"num:"<< num;
-  //    qDebug()<<"number:"<< number;
-
-
-
-  //    qDebug()<<"position:"<<  PartTopoShape.Location().Transformation().TranslationPart().X()<<","<<  PartTopoShape.Location().Transformation().TranslationPart().Y()<<","<<  PartTopoShape.Location().Transformation().TranslationPart().Z();
+      //Mapping STEP entities to Open CASCADE Technology shapes
+      PartTopoShape = reader.OneShape();
+      auto number=reader.NbShapes();
+      qDebug()<<"NbRoots:"<< NbRoots;
+      qDebug()<<"num:"<< num;
+      qDebug()<<"number:"<< number;
 
 
-  //    gp_Vec vec(100,110,120);
-  //    gp_Trsf rsf01;
-  //    rsf01.SetTranslationPart(vec);
-  //    TopLoc_Location loc(rsf01);
-  //    PartTopoShape.Move(loc);
+
+      qDebug()<<"position:"<<  PartTopoShape.Location().Transformation().TranslationPart().X()<<","<<  PartTopoShape.Location().Transformation().TranslationPart().Y()<<","<<  PartTopoShape.Location().Transformation().TranslationPart().Z();
 
 
-  //    qDebug()<<"position01:"<<  PartTopoShape.Location().Transformation().TranslationPart().X()<<","<<  PartTopoShape.Location().Transformation().TranslationPart().Y()<<","<<  PartTopoShape.Location().Transformation().TranslationPart().Z();
+      gp_Vec vec(100,110,120);
+      gp_Trsf rsf01;
+      rsf01.SetTranslationPart(vec);
+      TopLoc_Location loc(rsf01);
+      PartTopoShape.Move(loc);
 
+
+      qDebug()<<"position01:"<<  PartTopoShape.Location().Transformation().TranslationPart().X()<<","<<  PartTopoShape.Location().Transformation().TranslationPart().Y()<<","<<  PartTopoShape.Location().Transformation().TranslationPart().Z();
+*/
 
   STEPCAFControl_Reader readercaf;
   readercaf.SetColorMode(true);
@@ -389,7 +403,6 @@ void OccView::loadDisplayRobotWhole() {
     delta = delta * delta;
     aiscon->Redisplay(true);
     m_context->Update(RobotAISShape[5], Standard_True);
-
     m_context->SetLocation(RobotAISShape[4], delta);
     m_context->Update(RobotAISShape[4], Standard_True);
 
@@ -517,10 +530,11 @@ void OccView::loadDisplayRobotJoints() {
     index = 0;
   }*/
 
-
+  m_view->FitAll();
 }
-
+//加载工件 workpiece
 void OccView::loadDisplayWorkpiece() {
+  qDebug() << "loadDisplayWorkpiece" ;
   STEPControl_Reader reader;
   IFSelect_ReturnStatus stat = reader.ReadFile(workpiecePath.toUtf8());
   switch (stat) {
@@ -543,25 +557,23 @@ void OccView::loadDisplayWorkpiece() {
   }
   if (stat != IFSelect_RetDone)
     return;
+//
+//  /*******注册progressbar***********/
+//  OccProgressIndicator *indicat = new OccProgressIndicator();
+//  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
+//  Handle_XSControl_WorkSession ws = reader.WS();
+//  ws->MapReader()->SetProgress(indicat);
 
-  /*******注册progressbar***********/
-  OccProgressIndicator *indicat = new OccProgressIndicator();
-  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
-  Handle_XSControl_WorkSession ws = reader.WS();
-  ws->MapReader()->SetProgress(indicat);
   Standard_Integer NbRoots = reader.NbRootsForTransfer();
   Standard_Integer num = reader.TransferRoots();
 
-
-
-
   //Mapping STEP entities to Open CASCADE Technology shapes
   PartTopoShape = reader.OneShape();
+
   auto number = reader.NbShapes();
   qDebug() << "NbRoots:" << NbRoots;
   qDebug() << "num:" << num;
   qDebug() << "number:" << number;
-
   //qDebug() << "position:" << PartTopoShape.Location().Transformation().TranslationPart().X() << "," << PartTopoShape.Location().Transformation().TranslationPart().Y() << "," << PartTopoShape.Location().Transformation().TranslationPart().Z();
   //gp_Vec vec(200, 200, 700);
   //gp_Trsf rsf01;
@@ -574,15 +586,12 @@ void OccView::loadDisplayWorkpiece() {
   if (m_context->HasLocation(PartAISShape)) {
     qDebug() << "m_context->HasLocation(PartAISShape)";
     double rx{0.0}, ry{0.0}, rz{0.0};
-    PartTopoShape.Location().Transformation().GetRotation().GetEulerAngles(gp_EulerSequence::gp_Extrinsic_XYZ, rx, ry,
-                                                                           rz);
+    PartTopoShape.Location().Transformation().GetRotation().GetEulerAngles(gp_EulerSequence::gp_Extrinsic_XYZ, rx, ry,rz);
     qDebug() << "rx:" << rx << "," << "ry:" << ry << "rz:" << rz;
-
   }
 
   double rx{0.0}, ry{0.0}, rz{0.0};
-  PartTopoShape.Location().Transformation().GetRotation().GetEulerAngles(gp_EulerSequence::gp_Extrinsic_XYZ, rx, ry,
-                                                                         rz);
+  PartTopoShape.Location().Transformation().GetRotation().GetEulerAngles(gp_EulerSequence::gp_Extrinsic_XYZ, rx, ry,rz);
   qDebug() << "rx:" << rx << "," << "ry:" << ry << "rz:" << rz;
 
   PartAISShape->SetDisplayMode(AIS_Shaded);
@@ -591,7 +600,7 @@ void OccView::loadDisplayWorkpiece() {
   m_view->FitAll();
 
 }
-
+//加载工具 workpiece
 void OccView::loadDisplayTool() {
   STEPControl_Reader reader;
   IFSelect_ReturnStatus stat = reader.ReadFile(toolPath.toUtf8());
@@ -619,11 +628,11 @@ void OccView::loadDisplayTool() {
   //Selecting STEP entities for translation : The whole file
   //加载文件
 
-  /*******注册progressbar***********/
-  OccProgressIndicator *indicat = new OccProgressIndicator();
-  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
-  Handle_XSControl_WorkSession ws = reader.WS();
-  ws->MapReader()->SetProgress(indicat);
+//  /*******注册progressbar***********/
+//  OccProgressIndicator *indicat = new OccProgressIndicator();
+//  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
+//  Handle_XSControl_WorkSession ws = reader.WS();
+//  ws->MapReader()->SetProgress(indicat);
 
   Standard_Integer NbRoots = reader.NbRootsForTransfer();
   Standard_Integer num = reader.TransferRoots();
@@ -655,32 +664,30 @@ void OccView::loadDisplayTool() {
   m_view->FitAll();
 
 
+  //设置位姿
   gp_Trsf trans, rot, transs;
   trans.SetTranslationPart(gp_Vec(100, 100, 100));
   gp_Quaternion qua;
   qua.SetEulerAngles(gp_EulerSequence::gp_Extrinsic_XYZ, 0.0, 0.0, 0.0);
   rot.SetRotation(qua);
   transs = trans * rot;
-
   //m_context->SetLocation(ToolAISShape, transs);
-
   auto loc = m_context->Location(ToolAISShape);
-
   qDebug() << "position:" << ToolTopoShape.Location().Transformation().TranslationPart().X() << ","
            << ToolTopoShape.Location().Transformation().TranslationPart().Y() << ","
            << PartTopoShape.Location().Transformation().TranslationPart().Z();
   qDebug() << "position01:" << ToolTopoShape.Location().Transformation().TranslationPart().X() << ","
            << ToolTopoShape.Location().Transformation().TranslationPart().Y() << ","
            << PartTopoShape.Location().Transformation().TranslationPart().Z();
-
   qDebug() << " loc.Transformation().TranslationPart():" << loc.Transformation().TranslationPart().X() << ","
            << loc.Transformation().TranslationPart().Y() << "," << loc.Transformation().TranslationPart().Z();
   double RX, RY, RZ;
   loc.Transformation().GetRotation().GetEulerAngles(gp_EulerSequence::gp_Extrinsic_XYZ, RX, RY, RZ);
-
   qDebug() << "loc.Transformation().TranslationPart():" << RX << "," << RY << "," << RZ;
 
   m_context->Update(ToolAISShape, true);
+
+  m_view->FitAll();
 }
 
 void OccView::loadDisplaySTL() {
@@ -697,8 +704,8 @@ void OccView::loadDisplaySTL() {
   Standard_Integer nTriangles = triFace->NbTriangles();
   TColgp_Array1OfPnt nodes(1, triFace->NbNodes());
   Poly_Array1OfTriangle triangles(1, triFace->NbTriangles());
-  nodes = triFace->Nodes();
-  triangles = triFace->Triangles();
+//  nodes = triFace->Nodes();
+//  triangles = triFace->Triangles();
 
 
 
@@ -754,34 +761,84 @@ void OccView::loadDisplaySTL() {
 
 
   qDebug() << "nTriangles:" << nTriangles << "," << triangles.Length();
-
+  m_view->FitAll();
 }
 
 void OccView::displayNormalVector() {
-  //遍历零件的面
-  for (TopExp_Explorer e(selectFaceShape, TopAbs_FACE); e.More(); e.Next()) {
-    TopoDS_Face aFace = TopoDS::Face(e.Current());
-    //拓扑面和几何曲面的方向相反时反转
-    if (aFace.Orientation() == TopAbs_REVERSED) {
-      aFace.Reversed();
-    }
-    BRepGProp_Face analysisFace(aFace);
-    Standard_Real umin, umax, vmin, vmax;
-    analysisFace.Bounds(umin, umax, vmin, vmax);//获取拓扑面的参数范围
-    Standard_Real midU, midV;
-    midU = (umin + umax) / 2;//拓扑面的参数中点
-    midV = (vmin + vmax) / 2;
-    gp_Vec norm;
-    gp_Pnt midPoint;
-    analysisFace.Normal(midU, midV, midPoint, norm);//返回面参数中点的坐标及其法向
-    //绘制法线
-    gp_Lin normLine(midPoint, gp_Dir(norm));
-    TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(normLine, 0, 20);
-    NormalVector.push_back(new AIS_Shape(anEdge));
-    m_context->Display(NormalVector.back(), Standard_True);
+
+
+
+  //Building the path curve
+  //Building elementaries edges
+  TopoDS_Edge edge1 = BRepBuilderAPI_MakeEdge(gp_Pnt(0,0,0),gp_Pnt(0,1,0));
+  GC_MakeArcOfCircle arc(gp_Pnt(0,1,0),gp_Pnt(0.5,1.5,0),gp_Pnt(1,1,0));
+  TopoDS_Edge edge2 = BRepBuilderAPI_MakeEdge(arc.Value());
+  TopoDS_Edge edge3 = BRepBuilderAPI_MakeEdge(gp_Pnt(1,1,0),gp_Pnt(1,0.5,0));
+  //Joining edges
+  TopoDS_Wire spine = BRepBuilderAPI_MakeWire(edge1,edge2,edge3);
+  //building profile
+  TopoDS_Wire profile = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(gp_Circ(gp_Ax2(gp_Pnt(0,0,0),gp_Dir(0,1,0)),0.1)));
+  //Building the pipe
+  BRepFill_PipeShell pipeBuilder(spine);
+  pipeBuilder.Add(profile);
+  pipeBuilder.Build();
+  TopoDS_Shape pipeShell = pipeBuilder.Shape();
+
+  //      绘制半圆
+  Handle(AIS_Shape) ais_pipeShell = new AIS_Shape(pipeShell);
+  m_context->SetColor(ais_pipeShell,Quantity_NOC_GREEN,Standard_True);
+  m_context->Display(ais_pipeShell, Standard_True);
+  PartAISShape->AddChild(ais_pipeShell);
+
+
+
+  //  qDebug() << "displayNormalVector:" ;
+//  //遍历零件的面
+//  for (TopExp_Explorer e(selectFaceShape, TopAbs_FACE); e.More(); e.Next()) {
+//    TopoDS_Face aFace = TopoDS::Face(e.Current());
+//    //拓扑面和几何曲面的方向相反时反转
+//    if (aFace.Orientation() == TopAbs_REVERSED) {
+//      aFace.Reversed();
+//    }
+//    BRepGProp_Face analysisFace(aFace);
+//    Standard_Real umin, umax, vmin, vmax;
+//    analysisFace.Bounds(umin, umax, vmin, vmax);//获取拓扑面的参数范围
+//    Standard_Real midU, midV;
+//    int piece = 10;
+//    midU = (umin + umax) / piece;//拓扑面的参数中点
+//    midV = (vmin + vmax) / piece;
+//    for(auto i=midU;i<piece;++midU){
+//      qDebug()<<"i"<<midU;
+//      for(auto j=midV;j<piece;++midV){
+//        qDebug()<<"j"<<midV;
+//        gp_Vec norm;
+//        gp_Pnt normPoint;
+//        analysisFace.Normal(i, j, normPoint, norm);//返回面参数中点的坐标及其法向
+//        //绘制法线
+//        gp_Lin normLine(normPoint, gp_Dir(norm));
+//        TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(normLine, 0, 20);
+//        NormalVector.push_back(new AIS_Shape(anEdge));
+//        m_context->Display(NormalVector.back(), Standard_True);
+//      }
+//    }
+//
+//
+//    gp_Vec norm;
+//    gp_Pnt midPoint;
+//    analysisFace.Normal(midU, midV, midPoint, norm);//返回面参数中点的坐标及其法向
+//    //绘制法线
+//    gp_Lin normLine(midPoint, gp_Dir(norm));
+//    TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(normLine, 0, 20);
+//    NormalVector.push_back(new AIS_Shape(anEdge));
+//    m_context->Display(NormalVector.back(), Standard_True);
+
+
     //Handle(AIS_Shape) ais_shape = new AIS_Shape(anEdge);
     //m_context->Display(ais_shape, Standard_True);
-  }
+//  }
+
+
+
 }
 
 void OccView::removeNormalVector() {
@@ -805,7 +862,7 @@ void OccView::InitView() {
     //创建Windows NT 窗口
     Handle(WNT_Window) wind = new WNT_Window((Aspect_Handle) window_handle);
     //创建3D查看器
-    m_viewer = new V3d_Viewer(m_graphic_driver, Standard_ExtString("viewer3d"));
+    m_viewer = new V3d_Viewer(m_graphic_driver/*, Standard_ExtString("viewer3d")*/);
     //创建视图
     m_view = m_viewer->CreateView();
     m_view->SetWindow(wind);
@@ -838,11 +895,11 @@ void OccView::InitView() {
                     Aspect_TOTP_LEFT_LOWER,
                     Graphic3d_Vec2i(85, 85)));
 
-    aisViewCube->Attributes()->DatumAspect()->LineAspect(Prs3d_DP_XAxis)->SetColor(Quantity_NOC_RED2);
+//    aisViewCube->Attributes()->DatumAspect()->LineAspect(Prs3d_DP_XAxis)->SetColor(Quantity_NOC_RED2);
     const Handle_Prs3d_DatumAspect &datumAspect = aisViewCube->Attributes()->DatumAspect();
-    datumAspect->ShadingAspect(Prs3d_DP_XAxis)->SetColor(Quantity_NOC_RED2);
-    datumAspect->ShadingAspect(Prs3d_DP_YAxis)->SetColor(Quantity_NOC_GREEN2);
-    datumAspect->ShadingAspect(Prs3d_DP_ZAxis)->SetColor(Quantity_NOC_BLUE2);
+//    datumAspect->ShadingAspect(Prs3d_DP_XAxis)->SetColor(Quantity_NOC_RED2);
+//    datumAspect->ShadingAspect(Prs3d_DP_YAxis)->SetColor(Quantity_NOC_GREEN2);
+//    datumAspect->ShadingAspect(Prs3d_DP_ZAxis)->SetColor(Quantity_NOC_BLUE2);
     m_context->Display(aisViewCube, true);
 
 
@@ -1332,7 +1389,6 @@ void OccView::startSelectSecondCurve() {
     TopoDS_Shape abc = m_context->DetectedShape();
     if (abc.ShapeType() == TopAbs_ShapeEnum::TopAbs_EDGE) {
       auto V = TopoDS::Edge(abc);
-
 
       PairsecondCurve = {"SECONDCURVE", V};
       emit secondCurveCompleteSigal();
@@ -2210,6 +2266,23 @@ void OccView::ButtonFirstCurve() {
   m_context->Activate(PartAISShape, aSubShapeSelMode);
   //选取第一条线到 PairfirstCurve 里
   selectFirstCurve = true;
+
+
+/*  //选择的线需要在面上面找到, 显示边界
+  auto aFace = TopoDS::Face(PairPlains.back().second);
+  Handle(Geom_Surface) surf=BRep_Tool::Surface(aFace); // get surface properties
+
+  for (TopExp_Explorer wireExp(aFace, TopAbs_WIRE); wireExp.More(); wireExp.Next()){
+    for (TopExp_Explorer edgeExp(wireExp.Current(), TopAbs_EDGE); edgeExp.More(); edgeExp.Next()){
+      TopoDS_Edge aFaceEdge = TopoDS::Edge(edgeExp.Current());
+      //绘制边界
+//      TopoDS_Edge aFaceEdge = BRepBuilderAPI_MakeEdge(anEdge, 0, 20);
+      Handle(AIS_Shape)aFaceEdgeais_shape = new AIS_Shape(aFaceEdge);
+      aFaceEdgeais_shape->SetColor(Quantity_NOC_RED2);
+      m_context->Display(aFaceEdgeais_shape, Standard_True);
+      // Next step
+    }
+  }*/
 }
 
 void OccView::ButtonSecondCurve() {
@@ -2226,135 +2299,362 @@ void OccView::ButtonPlainSelect() {
   selectFaces = true;
 }
 
+//点坐标转换为面上的UV值
+gp_Pnt2d OccView::FaceParameters(const TopoDS_Face &face,const gp_Pnt &pt)
+{
+  // get face as surface
+  const Handle(Geom_Surface) &surface = BRep_Tool::Surface(face);
+  // create shape analysis object
+  ShapeAnalysis_Surface sas(surface);
+  // get UV of point on surface
+  gp_Pnt2d uv = sas.ValueOfUV(pt, 0.01);
+  // return parameters of point on face
+  return uv;
+}
+
+//将边分割为点edge2points
+auto OccView::E2P(TopoDS_Edge &E,const int i)->std::vector<gp_Pnt>{
+  Standard_Real curve_first,curve_last;
+  Handle(Geom_Curve) curve = BRep_Tool::Curve(E, curve_first, curve_last);
+  std::vector<double>   params(i);
+  std::vector<gp_Pnt>   points(i);
+  //为了获得每个点，对线取等分
+  for (int k = 0; k < i; k++) {
+    params[k] = (curve_last - curve_first) / (i-1) * k + curve_first;
+    curve->D0(params[k], points[k]);
+    //std::cout<< " points["<<k<<"]:" << points[k].X() << " " << points[k].Y() << " " << points[k].Z()<<std::endl;
+    //绘制点
+    TopoDS_Vertex pvertex = BRepBuilderAPI_MakeVertex(points[k]);
+    Handle(AIS_Shape) pshape = new AIS_Shape(pvertex);
+    pshape->SetColor(Quantity_NOC_GOLD);
+    m_context->Display(pshape, Standard_True);
+    PartAISShape->AddChild(pshape);
+  }
+  return points;
+}
+
+//将边分割为点edge2UV
+auto OccView::E2UV(TopoDS_Edge &E, TopoDS_Face& F, const int i)->std::vector<gp_Pnt2d>{
+  Standard_Real curve_first,curve_last;
+  Handle(Geom_Curve) curve = BRep_Tool::Curve(E, curve_first, curve_last);
+  std::vector<double>   params(i);
+  std::vector<gp_Pnt>   points(i);
+  std::vector<gp_Pnt2d>   UV(i);
+  //为了获得每个点，对线取等分
+  for (int k = 0; k < i; k++) {
+    params[k] = (curve_last - curve_first) / (i-1) * k + curve_first;
+    curve->D0(params[k], points[k]);
+    //std::cout<< " points["<<k<<"]:" << points[k].X() << " " << points[k].Y() << " " << points[k].Z()<<std::endl;
+    //绘制点
+    TopoDS_Vertex pvertex = BRepBuilderAPI_MakeVertex(points[k]);
+    Handle(AIS_Shape) pshape = new AIS_Shape(pvertex);
+    pshape->SetColor(Quantity_NOC_GOLD);
+    m_context->Display(pshape, Standard_True);
+    PartAISShape->AddChild(pshape);
+    //点坐标转换为面上的UV值
+    UV[k]= FaceParameters(F,points[k]);
+//    std::cout<<"uv"<<UV[k].X()<<UV[k].Y()<<std::endl;
+  }
+  return UV;
+}
+
+//对面上的边生成法向量
+auto OccView::NormalFromEdge(TopoDS_Edge &E, TopoDS_Face& F,const int i) -> void {
+  Standard_Real curve_first,curve_last;
+  //TopoEdge转换成curve才能裁剪
+  Handle(Geom_Curve) curve = BRep_Tool::Curve(E, curve_first, curve_last);
+  std::vector<double>   params(i);
+  std::vector<gp_Pnt>   points(i);
+  //为了获得每个点UV，对边界线取等分
+  for (int k = 0; k < i; k++) {
+    params[k] = (curve_last - curve_first) / (i-1) * k + curve_first;
+    curve->D0(params[k], points[k]);
+//    std::cout<< " points["<<k<<"]:" << points[k].X() << " " << points[k].Y() << " " << points[k].Z()<<std::endl;
+    //绘制点
+    TopoDS_Vertex pvertex = BRepBuilderAPI_MakeVertex(points[k]);
+    Handle(AIS_Shape) pshape = new AIS_Shape(pvertex);
+    pshape->SetColor(Quantity_NOC_GOLD);
+    m_context->Display(pshape, Standard_True);
+    PartAISShape->AddChild(pshape);
+    //点坐标转换为面上的UV值
+    BRepGProp_Face analysisFace(F);
+    gp_Pnt2d uv = FaceParameters(F,points[k]);
+//    std::cout<<"uv"<<uv.X()<<uv.Y()<<std::endl;
+    gp_Vec norm;
+    gp_Pnt midPoint;
+    analysisFace.Normal(uv.X(), uv.Y(), midPoint, norm);//返回面参数中点的坐标及其法向
+    // 绘制法线
+    gp_Lin normLine(midPoint, gp_Dir(norm));
+    TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(normLine, 0, 20);
+    Handle(AIS_Shape)ais_shape = new AIS_Shape(anEdge);
+    ais_shape->SetColor(Quantity_NOC_BLUE1);
+    m_context->Display(ais_shape, Standard_True);
+  }
+}
+
 /********CAM计算*************/
 void OccView::ButtonPointsCal() {
-  double aFirst;
-  double aLast;
-  //定义线和面
-  auto edge = TopoDS::Edge(PairfirstCurve.second);
-  auto lastedge = TopoDS::Edge(PairsecondCurve.second);
-  auto face = TopoDS::Face(PairPlains.back().second);
-
-  Handle(Geom_Curve) curve = BRep_Tool::Curve(edge, aFirst, aLast);
-  //修剪
-  Handle(Geom_TrimmedCurve) TrimmedCurve = new Geom_TrimmedCurve(curve, aFirst, aLast);
-  Handle(Geom_TrimmedCurve) trimmer02 = new Geom_TrimmedCurve(TrimmedCurve, aFirst + 1, aLast - 1);
-  //to a B-spline curve
-  Handle(Geom_BSplineCurve) PCurve = GeomConvert::CurveToBSplineCurve(TrimmedCurve);
-
-  /**********平面和曲线相交****************/
+  //选择的面
+  auto aFace = TopoDS::Face(PairPlains.back().second);
+  //选择的第一边
+  auto first_edge = TopoDS::Edge(PairfirstCurve.second);
+  //选择的第二边
+  auto last_edge = TopoDS::Edge(PairsecondCurve.second);
+  TopLoc_Location loca;
+  Handle(Geom_Surface) Surface=BRep_Tool::Surface(aFace,loca);
+  GeomAdaptor_Surface theGASurface(Surface);
+  //Returns the type of the surface : 0Plane平面, Cylinder圆柱面, Cone圆锥面, Sphere球面, Torus圆环面,
+  // BezierSurface贝塞尔面, BSplineSurfaceB样条曲面, SurfaceOfRevolution旋转曲面, SurfaceOfExtrusion线性拉伸面,
+  // OtherSurface偏移曲面，（Rectangle Trim Surface 矩形裁剪曲面）
+  //确认面的朝向是外
+  if (aFace.Orientation() == TopAbs_REVERSED){aFace.Reversed();}
+  BRepGProp_Face analysisFace(aFace);
+  Standard_Real umin, umax, vmin, vmax;
+  analysisFace.Bounds(umin, umax, vmin, vmax);//获取拓扑面的参数范围
+  qDebug()<<"umin:"<<umin;
+  qDebug()<<"umax:"<<umax;
+  qDebug()<<"vmin:"<<vmin;
+  qDebug()<<"vmax:"<<vmax;
+  qDebug()<<theGASurface.GetType();
+  //判定为平面
+  if(theGASurface.GetType() == GeomAbs_Plane)
   {
+    qDebug()<<"surface is GeomAbs_Plane";
+/*    //获取面的边框线edge
+    auto Wire = BRepTools::OuterWire(aFace);
+    std::vector<TopoDS_Edge> someEdges;
+    std::vector<gp_Pnt2d> someuv;
+    for (TopExp_Explorer e(Wire, TopAbs_EDGE); e.More(); e.Next()){
+      TopoDS_Edge edge_outface = TopoDS::Edge(e.Current());
+      someEdges.push_back(edge_outface);
+      NormalFromEdge(edge_outface, aFace,5);
+    }*/
+    //边切割段数
+    const int i = 5;
+    //pipe的半径
+    const int r = 5;
+    std::vector<gp_Pnt> points1 = E2P(first_edge,i);
+    std::vector<gp_Pnt> points2 = E2P(last_edge,i);
+    std::vector<gp_Pnt2d> uv1 = E2UV(first_edge,aFace,i);
+    std::vector<gp_Pnt2d> uv2 = E2UV(last_edge,aFace,i);
+    Standard_Integer num_shape_section{0};
+    NormalFromEdge(first_edge, aFace,5);
+    do{
 
-
-    for (int j = 1; j < 20; j++) {
-
-
-      Standard_Real firstParam = curve->FirstParameter();
-      Standard_Real lastParam = curve->LastParameter();
+      //制作选择边的first_point形成的圆
+      Standard_Real curve_first,curve_last;
+      Handle(Geom_Curve) curve = BRep_Tool::Curve(first_edge, curve_first, curve_last);
       Standard_Real params[4];
       gp_Pnt points[4];
-      //曲线分成三段，有四个点
+      //为了获得每个点UV，对边界线取等分
       for (int k = 0; k < 4; k++) {
-        params[k] = (lastParam - firstParam) / 4 * k + firstParam;
+        params[k] = (curve_last - curve_first) / 4 * k + curve_first;
         curve->D0(params[k], points[k]);
+//        std::cout<< " points["<<k<<"]:" << points[k].X() << " " << points[k].Y() << " " << points[k].Z()<<std::endl;
+        //绘制点
+        TopoDS_Vertex pvertex = BRepBuilderAPI_MakeVertex(points[k]);
+        Handle(AIS_Shape) pshape = new AIS_Shape(pvertex);
+        pshape->SetColor(Quantity_NOC_GOLD);
+        m_context->Display(pshape, Standard_True);
+        PartAISShape->AddChild(pshape);
+        //点坐标转换为面上的UV值
+        gp_Pnt2d uv = FaceParameters(aFace,points[k]);
+//        std::cout<<"uv"<<uv.X()<<uv.Y()<<std::endl;
       }
+//      std::cout<<"point"<<points[0].X()<<" "<<points[0].Y()<<" "<<points[0].Z()<<std::endl;
 
-      //Direction
-      gp_Dir dir1(points[2].X() - points[1].X(), points[2].Y() - points[1].Y(), points[2].Z() - points[1].Z());
-      gp_Dir dir2(points[3].X() - points[2].X(), points[3].Y() - points[2].Y(), points[3].Z() - points[2].Z());
-      gp_Dir dir3;
+      //得到圆的方向和形状
+      gp_Dir dir_cir(points[1].X() - points[0].X(), points[1].Y() - points[0].Y(), points[1].Z() - points[0].Z());
+      gp_Circ circ_first(gp_Ax2(points[0],dir_cir),2);
 
-      gp_Pnt pnt00;
-      pnt00.SetX(points[0].X());
-      pnt00.SetY(points[0].Y());
-      pnt00.SetZ(points[0].Z() + j * 10);
-      dir3 = dir1 ^ dir2;
+      // 得到半圆semi_cir
+      gp_Dir dir_plane(points2[0].X() - points[0].X(), points2[0].Y() - points[0].Y(), points2[0].Z() - points[0].Z());
+      gp_Pln trimmed_plane(points[0], dir_plane);
+      gp_Dir dir_per = dir_cir ^ dir_plane;
+      gp_Pnt pUp (points[0].X()+dir_per.X(),points[0].Y()+dir_per.Y(),points[0].Z()+dir_per.Z());
+      gp_Pnt pDown(points[0].X()-dir_per.X(),points[0].Y()-dir_per.Y(),points[0].Z()-dir_per.Z());
+      Handle(Geom_TrimmedCurve) semi_cir = GC_MakeArcOfCircle(circ_first,pDown,pUp,1);
 
-      //plane
-      gp_Pln apln(pnt00, dir3);
-      Handle(Geom_Plane) gepln = new Geom_Plane(apln);
-      Handle(AIS_Plane) planeAIS = new AIS_Plane(gepln);
-      //m_context->Display(planeAIS, true);
+      TopoDS_Edge edge_cir = BRepBuilderAPI_MakeEdge(semi_cir);
+      TopoDS_Wire wire_cir = BRepBuilderAPI_MakeWire(edge_cir);
+      TopoDS_Shape pipe = BRepPrimAPI_MakePrism(wire_cir,dir_cir);//得到拉伸面
+      //绘制pipe
+      Handle(AIS_Shape) ais_pipe = new AIS_Shape(pipe);
+      m_context->SetColor(ais_pipe,Quantity_NOC_GOLD,Standard_True);
+      m_context->Display(ais_pipe, Standard_True);
+      PartAISShape->AddChild(ais_pipe);
 
-      PartAISShape->AddChild(planeAIS);
+      //绘制plane
+      Handle(Geom_Plane) gepln = new Geom_Plane(trimmed_plane);
+      Handle(AIS_Plane) ais_plane = new AIS_Plane(gepln);
+      m_context->SetColor(ais_plane,Quantity_NOC_GOLD,Standard_True);
+      m_context->Display(ais_plane, Standard_True);
+      PartAISShape->AddChild(ais_plane);
+//      std::cout<<"plane "<<std::endl;
 
-
-      BOOL index_=true;
-      // 切片 所选的面和计算的面 The algorithm is to build a Section operation between arguments and tools.
-      BRepAlgoAPI_Section section(face, apln, index_);
-
-      BRepAlgoAPI_Common com;
-
+      //拉伸面与选择的平面相交
+      BRepAlgoAPI_Section section(aFace, pipe, 1);
       section.ComputePCurveOn2(true);
       section.Approximation(true);
       section.Build();
-      //qDebug() << "index_:" << index_;
-      if (index_) {
-        auto shape = section.Shape();
+      auto shape_section = section.Shape();
+      num_shape_section = shape_section.NbChildren();
+//      std::cout<<num_shape_section<<std::endl;
+//      qDebug() << "shape.NbChildren():" << num_shape_section;
+      //  auto Compound_edge = TopoDS::Compound(shape_section);
+      //绘制section
+      Handle(AIS_Shape) ais_section = new AIS_Shape(shape_section);
+      m_context->SetColor(ais_section,Quantity_NOC_BLUE2,Standard_True);
+      m_context->Display(ais_section, Standard_True);
+      PartAISShape->AddChild(ais_section);
 
-
-        qDebug() << "shape.NbChildren():" << shape.NbChildren();
-        auto shapeEdge = TopoDS::Compound(shape);
-
-        Handle(AIS_Shape) aishape = new AIS_Shape(shape);
-        aishape->SetColor(Quantity_NOC_BLACK);
-        m_context->Display(aishape, true);
-
-        PartAISShape->AddChild(aishape);
-
-        double aaFirst;
-        double aaLast;
-
-        for (TopExp_Explorer e(shape, TopAbs_EDGE); e.More(); e.Next()) {
-          TopoDS_Edge aedge = TopoDS::Edge(e.Current());
-          qDebug() << "succeed";
-
-          Handle(Geom_Curve) aacurve = BRep_Tool::Curve(aedge, aaFirst, aaLast);
-          Handle(Geom_TrimmedCurve) aaTrimmedCurve = new Geom_TrimmedCurve(aacurve, aaFirst, aaLast);
-          Handle(Geom_BSplineCurve) aaPCurve = GeomConvert::CurveToBSplineCurve(aaTrimmedCurve);
-
-          Standard_Real aaafirst = aaPCurve->FirstParameter();
-          Standard_Real aaalast = aaPCurve->LastParameter();
-          for (int deta = 0; deta < 5; deta++) {
-            Standard_Real data = aaafirst + (aaalast - aaafirst) / 4 * deta;
-            gp_Pnt pdata;
-            gp_Vec vec1, vec2;
-            aaPCurve->D2(data, pdata, vec1, vec2);
-            TopoDS_Vertex pvertex = BRepBuilderAPI_MakeVertex(pdata);
-            Handle(AIS_Shape) pshape = new AIS_Shape(pvertex);
-            pshape->SetColor(Quantity_NOC_YELLOW);
-            m_context->Display(pshape, Standard_True);
-
-            PartAISShape->AddChild(pshape);
-
-            IntCurvesFace_ShapeIntersector *intsec = new IntCurvesFace_ShapeIntersector();
-            intsec->Load(face, 1);
-            gp_Lin normLine1(pdata, gp_Dir(vec2));
-            intsec->Perform(normLine1, -1, 1);
-            auto Udata = intsec->UParameter(1);
-            auto Vdata = intsec->VParameter(1);
-            BRepGProp_Face analysisFace(face);
-            gp_Pnt p1;
-            gp_Vec vecc;
-            analysisFace.Normal(Udata, Vdata, p1, vecc);
-            pointVecs.push_back({p1, vecc});
-            trackPoints.push_back({p1.X(),p1.Y(),p1.Z(),vecc.X(),vecc.Y(),vecc.Z()});
-//            emit setTrackPoints(trackPoints);
-            qDebug() << "pointVecs"<<p1.X()<<" "<<p1.Y()<<" "<<p1.Z()<<" "
-            <<"normal"<<vecc.X()<<" "<<vecc.Y()<<" "<<vecc.Z();
-
-            gp_Lin normLine2(p1, gp_Dir(vecc));
-            TopoDS_Edge anEdge2 = BRepBuilderAPI_MakeEdge(normLine2, 0, 20);
-            Handle(AIS_Shape) vecshape = new AIS_Shape(anEdge2);
-            vecshape->SetColor(Quantity_NOC_BLUE1);
-            m_context->Display(vecshape, Standard_True);
-            PartAISShape->AddChild(vecshape);
-          }
-        }
+      std::vector<gp_Pnt2d> compound_uv;
+      std::vector<TopoDS_Edge> his_edge;
+      his_edge.push_back(first_edge);
+      //对得到的相交线shape_section操作生成法向量
+      for (TopExp_Explorer e(shape_section, TopAbs_EDGE); e.More(); e.Next()){
+        TopoDS_Edge compound_edge = TopoDS::Edge(e.Current());
+        NormalFromEdge(compound_edge, aFace,5);
+        first_edge = compound_edge;
       }
+//      std::cout<<num_shape_section<<std::endl;
+    }while(num_shape_section!=0);
+  }else
+          if(theGASurface.GetType() == GeomAbs_BSplineSurface){
+     //todo BSplineSurface
+    qDebug()<<"surface is GeomAbs_BSplineSurface";
+      //边切割段数
+      const int i = 50;
+      //pipe的半径
+      const int r = 10;
+      //存储选择的线生成的点位置
+      std::vector<gp_Pnt> points_com;
+      std::vector<gp_Pnt> points1 = E2P(first_edge,i);
+      std::vector<gp_Pnt> points2 = E2P(last_edge,i);
+      std::vector<gp_Pnt2d> uv1 = E2UV(first_edge,aFace,i);
+      std::vector<gp_Pnt2d> uv2 = E2UV(last_edge,aFace,i);
+      //切边产生法向量
+      NormalFromEdge(first_edge,aFace,i);
+      int count = 0;
+      Standard_Integer num_point_com{0};
+      Standard_Integer num_shape_section{0};
+      do{
+        std::vector<gp_Pnt> points = E2P(first_edge,i);
+        //往外镜像点points包含外沿两点 i = i+2个点
+        gp_Pnt point_out1 = points[1];
+        point_out1.Mirror(points[0]);
+        gp_Pnt point_out2 = points[i-2];
+        point_out2.Mirror(points[i-1]);
+        points.insert(points.begin(),point_out1);
+        points.push_back(point_out2);
+        points_com.clear();
+        for(int k =0;k<points.size();++k){
+          std::cout<<"points "<<k<<" : "<<points[k].X()<<" "<<points[k].Y()<<" "<<points[k].Z()<<" "<<std::endl;
+        }
+        //build入口半圆
+        std::cout<<"cir start"<<std::endl;
+        std::cout<<"distance cir"<<points[2].Distance(points[0])<<std::endl;
+        gp_Dir dir_cir(points[1].X() - points[0].X(), points[1].Y() - points[0].Y(), points[1].Z() - points[0].Z());
+        gp_Circ circ_first(gp_Ax2(points[0],dir_cir),r);
+        gp_Dir dir_plane(points2[0].X() - points[0].X(), points2[0].Y() - points[0].Y(), points2[0].Z() - points[0].Z());
+        std::cout<<"dir start"<<std::endl;
+        gp_Dir dir_per;
+        try{
+          dir_per =  dir_plane ^ dir_cir;} catch (Standard_Failure& failure) {
+          qDebug() << failure.GetMessageString();}
+        gp_Pnt pUp (points[0].X()+dir_per.X(),points[0].Y()+dir_per.Y(),points[0].Z()+dir_per.Z());
+        gp_Pnt pDown(points[0].X()-dir_per.X(),points[0].Y()-dir_per.Y(),points[0].Z()-dir_per.Z());
+        Handle(Geom_TrimmedCurve) semi_cir = GC_MakeArcOfCircle(circ_first,pUp,pDown,1);
+        TopoDS_Edge edge_cir = BRepBuilderAPI_MakeEdge(semi_cir);
+        TopoDS_Wire wire_cir_first = BRepBuilderAPI_MakeWire(edge_cir);
+        std::cout<<"cir finish"<<std::endl;
+        //绘制半圆
+        Handle(AIS_Shape) ais_cir = new AIS_Shape(wire_cir_first);
+        m_context->SetColor(ais_cir,Quantity_NOC_GREEN,Standard_True);
+        m_context->Display(ais_cir, Standard_True);
+
+        //build出口半圆
+        std::cout<<"cir start"<<std::endl;
+        std::cout<<"distance cir"<<points[i+1].Distance(points[i])<<std::endl;
+        gp_Dir dir_cir_last(points[i+1].X() - points[i].X(), points[i+1].Y() - points[i].Y(), points[i+1].Z() - points[i].Z());
+        gp_Circ circ_last(gp_Ax2(points[i+1],dir_cir_last),r);
+        gp_Dir dir_plane_last(points2[i-1].X() - points[i].X(), points2[i-1].Y() - points[i].Y(), points2[i-1].Z() - points[i].Z());
+        gp_Dir dir_per_last;
+        try{
+          dir_per_last = dir_plane ^ dir_cir;
+        } catch (Standard_Failure& failure) {
+          //叉乘为0，为平面的情况
+          qDebug() << failure.GetMessageString();
+        }
+        std::cout<<"dir start"<<std::endl;
+        gp_Pnt pUp_last (points[i+1].X()+dir_per_last.X(),points[i+1].Y()+dir_per_last.Y(),points[i+1].Z()+dir_per_last.Z());
+        gp_Pnt pDown_last(points[i+1].X()-dir_per_last.X(),points[i+1].Y()-dir_per_last.Y(),points[i+1].Z()-dir_per_last.Z());
+        Handle(Geom_TrimmedCurve) semi_cir_last = GC_MakeArcOfCircle(circ_last,pUp_last,pDown_last,1);
+        TopoDS_Edge edge_cir_last = BRepBuilderAPI_MakeEdge(semi_cir_last);
+        TopoDS_Wire wire_cir_last = BRepBuilderAPI_MakeWire(edge_cir_last);
+        std::cout<<"cir finish"<<std::endl;
+        //绘制半圆
+        Handle(AIS_Shape) ais_cir_last = new AIS_Shape(wire_cir_last);
+        m_context->SetColor(ais_cir_last,Quantity_NOC_GREEN,Standard_True);
+        m_context->Display(ais_cir_last, Standard_True);
+
+        //管道路径(todo 相交出来的edge有问题 在面非常曲折的时候)
+        TopoDS_Wire wire_path_all = BRepBuilderAPI_MakeWire(first_edge);
+        //build pipe
+        BRepOffsetAPI_MakePipeShell mkPipeShell(wire_path_all);
+        mkPipeShell.SetMode(true);
+        mkPipeShell.SetForceApproxC1(true);
+        mkPipeShell.SetDiscreteMode();
+        mkPipeShell.SetTransitionMode(BRepBuilderAPI_RoundCorner);
+        mkPipeShell.Add(wire_cir_first, false, true);
+        mkPipeShell.Add(wire_cir_last, false, true);
+        if (!mkPipeShell.IsReady())
+          std::logic_error("shape is not ready to build");
+        std::cout<<"pipe start"<<std::endl;
+        mkPipeShell.Build();
+        TopoDS_Shape pipe =  mkPipeShell.Shape();
+        std::cout<<"pipe finish"<<std::endl;
+        //绘制pipe
+        Handle(AIS_Shape) ais_pipe = new AIS_Shape(pipe);
+        m_context->SetColor(ais_pipe,Quantity_NOC_GOLD1,Standard_True);
+        m_context->Display(ais_pipe, Standard_True);
+        PartAISShape->AddChild(ais_pipe);
+
+//        if(count<=3){
+           std::cout<<"section start"<<std::endl;
+          //拉伸面与选择的平面相交
+          BRepAlgoAPI_Section section(aFace, pipe, 1);
+          section.ComputePCurveOn1(true);
+          section.Approximation(true);
+          section.Build();
+          auto shape_section = section.Shape();
+          num_shape_section = shape_section.NbChildren();
+          std::cout<<"num_shape_section:"<<num_shape_section<<std::endl;
+          //  auto Compound_edge = TopoDS::Compound(shape_section);
+          //绘制section
+          Handle(AIS_Shape) ais_section = new AIS_Shape(shape_section);
+          m_context->SetColor(ais_section,Quantity_NOC_GREEN,Standard_True);
+          m_context->Display(ais_section, Standard_True);
+          PartAISShape->AddChild(ais_section);
+          std::cout<<"section "<<std::endl;
+
+          //对得到的相交线shape_section操作生成法向量
+          for (TopExp_Explorer e(shape_section, TopAbs_EDGE); e.More(); e.Next()){
+            TopoDS_Edge compound_edge = TopoDS::Edge(e.Current());
+            NormalFromEdge(compound_edge,aFace,i);
+            if(num_shape_section==1){first_edge = compound_edge;}
+            else{
+              std::cout<<"num_shape_section!=1, is:"<<num_shape_section<<std::endl;
+              return ;
+            }
+          }
+//        }
+        ++count;
+//      }while(count<=2);
+      }while(num_shape_section!=0);
     }
-  }
-  OccView::finish_norm = true;
+
+
 }
 
 void OccView::ConstructRobot(Assemly_Tree &tree) {
@@ -2436,23 +2736,22 @@ void OccView::setJointAngle(nameState joint, double angle) {
   }
 }
 
+//load robot
 void OccView::ReadFile(QString aFilePath, Handle(Document) doc) {
   STEPCAFControl_Reader reader;
   reader.SetColorMode(true);
   reader.SetNameMode(true);
   reader.ReadFile(aFilePath.toUtf8());
 
-
-  /*******注册progressbar***********/
-  OccProgressIndicator *indicat = new OccProgressIndicator();
-  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
-  Handle_XSControl_WorkSession ws = reader.Reader().WS();
-  ws->MapReader()->SetProgress(indicat);
+//  /*******注册progressbar***********/
+//  OccProgressIndicator *indicat = new OccProgressIndicator();
+//  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
+//  Handle_XSControl_WorkSession ws = reader.Reader().WS();
+//  ws->MapReader()->SetProgress(indicat);
 
 
   bool yes = reader.Transfer(doc);
   if (yes) {
-
     TDF_Label mainLabel = doc->Main();
     Handle(XCAFDoc_ShapeTool) ShapeTool = XCAFDoc_DocumentTool::ShapeTool(mainLabel);
     Handle(XCAFDoc_ColorTool) ColorTool = XCAFDoc_DocumentTool::ColorTool(mainLabel);
@@ -2463,7 +2762,7 @@ void OccView::ReadFile(QString aFilePath, Handle(Document) doc) {
       TDF_Label Label = tdfLabels.Value(1);
       Ui::deepBuildAssemblyTree(RootNodeID, Label, doc->docTree);
 
-      /******获取机器人的shape*****/
+      /******获取机器人的shape 到 RobotAISShape*****/
 
       TDF_LabelSequence components;
       XCAFDoc_ShapeTool::GetComponents(Label, components);
@@ -2482,9 +2781,15 @@ void OccView::ReadFile(QString aFilePath, Handle(Document) doc) {
       //RobotAISShape[0]->AddChild(RobotAISShape[1]);
     }
     initRobot();
-
   }
+  m_view->FitAll();
 }
+
+
+/*
+//import step
+原文链接：https://blog.csdn.net/qq_15714933/article/details/108813205
+*/
 
 //void OccView::setTrackPoints() {
 //

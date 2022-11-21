@@ -10,8 +10,8 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(Boost_LIB_PREFIX "lib")
-set(Boost_ARCHITECTURE "-x64")
+#set(Boost_LIB_PREFIX "lib")
+#set(Boost_ARCHITECTURE "-x64")
 SET(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:"msvcrt.lib")
 
 # find QT

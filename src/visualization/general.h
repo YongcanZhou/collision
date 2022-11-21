@@ -81,6 +81,13 @@ typedef enum JointType {
 }JointType;
 
 
+struct PointsVector {
+
+  gp_Pnt p1;// 原始点
+  gp_Vec v1; //法向量
+  gp_Vec v2; //切向量
+};
+
 static gp_Pnt V3dView_to3dPosition(const Handle_V3d_View& view, double x, double y)
 {
     double xEye, yEye, zEye, xAt, yAt, zAt;
