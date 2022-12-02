@@ -884,21 +884,35 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
   ui->tabWidgetPage4->setLayout(layout08);
 
-
+  //发送选择指令
   QObject::connect(buttonFirstCurve, &QPushButton::clicked, this, [=] {
     occWidget->ButtonFirstCurve();
     if (buttonFirstCurve->isEnabled()) {
       buttonFirstCurve->setEnabled(false);
     }
   });
+  QObject::connect(buttonsecondCurve, &QPushButton::clicked, this, [=] {
+    occWidget->ButtonSecondCurve();
+    if (buttonsecondCurve->isEnabled()) {
+      buttonsecondCurve->setEnabled(false);
+    }
+  });
+  QObject::connect(buttonCalPlain, &QPushButton::clicked, this, [=] {
+    occWidget->ButtonPlainSelect();
+    if (!buttonStartCal->isEnabled()) {
+      buttonStartCal->setEnabled(false);
+    }
+  });
+
+  //显示选择后的文字
   QObject::connect(occWidget, &OccView::firstCurveCompleteSigal, this, [=] {
-    plainTextFirstCurve->appendPlainText(occWidget->PairfirstCurve.first);
+    plainTextFirstCurve->appendPlainText(occWidget->PairfirstCurve.back().first);
     if (!buttonFirstCurve->isEnabled()) {
       buttonFirstCurve->setEnabled(true);
     }
   });
   QObject::connect(occWidget, &OccView::secondCurveCompleteSigal, this, [=] {
-    plainTextSecondCurve->appendPlainText(occWidget->PairsecondCurve.first);
+    plainTextSecondCurve->appendPlainText(occWidget->PairsecondCurve.back().first);
     if (!buttonsecondCurve->isEnabled()) {
       buttonsecondCurve->setEnabled(true);
     }
@@ -910,21 +924,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     }
   });
 
-  QObject::connect(buttonsecondCurve, &QPushButton::clicked, this, [=] {
-    occWidget->ButtonSecondCurve();
-    if (buttonsecondCurve->isEnabled()) {
-      buttonsecondCurve->setEnabled(false);
-    }
-  });
-
-
-  QObject::connect(buttonCalPlain, &QPushButton::clicked, this, [=] {
-    occWidget->ButtonPlainSelect();
-    if (!buttonStartCal->isEnabled()) {
-      buttonStartCal->setEnabled(false);
-    }
-  });
-
+  //开始计算指令
   QObject::connect(buttonStartCal, &QPushButton::clicked, this, [=] {
     occWidget->ButtonPointsCal();
   });

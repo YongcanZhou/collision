@@ -355,9 +355,12 @@ private:
 
 public:
   OCAFBrowser *ocaf;
-  std::pair<QString, TopoDS_Shape> PairfirstCurve;
-  std::pair<QString, TopoDS_Shape> PairsecondCurve;
+  std::vector<std::pair<QString, TopoDS_Shape>> PairfirstCurve;
+  std::vector<std::pair<QString, TopoDS_Shape>> PairsecondCurve;
   std::vector<std::pair<QString, TopoDS_Shape>> PairPlains;
+  int num_FC{0};
+  int num_SC{0};
+  int num_P{0};
   bool selectFirstCurve{false};
   bool selectSecondCurve{false};
   bool selectFaces{false};
@@ -368,7 +371,18 @@ public:
   //将边分割为点edge2points
   auto OccView::E2P(TopoDS_Edge &E,const int i)->std::vector<gp_Pnt>;
   //将边分割为点edge2UV
-  auto OccView::E2UV(TopoDS_Edge &E,TopoDS_Face& F,const int i)->std::vector<gp_Pnt2d>;
+  auto OccView::E2UV(const TopoDS_Edge &E,const TopoDS_Face& F,const int i)->std::vector<gp_Pnt2d>;
+  //将边分割为点VectorEdge2UV
+  auto OccView::VE2UV(const std::vector<std::pair<QString, TopoDS_Shape>>& VE, const TopoDS_Face& F,const int& i, bool* is_dir_X=false, bool* is_dir_Y=false )->std::vector<gp_Pnt2d>;
+  //设置点为0或者1
+  auto OccView::PointToPole(Standard_Real) -> Standard_Real;
+  //计算直线斜率
+  auto OccView::uv2atan(std::vector<gp_Pnt2d>) -> Standard_Real;
+  //X平均值
+  auto OccView::Xmean(std::vector<gp_Pnt2d>) -> Standard_Real;
+  //Y平均值
+  auto OccView::Ymean(std::vector<gp_Pnt2d>) -> Standard_Real;
+
 
 
 public:
