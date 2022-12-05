@@ -247,6 +247,10 @@ public:
   void ButtonPlainSelect();
   void ButtonPointsCal();
 
+//切入切出
+  void ButtonPointsCutOverCal();
+  void ButtonSaftyPlane();
+  void ButtonPointsSim();
 
   double &getJoint01CurrentAngle() { return Joint01CurrentAngle; }
   double &getJoint02CurrentAngle() { return Joint02CurrentAngle; }
@@ -291,13 +295,20 @@ private:
   Eigen::Matrix4d robot_tool0_matrix;
   bool ExternalToolEnable{true};
 
+//  std::vector<std::pair<gp_Pnt, gp_Vec>> pointVecs;//轨迹点
   std::vector<std::pair<gp_Pnt, gp_Vec>> pointVecs;//轨迹点
+  std::vector<std::vector<Ui::PointsVector>>  pointVecVecs;
+  Ui::CutOverData cutoverdata;
+  std::vector<std::vector<Ui::PointsVector>>  CutOver_CAM_pointVecVecs;
+  std::vector<std::vector<Ui::PointsVector>>  CutOver_CAM_saftypln_pointVecVecs;
 
   static std::vector<std::array<double, 6>> trackPoints /*{{1,1,1,1,1,1}}*/;//轨迹点
 public:
   static std::vector<std::array<double, 6>> GetTrackPoints() noexcept { return trackPoints; }
   //定义判定是否完成法向量计算
   static bool finish_norm;
+
+
 
 
 signals:
@@ -367,7 +378,7 @@ public:
   //点坐标转换为面上的UV值
   gp_Pnt2d FaceParameters(const TopoDS_Face &face,const gp_Pnt &pt);
   //对面上的边生成法向量
-  auto NormalFromEdge(TopoDS_Edge& E,TopoDS_Face& F,int i)->void;
+  auto NormalFromEdge(TopoDS_Edge& E,TopoDS_Face& F,int i) -> std::vector<Ui::PointsVector>;
   //将边分割为点edge2points
   auto OccView::E2P(TopoDS_Edge &E,const int i)->std::vector<gp_Pnt>;
   //将边分割为点edge2UV

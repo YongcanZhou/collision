@@ -88,6 +88,15 @@ struct PointsVector {
   gp_Vec v2; //切向量
 };
 
+struct CutOverData {
+  double radius{ 5.0 };
+  int pointNum { 3 };
+  double CutOverAngle{ 90.0 * PI_OCC / 180.0 };
+  double saftyplndis{ 40.0 };
+  double pathErrorValue{0.01};
+};
+
+
 static gp_Pnt V3dView_to3dPosition(const Handle_V3d_View& view, double x, double y)
 {
     double xEye, yEye, zEye, xAt, yAt, zAt;
