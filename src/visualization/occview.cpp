@@ -2446,15 +2446,20 @@ void OccView::ButtonPointsCal() {
 
   //选择的最后一个面判定
   auto aFace = TopoDS::Face(PairPlains.back().second);
-  //确认面的朝向是外
-  if (aFace.Orientation() == TopAbs_REVERSED) { aFace.Reversed(); }
+
   TopLoc_Location loca;
   Handle(Geom_Surface) Surface = BRep_Tool::Surface(aFace, loca);
   GeomAdaptor_Surface theGASurface(Surface);
   //OCC表示曲面的方法：Plane平面, Cylinder圆柱面, Cone圆锥面, Sphere球面, Torus圆环面,
   // BezierSurface贝塞尔面, BSplineSurfaceB样条曲面, SurfaceOfRevolution旋转曲面, SurfaceOfExtrusion线性拉伸面,
   // OtherSurface偏移曲面，（Rectangle Trim Surface 矩形裁剪曲面） 共十种曲面
-  qDebug() << " theGASurface.GetType():" << theGASurface.GetType();
+
+  //确认面的朝向是外
+  if (aFace.Orientation() == TopAbs_REVERSED) { aFace.Reversed(); }
+//  BRepGProp_Face analysisFace(aFace);
+//  Standard_Real umin, umax, vmin, vmax;
+//  analysisFace.Bounds(umin, umax, vmin, vmax);//获取拓扑面的参数范围
+//  qDebug() << " theGASurface.GetType():" << theGASurface.GetType();
 
   //判定为平面
   if (theGASurface.GetType() == GeomAbs_Plane) {
@@ -2556,7 +2561,7 @@ void OccView::ButtonPointsCal() {
     qDebug() << "surface is GeomAbs_BSplineSurface";
 
     //UV方法（平行曲线）     选择面+选择面的一边+选择面的对边
-    /* //边切割段数   横向
+   /*  //边切割段数   横向
     const int i{20};
     //pipe的半径   整个面走几刀  纵向（选择两线之间的距离）
     const int r{10};
@@ -2585,23 +2590,24 @@ void OccView::ButtonPointsCal() {
         if(is_dir_Y && Xmean(uv1)>0.5){//右边
           U = uv1[k].X() - delta;
           V = uv1[k].Y();
-          if(U<uv2[k].X()){continue;}
+//          if(U<uv2[k].X()){continue;}
         }else if(is_dir_Y && Xmean(uv1)<0.5){//左边
           U = uv1[k].X() + delta;
           V = uv1[k].Y()  ;
-          if(U>uv2[k].X()){continue;}
+//          if(U>uv2[k].X()){continue;}
         }else if(is_dir_X && Ymean(uv1)>0.5){//上边
           U = uv1[k].X() ;
           V = uv1[k].Y() - delta ;
-          if(V<uv2[k].Y()){continue;}
+//          if(V<uv2[k].Y()){continue;}
         }else{//下边
           U = uv1[k].X() ;
           V = uv1[k].Y() + delta;
-          if(V>uv2[k].Y()){continue;}
+//          if(V>uv2[k].Y()){continue;}
         }
         //绘制法线BRepGProp_Face
         gp_Vec norm_before(norm);
         gp_Pnt point_before(midPoint);
+        BRepGProp_Face analysisFace(aFace);
         analysisFace.Normal(U, V, midPoint, norm);//返回面参数中点的坐标及其法向
         gp_Lin normLine(midPoint, gp_Dir(norm));
         TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(normLine, 0, 5);
@@ -2624,10 +2630,10 @@ void OccView::ButtonPointsCal() {
         }
       }
       pointVecVecs.push_back(pointsVector);
-    }*/
-
+    }
+*/
     //UV方法(两曲线渐进)   选择面+选择面的一边+选择面的对边
-    /* //边切割段数
+   /*  //边切割段数
     const int i{20};
     //pipe的半径   整个面走几刀
     const int r{10};
@@ -2658,6 +2664,7 @@ void OccView::ButtonPointsCal() {
         //绘制法线BRepGProp_Face
         gp_Vec norm_before(norm);
         gp_Pnt point_before(midPoint);
+        BRepGProp_Face analysisFace(aFace);
         analysisFace.Normal(U, V, midPoint, norm);//返回面参数中点的坐标及其法向
         gp_Lin normLine(midPoint, gp_Dir(norm));
         TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(normLine, 0, 5);
@@ -2994,6 +3001,7 @@ void OccView::ButtonPointsCutOverCal() {
       dataPoint.v2 = vec1;
       vectorpoints.push_back(dataPoint);
     }
+
     CutOver_CAM_pointVecVecs.push_back(vectorpoints);
   }
 
