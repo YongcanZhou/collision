@@ -16,32 +16,36 @@ class threadSimulation : public QThread
 public:
 	explicit threadSimulation(QThread *parent=nullptr);
 	~threadSimulation() override;
+	void ThreadStart();
+	void ThreadStop();
+
 protected:
 	void run() override;
+
 private:
-//    OccView *occWidget_t;
 	double angle{ 0.0 };
 	QMutex m_lock;
 	bool threadStop{ true };
   std::vector<std::array<double, 6>> TrackPoints;
-
-//	std::array<double, 7 * 16> link_pm{};
-	std::array<double, 7 * 7> link_pq{};
-//	std::array<double, 7 * 6> link_pe{};
-	size_t num_contacts{};
+	std::array<double, 7 * 7> link_pq{0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+                                    0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+                                    1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1};
+	size_t num_contacts{0};
+  std::array<double, 7> sphere_pq{0};
 	std::atomic_bool running; // set to stop thread
+	//std::vector<std::vector<Ui::PointsVector>> CutOver_CAM_pointVecVecs;
+   std::vector<std::array<double, 6>> track_points;
+
 
 signals:
 //	void updataAngle(double angle_);
 //	void updateLinkPM(std::array<double, 7 * 16> link_pm);
 	void updateLinkPQ(std::array<double, 7 * 7> link_pq);
+  void updateSpherePQ(std::array<double, 7> );
 
 private slots:
 //  void GetTrackPoints(std::vector<std::array<double, 6>> );
 
-public:
-	void ThreadStart();
-	void ThreadStop();
 
 };
 
@@ -68,14 +72,14 @@ class OccProgressIndicator : public QObject, public Message_ProgressIndicator {
 public:
 	OccProgressIndicator()
 	{
-//		this->SetScale(0., 100., 1.);
+		this->SetScale(0., 100., 1.);
 	}
 	bool UserBreak() override
 	{
 		return false;
 	}
 
-	bool Show(const Message_ProgressScope theScope,const bool force) /*override*/
+	bool Show(const bool force) override
 	{
 		emit updateProgress(this->GetPosition() * 100);
 		return false;

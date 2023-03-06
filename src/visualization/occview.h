@@ -279,7 +279,7 @@ private:
   bool faceSelect{false};
   std::vector<Handle(AIS_Shape)> NormalVector;
   Handle_Graphic3d_Camera cameraStart, cameraEnd;
-  Handle(AIS_Shape) RobotAISShape[7];//机器人的shape
+  Handle(AIS_Shape) RobotAISShape[2];//机器人的shape
   Handle_AIS_Shape PartAISShape;     //工件的shape
   Handle_AIS_Shape ToolAISShape;     //工具的shape
   TopoDS_Shape RobotTopoShape, PartTopoShape, ToolTopoShape;
@@ -295,16 +295,15 @@ private:
   Eigen::Matrix4d robot_tool0_matrix;
   bool ExternalToolEnable{true};
 
-//  std::vector<std::pair<gp_Pnt, gp_Vec>> pointVecs;//轨迹点
   std::vector<std::pair<gp_Pnt, gp_Vec>> pointVecs;//轨迹点
-  std::vector<std::vector<Ui::PointsVector>>  pointVecVecs;
+  static std::vector<std::vector<Ui::PointsVector>> pointVecVecs;
   Ui::CutOverData cutoverdata;
-  std::vector<std::vector<Ui::PointsVector>>  CutOver_CAM_pointVecVecs;
+  static std::vector<std::vector<Ui::PointsVector>>  CutOver_CAM_pointVecVecs;
   std::vector<std::vector<Ui::PointsVector>>  CutOver_CAM_saftypln_pointVecVecs;
 
   static std::vector<std::array<double, 6>> trackPoints /*{{1,1,1,1,1,1}}*/;//轨迹点
 public:
-  static std::vector<std::array<double, 6>> GetTrackPoints() noexcept { return trackPoints; }
+  static std::vector<std::vector<Ui::PointsVector>> GetTrackPoints() noexcept { return pointVecVecs; }
   //定义判定是否完成法向量计算
   static bool finish_norm;
 
@@ -322,8 +321,9 @@ signals:
   //    void setTrackPoints(std::vector<std::array<double,6>> );
 
 private slots:
-  //    void setLinkPM(std::array<double, 7 * 16> link_pm);
+  //void setLinkPM(std::array<double, 7 * 16> link_pm);
   void setLinkPQ(std::array<double, 7 * 7> link_pq);
+  void setSpherePQ(std::array<double, 7 > );
 
   //    std::vector<std::array<double,6>> GetTrackPoints() noexcept {return trackPoints;}
   //  void setAngle(double angle);

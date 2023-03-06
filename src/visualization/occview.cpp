@@ -63,6 +63,8 @@ double OccView::Joint06OriginAngle_static = 0.0;
 #endif
 
 std::vector<std::array<double, 6>> OccView::trackPoints;
+std::vector<std::vector<Ui::PointsVector>> OccView::CutOver_CAM_pointVecVecs;
+std::vector<std::vector<Ui::PointsVector>> OccView::pointVecVecs;
 bool OccView::finish_norm{false};
 
 OccView::OccView(QWidget *parent) : QWidget(parent) {
@@ -113,8 +115,8 @@ OccView::OccView(QWidget *parent) : QWidget(parent) {
   XB4Ax5 = gp_Ax1(gp_Pnt(0.320, 0, 0.642), gp_Dir(0, 1, 0));
   XB4Ax6 = gp_Ax1(gp_Pnt(0.393, 0, 0.642), gp_Dir(1, 0, 0));
 
-  //  OccProgressIndicator *indicat = new OccProgressIndicator();
-  //  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
+  OccProgressIndicator *indicat = new OccProgressIndicator();
+  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
 
 #ifdef UR5
   GeneralAx1 = UR5Ax1;
@@ -558,10 +560,10 @@ void OccView::loadDisplayWorkpiece() {
     return;
   //
   //  /*******注册progressbar***********/
-  //  OccProgressIndicator *indicat = new OccProgressIndicator();
-  //  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
-  //  Handle_XSControl_WorkSession ws = reader.WS();
-  //  ws->MapReader()->SetProgress(indicat);
+    OccProgressIndicator *indicat = new OccProgressIndicator();
+    QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
+    Handle_XSControl_WorkSession ws = reader.WS(); 
+    ws->MapReader()->SetProgress(indicat);
 
   Standard_Integer NbRoots = reader.NbRootsForTransfer();
   Standard_Integer num = reader.TransferRoots();
@@ -629,10 +631,10 @@ void OccView::loadDisplayTool() {
   //加载文件
 
   //  /*******注册progressbar***********/
-  //  OccProgressIndicator *indicat = new OccProgressIndicator();
-  //  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
-  //  Handle_XSControl_WorkSession ws = reader.WS();
-  //  ws->MapReader()->SetProgress(indicat);
+    OccProgressIndicator *indicat = new OccProgressIndicator();
+    QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
+    Handle_XSControl_WorkSession ws = reader.WS();
+    ws->MapReader()->SetProgress(indicat);
 
   Standard_Integer NbRoots = reader.NbRootsForTransfer();
   Standard_Integer num = reader.TransferRoots();
@@ -1950,6 +1952,21 @@ void OccView::setLinkPQ(std::array<double, 7 * 7> link_pq) {
   //  std::cout<<"test"<<std::endl;
 }
 
+void OccView::setSpherePQ(std::array<double, 7 > sphere_pq) {
+  gp_Trsf transformation;
+  //transformation.SetTransformation(
+  //        gp_Quaternion(sphere_pq[ 3], sphere_pq[ 4], sphere_pq[5], sphere_pq[ 6]),
+  //        gp_Vec(sphere_pq[0] * 1000, sphere_pq[1] * 1000, sphere_pq[2] * 1000));
+  
+  static std::array<double, 7> sphere_pq_init = sphere_pq;
+  //传进来的是一个delta值
+  transformation.SetTranslation(gp_Vec(sphere_pq[0] * 1000, sphere_pq[1] * 1000, (sphere_pq[2]-sphere_pq_init[2]) * 1000));
+ /* std::cout << "position:"
+            << "x " << sphere_pq[0] << " y " << sphere_pq[1] << " z " << (sphere_pq[2] - sphere_pq_init[2]) * 1000 << std::endl;*/
+  m_context->SetLocation(RobotAISShape[1], transformation);
+  m_context->UpdateCurrentViewer();
+}
+
 //
 //void OccView::setAngle(double angle) {
 //  gp_Trsf trans1, trans2, trans3, trans4, trans5, trans6;
@@ -2456,10 +2473,6 @@ void OccView::ButtonPointsCal() {
 
   //确认面的朝向是外
   if (aFace.Orientation() == TopAbs_REVERSED) { aFace.Reversed(); }
-//  BRepGProp_Face analysisFace(aFace);
-//  Standard_Real umin, umax, vmin, vmax;
-//  analysisFace.Bounds(umin, umax, vmin, vmax);//获取拓扑面的参数范围
-//  qDebug() << " theGASurface.GetType():" << theGASurface.GetType();
 
   //判定为平面
   if (theGASurface.GetType() == GeomAbs_Plane) {
@@ -2560,11 +2573,38 @@ void OccView::ButtonPointsCal() {
   else if (theGASurface.GetType() == GeomAbs_BSplineSurface) {
     qDebug() << "surface is GeomAbs_BSplineSurface";
 
-    //UV方法（平行曲线）     选择面+选择面的一边+选择面的对边
-   /*  //边切割段数   横向
+    //UV方法（平行曲线）     选择面+选择面的一边+选择面的对边 （任意边）
+/*    //边切割段数   横向
     const int i{20};
     //pipe的半径   整个面走几刀  纵向（选择两线之间的距离）
     const int r{10};
+
+    BRepGProp_Face analysisFace(aFace);
+    Standard_Real umin, umax, vmin, vmax;
+    analysisFace.Bounds(umin, umax, vmin, vmax);//获取拓扑面的参数范围
+    //遍历生成
+    for(int Udelta = 0; Udelta <= i; Udelta++){
+      for(int Vdelta = 0; Vdelta <= r; Vdelta++){
+        Standard_Real U = (umin + umax) * Udelta / i;
+        Standard_Real V = (vmin + vmax) * Vdelta / r;
+        //        std::cout<<"u"<<U<<" v"<<V<<std::endl;
+        gp_Vec vec_norm;
+        gp_Pnt pnt_norm;
+        analysisFace.Normal(U,V,pnt_norm,vec_norm);
+        gp_Lin lin_norm(pnt_norm,gp_Dir(vec_norm));
+        TopoDS_Edge edge_norm = BRepBuilderAPI_MakeEdge(lin_norm,0,20);
+        Handle(AIS_Shape) ais_norm = new AIS_Shape(edge_norm);
+        ais_norm ->SetColor(Quantity_NOC_BLUE1);
+        m_context->Display(ais_norm,Standard_True);
+      }
+    }*/
+
+
+    //UV方法（平行曲线）     选择面+选择面的一边+选择面的对边
+     //边切割段数   横向
+    const int i{20};
+    //pipe的半径   整个面走几刀  纵向（选择两线之间的距离）
+    const int r{20};
     //将边分割为点VectorEdge2UV
     bool is_dir_X{false},is_dir_Y{false};
     std::vector<gp_Pnt2d> uv1 = VE2UV(PairfirstCurve, aFace, i, &is_dir_X, &is_dir_Y);
@@ -2590,19 +2630,19 @@ void OccView::ButtonPointsCal() {
         if(is_dir_Y && Xmean(uv1)>0.5){//右边
           U = uv1[k].X() - delta;
           V = uv1[k].Y();
-//          if(U<uv2[k].X()){continue;}
+          if(U<uv2[k].X()){continue;}
         }else if(is_dir_Y && Xmean(uv1)<0.5){//左边
           U = uv1[k].X() + delta;
           V = uv1[k].Y()  ;
-//          if(U>uv2[k].X()){continue;}
+          if(U>uv2[k].X()){continue;}
         }else if(is_dir_X && Ymean(uv1)>0.5){//上边
           U = uv1[k].X() ;
           V = uv1[k].Y() - delta ;
-//          if(V<uv2[k].Y()){continue;}
+          if(V<uv2[k].Y()){continue;}
         }else{//下边
           U = uv1[k].X() ;
           V = uv1[k].Y() + delta;
-//          if(V>uv2[k].Y()){continue;}
+          if(V>uv2[k].Y()){continue;}
         }
         //绘制法线BRepGProp_Face
         gp_Vec norm_before(norm);
@@ -2631,7 +2671,6 @@ void OccView::ButtonPointsCal() {
       }
       pointVecVecs.push_back(pointsVector);
     }
-*/
     //UV方法(两曲线渐进)   选择面+选择面的一边+选择面的对边
    /*  //边切割段数
     const int i{20};
@@ -2863,8 +2902,11 @@ void OccView::ButtonPointsCal() {
 
   }//判断曲面
 
+  finish_norm = true;
+
   //计算切入切出
   ButtonPointsCutOverCal();
+
 }
 
 

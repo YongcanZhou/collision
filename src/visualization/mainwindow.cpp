@@ -574,7 +574,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
   pointsview->setRenderWindow(viewer->getRenderWindow());
   viewer->setupInteractor(pointsview->interactor(), pointsview->renderWindow());
 #endif
-  char strfilepath[256] = "C:/Users/ZHOUYC/Desktop/rabbit.pcd";
+  char strfilepath[256] = "./bunny.pcd";
   pcl::io::loadPCDFile(strfilepath, *cloud);
   //viewer->addPointCloud(cloud, "cloud");
 
@@ -939,13 +939,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
   /*****anyTest******/
 
   qRegisterMetaType<std::array<double, 7 * 7>>("std::array<double, 7 * 7>");
+
+  qRegisterMetaType<std::array<double, 7 >>("std::array<double, 7 >");
+
   qRegisterMetaType<std::vector<std::array<double, 6>>>("std::vector<std::array<double, 6>>");
+
   // qRegisterMetaType<std::array<double, 7 * 16>>("std::array<double, 7 * 16>");
   //QObject::connect(threadsim, SIGNAL(updataAngle(double)), occWidget, SLOT(setAngle(double)));
   //QObject::connect(threadsim, SIGNAL(updateLinkPm(std::array<double, 7 * 16>)), occWidget, SLOT(setLinkPm(std::array<double, 7 * 16>)));
 
   QObject::connect(threadsim, SIGNAL(updateLinkPQ(std::array<double, 7 * 7>)), occWidget,
                    SLOT(setLinkPQ(std::array<double, 7 * 7>)));
+  QObject::connect(threadsim, SIGNAL(updateSpherePQ(std::array<double, 7 >)), occWidget,
+                   SLOT(setSpherePQ(std::array<double, 7 >)));
+
   //  QObject::connect(occWidget,SIGNAL(setTrackPoints(std::vector<std::array<double, 6>>)),threadsim,
   //                                   SLOT(GetTrackPoints(std::vector<std::array<double, 6>> )) );
   anyTest();
@@ -954,7 +961,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
   //thread_visual
   update_time = new QTimer();
   QObject::connect(update_time, SIGNAL(timeout()), this, SLOT(time_update()));
-  update_time->start(10);//10m秒钟后启动
+  update_time->start(1);//1ms秒钟后启动
 }
 
 MainWindow::~MainWindow() {
