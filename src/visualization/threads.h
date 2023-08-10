@@ -23,6 +23,9 @@ protected:
 	void run() override;
 
 private:
+  auto BallRebound()->void;
+  auto XB4Push() -> void;
+
 	double angle{ 0.0 };
 	QMutex m_lock;
 	bool threadStop{ true };
@@ -33,8 +36,9 @@ private:
 	size_t num_contacts{0};
   std::array<double, 7> sphere_pq{0};
 	std::atomic_bool running; // set to stop thread
-	//std::vector<std::vector<Ui::PointsVector>> CutOver_CAM_pointVecVecs;
-   std::vector<std::array<double, 6>> track_points;
+  std::vector<std::array<double, 6>> track_points;
+
+
 
 
 signals:

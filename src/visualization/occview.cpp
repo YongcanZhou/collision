@@ -1928,18 +1928,6 @@ void OccView::ButtonAxis06MoveBackward() {
   m_context->SetLocation(RobotAISShape[6], trans);
   m_context->UpdateCurrentViewer();
 }
-//
-//void OccView::setLinkPM(std::array<double, 7 * 16> link_pm) {
-//  gp_Trsf transformation;
-//  for (int i = 1; i < 7; ++i) {
-//    transformation.SetValues(link_pm[i * 16], link_pm[i * 16 + 1], link_pm[i * 16 + 2], link_pm[i * 16 + 3] * 1000,
-//                             link_pm[i * 16 + 4], link_pm[i * 16 + 5], link_pm[i * 16 + 6], link_pm[i * 16 + 7] * 1000,
-//                             link_pm[i * 16 + 8], link_pm[i * 16 + 9], link_pm[i * 16 + 10],
-//                             link_pm[i * 16 + 11] * 1000);
-//    //std::cout << "position:" << "x " << link_pm[i * 16 + 3] << " y " << link_pm[i * 16 + 7] << " z "<< link_pm[i * 16 + 11] << std::endl;
-//    m_context->SetLocation(RobotAISShape[i], transformation);
-//  }
-//}
 
 void OccView::setLinkPQ(std::array<double, 7 * 7> link_pq) {
   gp_Trsf transformation;
@@ -1967,51 +1955,6 @@ void OccView::setSpherePQ(std::array<double, 7 > sphere_pq) {
   m_context->UpdateCurrentViewer();
 }
 
-//
-//void OccView::setAngle(double angle) {
-//  gp_Trsf trans1, trans2, trans3, trans4, trans5, trans6;
-//  trans1.SetRotation(GeneralAx1, angle);
-//  trans2.SetRotation(GeneralAx2, angle);
-//  trans3.SetRotation(GeneralAx3, angle);
-//  trans4.SetRotation(GeneralAx4, angle);
-//  trans5.SetRotation(GeneralAx5, angle);
-//  trans6.SetRotation(GeneralAx6, angle);
-//
-//  m_context->SetLocation(RobotAISShape[1], trans1);
-//  m_context->SetLocation(RobotAISShape[2], trans2);
-//  m_context->SetLocation(RobotAISShape[3], trans3);
-//  m_context->SetLocation(RobotAISShape[4], trans4);
-//  m_context->SetLocation(RobotAISShape[5], trans5);
-//  m_context->SetLocation(RobotAISShape[6], trans6);
-//  m_context->UpdateCurrentViewer();
-//}
-//
-//
-//void OccView::setAngle(double *angle) {
-//  gp_Trsf trans1, trans2, trans3, trans4, trans5, trans6;
-//  trans1.SetRotation(GeneralAx1, angle[0]);
-//  trans2.SetRotation(GeneralAx2, angle[1]);
-//  trans3.SetRotation(GeneralAx3, angle[2]);
-//  trans4.SetRotation(GeneralAx4, angle[3]);
-//  trans5.SetRotation(GeneralAx5, angle[4]);
-//  trans6.SetRotation(GeneralAx6, angle[5]);
-//
-//  getJoint01CurrentAngle() = angle[0];
-//  getJoint02CurrentAngle() = angle[1];
-//  getJoint03CurrentAngle() = angle[2];
-//  getJoint04CurrentAngle() = angle[3];
-//  getJoint05CurrentAngle() = angle[4];
-//  getJoint06CurrentAngle() = angle[5];
-//
-//  m_context->SetLocation(RobotAISShape[1], trans1);
-//  m_context->SetLocation(RobotAISShape[2], trans2);
-//  m_context->SetLocation(RobotAISShape[3], trans3);
-//  m_context->SetLocation(RobotAISShape[4], trans4);
-//  m_context->SetLocation(RobotAISShape[5], trans5);
-//  m_context->SetLocation(RobotAISShape[6], trans6);
-//  m_context->UpdateCurrentViewer();
-//  qDebug() << "slot:" << angle[0];
-//}
 
 void OccView::setVisiable(nameState name, bool state) {
   if (name == nameState::joint1) {
