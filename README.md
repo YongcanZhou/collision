@@ -1,16 +1,16 @@
-# Robot_OCC
+# Robot contact force calculate 
 
-## 依赖库
+## Dependent library
 
 1. [Qt 5.12.12](https://download.qt.io/official_releases/qt/) 
 
 2. [Open CASCADE Technology 7.4.0](https://dev.opencascade.org/release/previous#node-29988)   
 
-   - 安装完需要重新对Open CASCADE Technology编译，cmake时候不选择using VTk
+   - cmake with not using VTk
 
 3. [PCL 1.12.1](https://github.com/PointCloudLibrary/pcl/releases/tag/pcl-1.12.1) 
 
-   - VTK 9.1 需要重新源码编译 + cmake时候勾选QT相关选项  
+   - VTK 9.1  recmake with QT options
 
      [windows debug boost](https://github.com/PointCloudLibrary/pcl/issues/5205)
 
@@ -22,15 +22,33 @@
 
 6. [sire](https://github.com/leitianjian/sire) 
 
-## 平台
+## Platform
 
 Visual studio：install VS QT tools
 
-## 使用
+## Usage
 
-导入机器人实现按预定轨迹运动，同时检测碰撞
+- Import the robot to realize the movement according to the predetermined trajectory
+- detect the collision at the same time 
+- calculate the contact force
 
+## demo
 
+- ball_rebound when restitution coefficient = 0.8
 
+  ![image](model\demo\ball_rebound_0.8.gif)
 
+- ball_rebound when restitution coefficient = 1
+
+  ![image](model\demo\ball_rebound_1.gif)
+
+- without collision detection
+
+  ![image](model\demo\without collision.gif)
+
+- collision detection
+
+  ![image](model\demo\collision.gif)
+
+  
 
