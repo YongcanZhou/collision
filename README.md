@@ -44,11 +44,11 @@ Visual studio：install VS QT tools
 
 - without collision detection
 
-  ![image](https://github.com/YongcanZhou/collision/blob/main/model/demo/collision.gif)
+  ![image](https://github.com/YongcanZhou/collision/blob/main/model/demo/without_collision.gif)
 
 - collision detection
 
-  ![image](https://github.com/YongcanZhou/collision/blob/main/model/demo/without_collision.gif)
+  ![image](https://github.com/YongcanZhou/collision/blob/main/model/demo/collision.gif)
 
   
 
