@@ -14,7 +14,7 @@
 
      [windows debug boost](https://github.com/PointCloudLibrary/pcl/issues/5205)
 
-     [VTK 9.1 添加QT相关lib](https://mangoroom.cn/cpp/pcl-vtk9-x-viewer-hosted-on-qt-widget.html)
+     [VTK 9.1 add QT lib](https://mangoroom.cn/cpp/pcl-vtk9-x-viewer-hosted-on-qt-widget.html)
 
 4. [hpp-fcl](https://github.com/leitianjian/hpp-fcl/tree/145b08e1bf98daba5d8ab4ace248c7e99a1e5faf) 
 
