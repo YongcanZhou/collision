@@ -36,19 +36,19 @@ Visual studio：install VS QT tools
 
 - ball_rebound when restitution coefficient = 0.8
 
-  ![image](model\demo\ball_rebound_0.8.gif)
+  ![image](https://github.com/YongcanZhou/collision/tree/main/model/demo/ball_rebound_0.8.gif)
 
 - ball_rebound when restitution coefficient = 1
 
-  ![image](model\demo\ball_rebound_1.gif)
+  ![image](https://github.com/YongcanZhou/collision/tree/main/model/demo/ball_rebound_1.gif)
 
 - without collision detection
 
-  ![image](model\demo\without collision.gif)
+  ![image](https://github.com/YongcanZhou/collision/tree/main/model/demo/without collision.gif)
 
 - collision detection
 
-  ![image](model\demo\collision.gif)
+  ![image](https://github.com/YongcanZhou/collision/tree/main/model/demo/collision.gif)
 
   
 
