@@ -38,17 +38,41 @@ Visual studio：install VS QT tools
 
   ![image](https://github.com/YongcanZhou/collision/blob/main/model/demo/ball_rebound_0.8.gif)
 
+  https://github.com/YongcanZhou/collision/blob/main/model/demo/ball_rebound_0.8.mp4
+
 - ball_rebound when restitution coefficient = 1
 
   ![image](https://github.com/YongcanZhou/collision/blob/main/model/demo/ball_rebound_1.gif)
+
+  https://github.com/YongcanZhou/collision/blob/main/model/demo/ball_rebound_1.mp4
 
 - without collision detection
 
   ![image](https://github.com/YongcanZhou/collision/blob/main/model/demo/without_collision.gif)
 
+  https://github.com/YongcanZhou/collision/blob/main/model/demo/no_collision_detection.mpeg4.aac.mp4
+
 - collision detection
 
   ![image](https://github.com/YongcanZhou/collision/blob/main/model/demo/collision.gif)
 
-  
+  https://github.com/YongcanZhou/collision/blob/main/model/demo/collision_detection.mpeg4.aac.mp4
+
+- CAM
+
+  https://github.com/YongcanZhou/collision/blob/main/model/demo/CAM.mpeg4.aac.mp4
+
+- CAD
+
+  https://github.com/YongcanZhou/collision/blob/main/model/demo/CAD.mp4
+
+- Polish
+
+  https://github.com/YongcanZhou/collision/blob/main/model/demo/polish.mpeg4.aac.mp4
+
+
+
+
+
+
 
