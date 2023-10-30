@@ -35,45 +35,32 @@ Visual studio：install VS QT tools
 ## demo
 
 - ball_rebound when restitution coefficient = 0.8
-
-  ![image](https://github.com/YongcanZhou/collision/blob/main/model/demo/ball_rebound_0.8.gif)
-
-  https://github.com/YongcanZhou/collision/blob/main/model/demo/ball_rebound_0.8.mp4
+  
+https://github.com/YongcanZhou/collision/assets/59829915/3853b102-e7c4-46a8-86be-9f868f660f7f
 
 - ball_rebound when restitution coefficient = 1
-
-  ![image](https://github.com/YongcanZhou/collision/blob/main/model/demo/ball_rebound_1.gif)
-
-  https://github.com/YongcanZhou/collision/blob/main/model/demo/ball_rebound_1.mp4
+  
+https://github.com/YongcanZhou/collision/assets/59829915/2cd5c0ba-a2c9-43d2-bbc9-2a4f0ff03d58
 
 - without collision detection
-
-  ![image](https://github.com/YongcanZhou/collision/blob/main/model/demo/without_collision.gif)
-
-  https://github.com/YongcanZhou/collision/blob/main/model/demo/no_collision_detection.mpeg4.aac.mp4
+  
+https://github.com/YongcanZhou/collision/assets/59829915/ac6f27d9-fe6b-4c1c-a3c9-7281de7b3a90
 
 - collision detection
-
-  ![image](https://github.com/YongcanZhou/collision/blob/main/model/demo/collision.gif)
-
-  https://github.com/YongcanZhou/collision/blob/main/model/demo/collision_detection.mpeg4.aac.mp4
+  
+https://github.com/YongcanZhou/collision/assets/59829915/884dd0d3-a216-404d-bec4-692d6105e011
 
 - CAM
-
-  https://github.com/YongcanZhou/collision/blob/main/model/demo/CAM.mpeg4.aac.mp4
+  
+https://github.com/YongcanZhou/collision/assets/59829915/ed496b67-17ce-4210-9296-c7ed22921d0e
 
 - CAD
-
-  https://github.com/YongcanZhou/collision/blob/main/model/demo/CAD.mp4
-
-  https://github.com/YongcanZhou/collision/blob/a5e365ad18dc2c6cc435ed9ab8ac56a7fabb5f65/model/demo/CAD.mp4
-
-  https://github.com/YongcanZhou/collision/blob/a5e365ad18dc2c6cc435ed9ab8ac56a7fabb5f65/model/demo/CAD
+  
+https://github.com/YongcanZhou/collision/assets/59829915/c693e9f2-e650-48a0-8978-baefe2290ccd
 
 - Polish
-
-  https://github.com/YongcanZhou/collision/blob/main/model/demo/polish.mpeg4.aac.mp4
-
+  
+https://github.com/YongcanZhou/collision/assets/59829915/a1bca1cb-bbd0-44e6-ab77-82cfc6eb7f2e
 
 
 
