@@ -66,9 +66,15 @@ Visual studio：install VS QT tools
 
   https://github.com/YongcanZhou/collision/blob/main/model/demo/CAD.mp4
 
+  https://github.com/YongcanZhou/collision/blob/a5e365ad18dc2c6cc435ed9ab8ac56a7fabb5f65/model/demo/CAD.mp4
+
+  https://github.com/YongcanZhou/collision/blob/a5e365ad18dc2c6cc435ed9ab8ac56a7fabb5f65/model/demo/CAD
+
 - Polish
 
   https://github.com/YongcanZhou/collision/blob/main/model/demo/polish.mpeg4.aac.mp4
+
+
 
 
 
