@@ -36,32 +36,38 @@ Visual studio：install VS QT tools
 
 - ball_rebound when restitution coefficient = 0.8
   
+
 https://github.com/YongcanZhou/collision/assets/59829915/3853b102-e7c4-46a8-86be-9f868f660f7f
 
 - ball_rebound when restitution coefficient = 1
   
+
 https://github.com/YongcanZhou/collision/assets/59829915/2cd5c0ba-a2c9-43d2-bbc9-2a4f0ff03d58
 
 - without collision detection
   
+
 https://github.com/YongcanZhou/collision/assets/59829915/ac6f27d9-fe6b-4c1c-a3c9-7281de7b3a90
 
 - collision detection
   
+
 https://github.com/YongcanZhou/collision/assets/59829915/884dd0d3-a216-404d-bec4-692d6105e011
 
 - CAM
   
+
 https://github.com/YongcanZhou/collision/assets/59829915/ed496b67-17ce-4210-9296-c7ed22921d0e
 
-- CAD
+- CAD :[OCCTSketcher](https://github.com/YongcanZhou/OCCTSketcher)
   
+
 https://github.com/YongcanZhou/collision/assets/59829915/c693e9f2-e650-48a0-8978-baefe2290ccd
 
 - Polish
   
-https://github.com/YongcanZhou/collision/assets/59829915/a1bca1cb-bbd0-44e6-ab77-82cfc6eb7f2e
 
+https://github.com/YongcanZhou/collision/assets/59829915/a1bca1cb-bbd0-44e6-ab77-82cfc6eb7f2e
 
 
 
