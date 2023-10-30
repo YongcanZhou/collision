@@ -279,7 +279,10 @@ private:
   bool faceSelect{false};
   std::vector<Handle(AIS_Shape)> NormalVector;
   Handle_Graphic3d_Camera cameraStart, cameraEnd;
-  Handle(AIS_Shape) RobotAISShape[2];//机器人的shape
+
+  Handle(AIS_Shape) RobotAISShape[20];//机器人的shape
+  std::vector<Handle(AIS_Shape)> vec_RobotAISShape;
+
   Handle_AIS_Shape PartAISShape;     //工件的shape
   Handle_AIS_Shape ToolAISShape;     //工具的shape
   TopoDS_Shape RobotTopoShape, PartTopoShape, ToolTopoShape;

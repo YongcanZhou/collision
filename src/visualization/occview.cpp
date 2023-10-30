@@ -1931,13 +1931,14 @@ void OccView::ButtonAxis06MoveBackward() {
 
 void OccView::setLinkPQ(std::array<double, 7 * 7> link_pq) {
   gp_Trsf transformation;
-  for (int i = 1; i < 7; ++i) {
+  for (int i = 1; i < 6; ++i) {
     transformation.SetTransformation(
             gp_Quaternion(link_pq[i * 7 + 3], link_pq[i * 7 + 4], link_pq[i * 7 + 5], link_pq[i * 7 + 6]),
             gp_Vec(link_pq[i * 7] * 1000, link_pq[i * 7 + 1] * 1000, link_pq[i * 7 + 2] * 1000));
     m_context->SetLocation(RobotAISShape[i], transformation);
+    //m_context->UpdateCurrentViewer();
+    //m_context->SetLocation(vec_RobotAISShape[i], transformation);
   }
-  //  std::cout<<"test"<<std::endl;
 }
 
 void OccView::setSpherePQ(std::array<double, 7 > sphere_pq) {
@@ -3079,10 +3080,10 @@ void OccView::ReadFile(QString aFilePath, Handle(Document) doc) {
   reader.ReadFile(aFilePath.toUtf8());
 
   //  /*******注册progressbar***********/
-  //  OccProgressIndicator *indicat = new OccProgressIndicator();
-  //  QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
-  //  Handle_XSControl_WorkSession ws = reader.Reader().WS();
-  //  ws->MapReader()->SetProgress(indicat);
+    OccProgressIndicator *indicat = new OccProgressIndicator();
+    QObject::connect(indicat, SIGNAL(updateProgress(int)), this, SLOT(importValue(int)));
+    Handle_XSControl_WorkSession ws = reader.Reader().WS();
+    ws->MapReader()->SetProgress(indicat);
 
 
   bool yes = reader.Transfer(doc);
@@ -3101,13 +3102,22 @@ void OccView::ReadFile(QString aFilePath, Handle(Document) doc) {
 
       TDF_LabelSequence components;
       XCAFDoc_ShapeTool::GetComponents(Label, components);
+
+      
+
       for (int i = 1; i <= components.Length(); i++) {
         TDF_Label Label00 = components.Value(i);
         auto shape = ShapeTool->GetShape(Label00);
-        RobotAISShape[i - 1] = new AIS_Shape(shape);
-        m_context->Display(RobotAISShape[i - 1], true);
-      }
 
+        RobotAISShape[i - 1] = new AIS_Shape(shape);
+        //auto i_RobotAISShape = new AIS_Shape(shape);
+        qDebug() << " RobotAISShape: " << i;
+        m_context->Display(RobotAISShape[i - 1], true);
+        //m_context->Display(i_RobotAISShape, true);
+        //vec_RobotAISShape.emplace_back(i_RobotAISShape);
+      }
+      qDebug() << "finish ";
+      m_view->FitAll();
       //RobotAISShape[5]->AddChild(RobotAISShape[6]);
       //RobotAISShape[4]->AddChild(RobotAISShape[5]);
       //RobotAISShape[3]->AddChild(RobotAISShape[4]);
@@ -3121,11 +3131,3 @@ void OccView::ReadFile(QString aFilePath, Handle(Document) doc) {
 }
 
 
-/*
-//import step
-原文链接：https://blog.csdn.net/qq_15714933/article/details/108813205
-*/
-
-//void OccView::setTrackPoints() {
-//
-//}

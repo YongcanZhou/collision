@@ -1,4 +1,6 @@
-#pragma once
+
+#ifndef THREADS_H
+#define THREADS_H
 
 #include <QObject>
 #include <qthread.h>
@@ -24,6 +26,7 @@ protected:
 
 private:
   auto BallRebound()->void;
+  auto XB4Polish() -> void;
   auto XB4Push() -> void;
 
 	double angle{ 0.0 };
@@ -66,8 +69,8 @@ public:
 
 private:
 	friend class TaskManager;
-	TaskId m_id = 0;//??????
-	TaskJob m_fn;//???????????
+	TaskId m_id = 0;
+	TaskJob m_fn;
 	TaskManager* m_manager = nullptr;
 };
 
@@ -93,3 +96,4 @@ signals:
 	void updateProgress(int value);
 
 };
+#endif// THREADS_H

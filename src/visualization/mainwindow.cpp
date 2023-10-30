@@ -58,6 +58,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
   QHBoxLayout *layout03 = new QHBoxLayout(this);
   QHBoxLayout *layout04 = new QHBoxLayout(this);
 
+  QHBoxLayout* layouts[4];
+
+
+
   auto buttonFitAll = Ui::createViewBtn(this, QIcon(":/themes/dark/expand.svg"), tr("Fit All"));
   QSpacerItem *hSpacer01 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
   QSpacerItem *hSpacer02 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
