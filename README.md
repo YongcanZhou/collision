@@ -1,3 +1,5 @@
+
+
 # Robot contact force calculate 
 
 ## Dependent library
@@ -6,7 +8,7 @@
 
 2. [Open CASCADE Technology 7.4.0](https://dev.opencascade.org/release/previous#node-29988)   
 
-   - cmake with not using VTk
+   - cmake with not using VTK
 
 3. [PCL 1.12.1](https://github.com/PointCloudLibrary/pcl/releases/tag/pcl-1.12.1) 
 
@@ -68,10 +70,3 @@ https://github.com/YongcanZhou/collision/assets/59829915/c693e9f2-e650-48a0-8978
   
 
 https://github.com/YongcanZhou/collision/assets/59829915/a1bca1cb-bbd0-44e6-ab77-82cfc6eb7f2e
-
-
-
-
-
-
-
